@@ -1,5 +1,4 @@
 import Walax from '../Walax'
-const { observable } = require('mobx')
 
 class Control extends Walax {
   constructor () {
@@ -7,4 +6,4 @@ class Control extends Walax {
   }
 }
 
-export default { Control: observable(Control.instance()) }
+export default Control
