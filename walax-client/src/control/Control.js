@@ -1,4 +1,4 @@
-import Walax from './Walax'
+import Walax from '../Walax'
 const { observable } = require('mobx')
 
 class Control extends Walax {

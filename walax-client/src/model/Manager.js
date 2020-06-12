@@ -1,16 +1,11 @@
-var m = require('mithril')
+import Walax from '../Walax'
 import Model from './Model'
+
+var m = require('mithril')
 var { observable } = require('mobx')
 
-class Manager {
-  static instances = observable(new Map())
+class Manager extends Walax {
   _xin = 1
-
-  static instance (model) {
-    if (!this.instances.has(model))
-      cObject.register(this.instances.set(model, new this(model)).get(model))
-    return this.instances.get(model)
-  }
 
   constructor (model) {
     this._name = 'base'
