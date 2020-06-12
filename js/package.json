@@ -1,0 +1,16 @@
+{
+  "name": "walax",
+  "version": "0.0.2",
+  "description": "walax is a Javascript framework for interacting with objects remotely via Django.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "keywords": [
+    "walax",
+    "javascript",
+    "django"
+  ],
+  "author": "Matt Barry <matt@hazelmollusk.org>",
+  "license": "UNLICENSED"
+}
