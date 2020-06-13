@@ -1,0 +1,21 @@
+
+from django.urls import path, include
+from django.contrib.auth.models import User
+from rest_framework import routers, serializers, viewsets
+from rest_framework.schemas import get_schema_view
+from .views import *
+
+router = routers.DefaultRouter(trailing_slash=False)
+router.register(r'bands', BandViewSet)
+router.register(r'albums', AlbumViewSet)
+router.register(r'songs', SongViewSet)
+router.register(r'store', StoreViewSet)
+
+urlpatterns = [
+    path(r'api/', include(router.urls)),
+    path(r'openapi', get_schema_view(
+        title="Record Stores",
+        description="API for example application",
+        version="1.0.0"
+    ), name='openapi-schema'),
+]
