@@ -4,9 +4,7 @@ class ObjectControl extends Control {
   constructor (apiUri = false) {
     super()
     this.schema = null
-    if (apiUri) {
-      this.loadSchema(apiUri)
-    }
+    if (apiUri) { this.loadSchema(apiUri) }
   }
 
   loadSchema (uri) {
@@ -14,4 +12,4 @@ class ObjectControl extends Control {
   }
 }
 
-export default Control
+export default ObjectControl
