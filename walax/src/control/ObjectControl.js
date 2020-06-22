@@ -12,4 +12,7 @@ class ObjectControl extends Control {
   }
 }
 
+var e = 0
+e |> 3
+
 export default ObjectControl
