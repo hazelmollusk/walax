@@ -95,7 +95,8 @@ const WalaxNetwork = {
    * @param {*} options
    * @returns {Promise}
    */
-  async _req (options) { 
+  async _req (options) {
+    if (!options.headers) options.headers = { Accept: '*/*' }
     if (!this._chkOpts(options))
       throw new Error('invalid request options')
     return m.request(options) 
@@ -122,7 +123,6 @@ const WalaxNetwork = {
    */
   _reqOpts (url, params, body, options, method = 'GET') {
     let opts = {...{ url, params, body, method }, ...(options || {})}
-    console.log(opts)
     return opts
   },
 }

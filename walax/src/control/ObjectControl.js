@@ -12,19 +12,26 @@ class ObjectControl extends Control {
    */
   constructor (key = false) {
     super()
+    this._init()
+  }
+
+  _init () {
     this.schema = null
-    this._apiUrl = null
-    this.api = null
+    this._schemaUri = null
   }
 
-  get apiUrl () { return this._apiUrl }
-  set apiUrl (url) {
-    this._apiUrl = url
-    this.loadSchema()
+  get schemaUri () { return this._schemaUri }
+  set schemaUri (url) {
+    this._init()
+    this._schemaUri = url
+    this.loadSchema(this._schemaUri)
   }
 
-  loadSchema () {
-    w.net.get(this.apiUrl)
+  loadSchema (uri) {
+    w.net.get(uri).then(data => {
+      this.schema = data
+      console.log(data)
+    })
   }
 }
 
