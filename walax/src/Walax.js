@@ -38,7 +38,7 @@ const WalaxLogger = {
 
   async _log (s, level = INFO) {
     return Array.isArray(s) 
-      ? s.map(function (x) { return this._log(x, level) })
+      ? s.map(x => this._log(x, level))
       : this._processLog(s, level)
   },
   async _processLog (msg, level) {

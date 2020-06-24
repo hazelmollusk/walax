@@ -21,6 +21,7 @@ class ObjectControl extends Control {
     this._schemaUri = null
     this._ops = null
     this._models = null
+    this._modelNames = null
     this._managers = null
   }
 
@@ -34,21 +35,32 @@ class ObjectControl extends Control {
   loadSchema () {
     w.net.get(this.schemaUri).then(data => {
       this.schema = data
-
+      console.log(this.models)
     })
+  }
+
+  get modelNames () {
+    if (!this._modelNames) {
+      this._modelNames = new Set()
+      Object.values(this.ops)
+        .map(v => { this._modelNames.add(v) })
+
+      console.log(this._modelNames)
+    }
+    return this._modelNames
   }
 
   get models () {
     if (!this._models) {
       this._models = {}
       w.log.debug('regenerating model classes')
-      Object.keys(this._ops)
-        .filter(k => k.startsWith('retrieve'))
-        .forEach(m => {
-          class WalaxProxyModel extends ModelBase {}
-          
-        })
+      this.modelNames.forEach(model => {
+        class WalaxProxyModel extends ModelBase {}
+        this._models[model] = WalaxProxyModel
+      })
+      console.log(this._models)
     }
+    return this._models
   }
 
   get ops () {
