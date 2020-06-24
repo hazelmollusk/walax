@@ -13,12 +13,18 @@ class ObjectControl extends Control {
   constructor (key = false) {
     super()
     this.schema = null
-    this.apiUrl = key || null
-    if (this.apiUrl) { this.loadSchema() }
+    this._apiUrl = null
+    this.api = null
+  }
+
+  get apiUrl () { return this._apiUrl }
+  set apiUrl (url) {
+    this._apiUrl = url
+    this.loadSchema()
   }
 
   loadSchema () {
-    w.get(this.apiUrl)
+    w.net.get(this.apiUrl)
   }
 }
 
