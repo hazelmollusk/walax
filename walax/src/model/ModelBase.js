@@ -1,4 +1,4 @@
-class ModelBase extends Object {
+class Walax extends Object {
   static get _manager () {
     return false
   }

@@ -53,7 +53,7 @@ const WalaxController = {
   isValidProp (prop) { return prop /* fixme */ },
   instance (cls, key = false, prop = false) {
     prop ||= key
-    key ||= prop || DEFAULT 
+    key  ||= prop || DEFAULT 
 
     if (!this.instances.has(cls))
       this.instances.set(cls, observable.map())
@@ -96,11 +96,12 @@ const WalaxNetwork = {
    * @returns {Promise}
    */
   async _req (options) {
-    if (!options.headers) options.headers = { Accept: '*/*' }
+    if (!options.headers) options.headers = { Accept: 'application/vnd.oai.openapi+json, application/json' }
     if (!this._chkOpts(options))
       throw new Error('invalid request options')
     return m.request(options) 
   },
+
   /**
    * check validity of request options object
    *
@@ -111,6 +112,7 @@ const WalaxNetwork = {
     // todo better sanity?
     return opts.url && opts.method
   },
+
   /**
    * formats parameters into request options for mithril
    *
@@ -123,6 +125,7 @@ const WalaxNetwork = {
    */
   _reqOpts (url, params, body, options, method = 'GET') {
     let opts = {...{ url, params, body, method }, ...(options || {})}
+    //todo defaults?
     return opts
   },
 }

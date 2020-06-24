@@ -1,4 +1,5 @@
 import Control from './Control'
+import ModelBase from '../model/ModelBase'
 import w from '../Walax'
 
 class ObjectControl extends Control {
@@ -18,20 +19,57 @@ class ObjectControl extends Control {
   _init () {
     this.schema = null
     this._schemaUri = null
+    this._ops = null
+    this._models = null
+    this._managers = null
   }
 
   get schemaUri () { return this._schemaUri }
   set schemaUri (url) {
     this._init()
     this._schemaUri = url
-    this.loadSchema(this._schemaUri)
+    this.loadSchema()
   }
 
-  loadSchema (uri) {
-    w.net.get(uri).then(data => {
+  loadSchema () {
+    w.net.get(this.schemaUri).then(data => {
       this.schema = data
-      console.log(data)
+
     })
+  }
+
+  get models () {
+    if (!this._models) {
+      this._models = {}
+      w.log.debug('regenerating model classes')
+      Object.keys(this._ops)
+        .filter(k => k.startsWith('retrieve'))
+        .forEach(m => {
+          class WalaxProxyModel extends ModelBase {}
+          
+        })
+    }
+  }
+
+  get ops () {
+    if (!this._ops) {
+      this._ops = {}
+      Object.entries(this.schema.paths).map(p => {
+        let path = p[0], methods = p[1]
+        Object.entries(methods).map(m => {
+          let opId = m[1].operationId
+          this._ops[opId] = {
+            path: p[0],
+            method: m[0],
+            detail: m[1],
+            op: opId
+                  .match(/[A-Z]?[a-z]+/g)
+                  .map(s => s.toLowerCase())
+          }
+        })
+      })
+    }
+    return this._ops
   }
 }
 
