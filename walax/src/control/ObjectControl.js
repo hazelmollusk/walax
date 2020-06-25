@@ -3,6 +3,8 @@ import ModelBase from '../model/ModelBase'
 import w from '../Walax'
 
 class ObjectControl extends Control {
+  @observable schema = null
+  
   /**
    *Creates an instance of ObjectControl.
    * @param {boolean} [key=false]
@@ -18,7 +20,6 @@ class ObjectControl extends Control {
 
   _init () {
     this.schema = null
-    this._schemaUri = null
     this._ops = null
     this._models = null
     this._modelNames = null
@@ -26,21 +27,14 @@ class ObjectControl extends Control {
     this._status = null
   }
 
-  get schemaUri () { return this._schemaUri }
-  set schemaUri (url) {
-    this._init()
-    this._schemaUri = url
-    this._loadSchema()
-  }
-
-  _loadSchema () {
+  loadSchema (uri, name = false, merge = true) {
     this._status = false
     w.log.info(`loading model schema: ${this.schemaUri}`)
-    return w.net.get(this.schemaUri).then(data => {
-      this.schema = data
-      this.status = true
-      console.log(data)
-    })
+    return w.net.get(this.schemaUri).then(data => this._addSchema(uri, data, name, merge))
+  }
+  
+  _addSchema(uri, data, name, merge) {
+
   }
 
   get modelNames () {
