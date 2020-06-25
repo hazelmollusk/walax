@@ -130,10 +130,16 @@ const WalaxNetwork = {
   },
 }
 
+class WalaxProxy {
+
+}
+
 export const Walax = {
   get log () { return WalaxLogger },
   get net () { return WalaxNetwork },
   get ctl () { return WalaxController },
+  
+  get Proxy () { return WalaxProxy },
 }
 
 export const w = Walax

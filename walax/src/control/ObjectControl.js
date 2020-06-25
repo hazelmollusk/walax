@@ -23,53 +23,75 @@ class ObjectControl extends Control {
     this._models = null
     this._modelNames = null
     this._managers = null
+    this._status = null
   }
 
   get schemaUri () { return this._schemaUri }
   set schemaUri (url) {
     this._init()
     this._schemaUri = url
-    this.loadSchema()
+    this._loadSchema()
   }
 
-  loadSchema () {
-    w.net.get(this.schemaUri).then(data => {
+  _loadSchema () {
+    this._status = false
+    w.log.info(`loading model schema: ${this.schemaUri}`)
+    return w.net.get(this.schemaUri).then(data => {
       this.schema = data
-      console.log(this.models)
+      this.status = true
+      console.log(data)
     })
   }
 
   get modelNames () {
     if (!this._modelNames) {
-      this._modelNames = new Set()
-      Object.values(this.ops)
-        .map(v => { this._modelNames.add(v) })
-
-      console.log(this._modelNames)
+      let mappings = new Map()
+      let names = new Set(
+        Object.values(this.ops)
+          .map(v => v?.op[1]))
+      names.forEach(x => {
+        // check for plurals
+        ['s','es'].forEach(y => {
+          if (names.has(x + y)) {
+            names.delete(x + y)
+            mappings.set(x + y, x)
+          }
+        })
+      })
+      w.log.info('parsed model names', names, mappings)
+      this._modelMap = mappings
+      this._modelNames = names
     }
     return this._modelNames
   }
 
+  get modelMap() {
+    return this.modelNames && this._modelMap
+  }
+
   get models () {
-    if (!this._models) {
-      this._models = {}
-      w.log.debug('regenerating model classes')
-      this.modelNames.forEach(model => {
-        class WalaxProxyModel extends ModelBase {}
+    if (!this._models && this.modelNames && this.ops) {
+      this._models = {}      
+      this._modelNames.forEach(model => {
+        class WalaxProxyModel extends ModelBase {
+          static _wlx_model = model
+        }
+
         this._models[model] = WalaxProxyModel
+        
       })
-      console.log(this._models)
+      w.log.info('regenerating model classes', this._models)
     }
     return this._models
   }
 
   get ops () {
-    if (!this._ops) {
+    if (!this._ops && this.schema?.paths) {
       this._ops = {}
-      Object.entries(this.schema.paths).map(p => {
-        let path = p[0], methods = p[1]
+      Object.entries(this.schema.paths).map(p => 
         Object.entries(methods).map(m => {
           let opId = m[1].operationId
+          console.log(opId)
           this._ops[opId] = {
             path: p[0],
             method: m[0],
@@ -78,8 +100,8 @@ class ObjectControl extends Control {
                   .match(/[A-Z]?[a-z]+/g)
                   .map(s => s.toLowerCase())
           }
-        })
-      })
+        }))
+      w.log.info('built operations map', this._ops)
     }
     return this._ops
   }

@@ -1,16 +1,6 @@
-class ModelBase extends Object {
+import w from '../Walax'
 
-  static get _manager () {
-    return false
-  }
-
-  static get objects () {
-    return this._manager?.instance(this)
-  }
-
-  static get _fields () {
-    return ['xin']
-  }
+class ModelBase extends w.Proxy {
 }
 
 export default ModelBase
