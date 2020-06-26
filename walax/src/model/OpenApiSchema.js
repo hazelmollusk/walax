@@ -27,8 +27,7 @@ export class OpenApiSchema extends WalaxSchema {
     this._uri = uri
     w.net.get(uri).then(data => {
       this._init();
-      this.schema = data;
-      console.log(data)
+      this.schema = data
       // initialize everything
       this.ops && this.modelNames && this.models;
     })
@@ -37,9 +36,10 @@ export class OpenApiSchema extends WalaxSchema {
   get modelNames() {
     if (!this._modelNames) {
       let mappings = new Map();
+      console.log(this.ops)
       let names = new Set(Object
         .values(this.ops)
-        .map(v => v?.op[1]));
+        .map(v => v?.op[1]))
       names.forEach(x => {
         // check for plurals
         ['s', 'es'].forEach(y => {
@@ -68,7 +68,7 @@ export class OpenApiSchema extends WalaxSchema {
         this._models[model] = WalaxProxyModel;
 
       });
-      w.log.info('regenerating model classes', this._models);
+      w.log.info('regenerated model classes', this._models);
     }
     return this._models;
   }
@@ -77,19 +77,19 @@ export class OpenApiSchema extends WalaxSchema {
     if (!this._ops && this.schema?.paths) {
       this._ops = observable.map();
       Object.entries(this.schema.paths).map(paths => 
-            Object.entries(paths).map(path => 
-            Object.entries(path).map(method => {
-        let opId = m[1].operationId;
-        console.log(opId);
+            Object.entries(paths[1]).map(path => {
+        let opId = path[1].operationId
+        
+        // this is how we store model definitions internally
         this._ops[opId] = {
-          path: p[0],
-          method: m[0],
-          detail: m[1],
+          path: paths[0],
+          method: path[0],
+          detail: path[1],
           op: opId
             .match(/[A-Z]?[a-z]+/g)
             .map(s => s.toLowerCase())
         }
-      })))
+      }))
       w.log.info('built operations map', this._ops);
     }
     return this._ops;
