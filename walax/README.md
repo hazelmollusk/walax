@@ -1,0 +1,67 @@
+# Welcome to walax 👋
+[![Version](https://img.shields.io/npm/v/walax.svg)](https://www.npmjs.com/package/walax)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
+
+> walax : django :: django : sql
+
+Walax is a Javascript framework for interacting with objects remotely via Django.  The goal is to provide a 'batteries-included' library for easily creating front-end applications, which automatically consumes and instantiates its interface from CoreAPI-compatible remote.  
+
+While other implementations should be possible, walax was designed and tested using  Django and DRF (see the `example` Django project for a simple working configuration).
+
+### 🏠 [Homepage](https://github.com/hazelmollusk/walax)
+
+Walax is meant to provide all the scaffolding for a fully-featured client-side application with API backing; as such, it encompasses an array of common functionality, and attempts to present them in an integrated fashion.
+
+Walax has two main dependencies:
+
+* mithril: view components and routing, as well as XHR
+* mobx: state management
+
+Both libraries are small, fast, and provide (in the author's opinion ;) powerful, un-intrusive access to critical features required by an SPA; walax is therefore opinionated on these choices.  (You can use just the object system with whatever state/display/routing library you like, but these are used internally by walax, and are included in the exposed interface.)
+
+For now, here are some examples of the walax API:
+
+## Examples
+
+    import w from Walax
+
+### Making remote requests
+
+    w.net.get('/records/openapi/?format=openapi-json')
+
+    w.net.delete('/api/endpoint/', {id: 23})
+
+    w.net.post('/some/form/somewhere', {}, '<request body goes here>')
+
+### Logging
+
+    w.log.info('just fyi', someVar)
+
+    w.log.error('oh dear')  // will throw an exception
+
+    w.log.fatal('i give up')  // terminates 
+
+
+### Objects (remote API)
+
+    w.ctl.obj.loadUri('/records/openapi/?format=openapi-json', 'records')
+    w.ctl.obj.loadUri('/somethingelse/api/', 'cool')
+    
+    let aStore = new w.ctl.models.records.Store()
+    aStore.name = 'new name'
+    aStore.save()
+
+## Author
+
+👤 **Matt Barry <matt@hazelmollusk.org>**
+
+* Website: http://hazelmollusk.org
+* Github: [@zaharazod](https://github.com/zaharazod)
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
