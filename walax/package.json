@@ -1,6 +1,6 @@
 {
   "name": "walax",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "walax is a Javascript framework for interacting with objects remotely via Django.",
   "main": "dist/walax/index.js",
   "scripts": {
@@ -11,8 +11,9 @@
     "javascript",
     "django"
   ],
+  "repository": "https://github.com/hazelmollusk/walax",
   "author": "Matt Barry <matt@hazelmollusk.org>",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.10.3",
