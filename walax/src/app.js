@@ -4,4 +4,4 @@ import { ObjectControl } from './control/'
 w.log.register(msg => console.log(msg))
 
 w.ctl.instance(ObjectControl, 'obj')
-w.ctl.obj.schemaUri = '/records/openapi/?format=openapi-json'
+w.ctl.obj.loadUri('/records/openapi/?format=openapi-json', 'records')

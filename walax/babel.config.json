@@ -8,7 +8,8 @@
     } ] ],
   "sourceMaps": true,
   "plugins": [
-      "@babel/plugin-proposal-class-properties",
-      "@babel/plugin-proposal-logical-assignment-operators"
-  ]
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    "@babel/plugin-proposal-logical-assignment-operators"
+   ]
 }
