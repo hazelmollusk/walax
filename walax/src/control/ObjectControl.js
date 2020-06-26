@@ -39,6 +39,8 @@ class ObjectControl extends Control {
     this.schema.set(name || uri, new OpenApiSchema(uri))
   }
 
+  schema (name) { return this.schema.get(name) }
+
   get ops () {
     if (!this._ops) {
       this._ops = observable.map()
