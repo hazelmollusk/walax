@@ -1,16 +1,19 @@
 import ModelBase from './ModelBase';
+
 import w from '../Walax';
 import { observable } from 'mobx';
 import { WalaxSchema } from './WalaxSchema';
+const m = require('mithril')
+
 export class OpenApiSchema extends WalaxSchema {
   constructor(uri = false) {
     super();
     this._init();
-    this.uri = uri;
+    if (uri) this.uri = uri;
   }
 
   _init() {
-    this.uri = false;
+    this._uri = false;
     this.schema = false;
     this._ops = null;
     this._models = null;
@@ -20,13 +23,15 @@ export class OpenApiSchema extends WalaxSchema {
 
   get uri() { return this._uri; }
   set uri(uri) {
+    if (!uri) throw new TypeError(uri)  // good, but better
+    this._uri = uri
     w.net.get(uri).then(data => {
       this._init();
-      this._uri = uri;
       this.schema = data;
-      // may as well initialize these
+      console.log(data)
+      // initialize everything
       this.ops && this.modelNames && this.models;
-    });
+    })
   }
 
   get modelNames() {
@@ -59,7 +64,7 @@ export class OpenApiSchema extends WalaxSchema {
         class WalaxProxyModel extends ModelBase {
           static _wlx_model = model;
         }
-        // todo add properties URGENT
+        // todo add properties 
         this._models[model] = WalaxProxyModel;
 
       });
@@ -71,7 +76,9 @@ export class OpenApiSchema extends WalaxSchema {
   get ops() {
     if (!this._ops && this.schema?.paths) {
       this._ops = observable.map();
-      Object.entries(this.schema.paths).map(p => Object.entries(methods).map(m => {
+      Object.entries(this.schema.paths).map(paths => 
+            Object.entries(paths).map(path => 
+            Object.entries(path).map(method => {
         let opId = m[1].operationId;
         console.log(opId);
         this._ops[opId] = {
@@ -81,8 +88,8 @@ export class OpenApiSchema extends WalaxSchema {
           op: opId
             .match(/[A-Z]?[a-z]+/g)
             .map(s => s.toLowerCase())
-        };
-      }));
+        }
+      })))
       w.log.info('built operations map', this._ops);
     }
     return this._ops;

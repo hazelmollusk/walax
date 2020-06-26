@@ -96,9 +96,10 @@ const WalaxNetwork = {
    * @returns {Promise}
    */
   async _req (options) {
+    if (!options) throw new Error(options)
     if (!options.headers) options.headers = { Accept: 'application/vnd.oai.openapi+json, application/json' }
-    if (!this._chkOpts(options))
-      throw new Error('invalid request options')
+    if (!this._chkOpts(options)) throw new Error(options)
+
     return m.request(options) 
   },
 
@@ -124,7 +125,10 @@ const WalaxNetwork = {
    * @returns {object}
    */
   _reqOpts (url, params, body, options, method = 'GET') {
+    console.log(15,url)
     let opts = {...{ url, params, body, method }, ...(options || {})}
+
+    console.log(11, url)
     //todo defaults?
     return opts
   },

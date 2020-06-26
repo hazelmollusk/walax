@@ -33,9 +33,9 @@ class ObjectControl extends Control {
   }
 
   loadUri (uri, name = false, replace = false) {
+    w.log.warn('purging model schema')
     w.log.info(`loading model schema: ${uri}`)
     this._init(replace)
-    console.log(OpenApiSchema)
     this.schema.set(name || uri, new OpenApiSchema(uri))
   }
 
