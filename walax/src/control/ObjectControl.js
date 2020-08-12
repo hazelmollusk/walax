@@ -1,10 +1,12 @@
 import Control from './Control'
-import w from '../Walax'
-import { observable } from 'mobx'
+import { observable, computed } from 'mobx'
 import { WalaxSchema } from '../model/WalaxSchema'
 import { OpenApiSchema } from '../model/OpenApiSchema'
 
 class ObjectControl extends Control {
+  schema = observable.map()
+  models = observable.map()
+
   /**
    *Creates an instance of ObjectControl.
    * @param {boolean} [key=false]
@@ -13,18 +15,8 @@ class ObjectControl extends Control {
    * ObjectControl(key) uses the value passed
    * as a URI for the base schema to load.
    */
-  constructor (key = false) {
+  constructor () {
     super()
-    this._init(true)
-  }
-
-  _init (full = false) {
-    if (full) this.schema = observable.map()
-    this._ops = null
-    this._models = null
-    this._modelNames = null
-    this._managers = null
-    this._status = null
   }
 
   loadSchema (schema, name) {
@@ -32,35 +24,30 @@ class ObjectControl extends Control {
     // todo checking, implement
   }
 
-  loadUri (uri, name = false, replace = false) {
-    w.log.warn('purging model schema')
-    w.log.info(`loading model schema: ${uri}`)
-    this._init(replace)
-    this.schema.set(name || uri, new OpenApiSchema(uri))
+  checkName(name) {
+    if (!name) return false
+    if ((typeof name) != 'string') return false
+    if (this.schema.has(name)) return false
+    if (name.search('^\w') != -1) return false
+    return true
+  }
+
+  loadUri (uri, name = false) {
+    name ||= uri 
+    if (!this.checkName(name)) 
+      throw new ReferenceError(`cannot assign name ${name} to URI ${uri}`)
+    
+    this.schema.set(name, new OpenApiSchema(uri))
   }
 
   schema (name) { return this.schema.get(name) }
 
-  get ops () {
-    if (!this._ops) {
-      this._ops = observable.map()
-      this.schema.forEach((v, k) =>
-        v.ops.forEach((vv, kk) => this._ops.set(kk, vv))
-      ) // todo collision detection
-    }
-
-    return this._ops
-  }
-
+  @computed
   get models () {
-    if (!this._models) {
-      this._models = observable.map()
-      this.schema.forEach((v, k) =>
-        v.models.forEach((vv, kk) => this._models.set(kk, vv))
-      ) // todo collision detection
-      // currently last-set wins
-    }
-    return this._models
+    var mods = new Map() 
+    this.schema.forEach( (v, k) => {
+
+    })
   }
 }
 

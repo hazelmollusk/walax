@@ -11,10 +11,10 @@ class Control {
    * This class (and descendants) will be
    * instantiated as singleton objects,
    * optionally one per unique key passed into:
-   * Walax.ctrl.register (cls, key = false)
+   * Walax.ctl.register (cls, key = false)
    */
-  constructor (key = false) {
-    this._wlx_ctrl_key = key
+  constructor () {
+    
   }
 }
 
