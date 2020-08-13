@@ -1,23 +1,10 @@
-import Control from './Control'
 import { observable, computed } from 'mobx'
 import { WalaxSchema } from '../model/WalaxSchema'
 import { DjangoSchema } from '../model/DjangoSchema'
 
-class ObjectControl extends Control {
-  schema = observable.map()
-  models = observable.map()
-
-  /**
-   *Creates an instance of ObjectControl.
-   * @param {boolean} [key=false]
-   * @memberof ObjectControl
-   *
-   * ObjectControl(key) uses the value passed
-   * as a URI for the base schema to load.
-   */
-  constructor () {
-    super()
-  }
+export const WalaxObject = {
+  schema = observable.map(),
+  models = observable.map(),
 
   loadSchema (schema, name) {
     // pre-built WalaxSchema
