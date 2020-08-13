@@ -1,3 +1,4 @@
 import { Walax, w } from './Walax.js'
 
-export default { Walax, w }
+export { Walax, w }
+export default w

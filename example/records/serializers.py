@@ -10,7 +10,6 @@ class BandSerializer(serializers.HyperlinkedModelSerializer):
 class AlbumSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Album
-
         fields = '__all__'
 
 class SongSerializer(serializers.HyperlinkedModelSerializer):
