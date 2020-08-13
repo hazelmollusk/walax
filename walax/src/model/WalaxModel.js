@@ -1,3 +1,3 @@
-export class WalaxModel {
+export default class WalaxModel {
 
 }

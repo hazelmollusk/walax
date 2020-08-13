@@ -1,7 +1,7 @@
 import Control from './Control'
 import { observable, computed } from 'mobx'
 import { WalaxSchema } from '../model/WalaxSchema'
-import { OpenApiSchema } from '../model/OpenApiSchema'
+import { DjangoSchema } from '../model/DjangoSchema'
 
 class ObjectControl extends Control {
   schema = observable.map()
@@ -37,7 +37,7 @@ class ObjectControl extends Control {
     if (!this.checkName(name)) 
       throw new ReferenceError(`cannot assign name ${name} to URI ${uri}`)
     
-    this.schema.set(name, new OpenApiSchema(uri))
+    this.schema.set(name, new DjangoSchema(uri))
   }
 
   schema (name) { return this.schema.get(name) }

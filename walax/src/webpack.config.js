@@ -3,10 +3,10 @@
 const path = require('path')
 
 module.exports = {
-  entry: path.resolve(__dirname, 'src/app.js'),
+  entry: path.resolve(__dirname, 'app.js'),
   output: {
-    path: path.resolve(__dirname, 'dist', 'walax'),
-    filename: 'app.js'
+    path: path.resolve(__dirname, '..', 'dist'),
+    filename: 'walax.js'
   },
   module: {
     rules: [

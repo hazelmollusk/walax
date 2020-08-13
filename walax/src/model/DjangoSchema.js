@@ -1,4 +1,4 @@
-import ModelBase from './ModelBase'
+import WalaxModel from './WalaxModel'
 import { observable } from 'mobx'
 import { WalaxSchema } from './WalaxSchema'
 const m = require('mithril')
@@ -9,7 +9,7 @@ class ApiOperation {
     this.summary = path.summary || ''
     this.description = path.description || ''
   }
-  
+
 }
 
 export class DjangoSchema extends WalaxSchema {
@@ -40,8 +40,8 @@ export class DjangoSchema extends WalaxSchema {
       this.description = data.info.description || ''
       this._servers = data.servers || false   // todo
       this._uri = uri
-      Object.entries(data.paths)
-    }
+      // Object.entries(data.paths)
+    })
   }
   
   get uri() { return this._uri }
@@ -78,7 +78,7 @@ export class DjangoSchema extends WalaxSchema {
     if (!this._models && this.modelNames && this.ops) {
       this._models = observable.map()
       this._modelNames.forEach(model => {
-        class WalaxProxyModel extends ModelBase {
+        class WalaxProxyModel extends WalaxModel {
           static _wlx_model = model
         }
         // todo add properties 
