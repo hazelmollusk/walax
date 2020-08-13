@@ -8,8 +8,8 @@ export const consoleLog = (msg, lvl) => console.log(msg)
 export const recordLogs = (msg, lvl) => true // fixne
 
 export const WalaxLogger = {
-  all = new Set(),
-  level = INFO,
+  all: new Set(),
+  level: INFO,
 
   /**
    * registers a callback: (msg, level) => { ..logging.. }
