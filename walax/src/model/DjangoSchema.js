@@ -3,10 +3,20 @@ import { observable } from 'mobx'
 import { WalaxSchema } from './WalaxSchema'
 const m = require('mithril')
 
-export class OpenApiSchema extends WalaxSchema {
+
+class ApiOperation {
+  constructor(path) {
+    this.summary = path.summary || ''
+    this.description = path.description || ''
+  }
+  
+}
+
+export class DjangoSchema extends WalaxSchema {
   _uri = false
-  _ops = observable.map()
-  _models = observable.map()
+  _servers = false
+  ops = observable.map()
+  models = observable.map()
 
   constructor(uri = false, models = false) {
     super()
@@ -16,7 +26,7 @@ export class OpenApiSchema extends WalaxSchema {
   load(uri, models = false) {
     if (!this.checkUri(uri)) 
       throw new URIError(`invalid schema URI: ${uri}`)
-    if (models || !this.checkModels(models)) 
+    if (!models || !this.checkModels(models)) 
       throw new TypeError(`invalid models: ${uri}`)
     w.net.get(uri).then(data => {
       if (!this.checkSchema(data))
@@ -28,6 +38,8 @@ export class OpenApiSchema extends WalaxSchema {
       this.title = data.info.title || 'unnamed'
       this.version = data.info.version || -1
       this.description = data.info.description || ''
+      this._servers = data.servers || false   // todo
+      this._uri = uri
       Object.entries(data.paths)
     }
   }

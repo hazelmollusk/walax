@@ -5,19 +5,20 @@ from .models import *
 class BandSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Band
-        fields = ['url', 'name', 'genre']
+        fields = '__all__'
 
 class AlbumSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Album
-        fields = ['url', 'name', 'genre', 'band']
+
+        fields = '__all__'
 
 class SongSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Song
-        fields = ['url', 'name', 'genre', 'album']
+        fields = '__all__'
 
 class StoreSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Store
-        fields = ['url', 'name', 'albums']
+        fields = '__all__'
