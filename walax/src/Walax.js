@@ -23,18 +23,39 @@ export const Walax = observable({
     return true
   },
 
+  augment (obj, key, desc = undefined) {
+    if (!obj || !key || !desc) throw new TypeError('augment called improperly')
+    if (!this.isValidProp(key)) throw new TypeError(`invalid key: ${key}`)
+    if (Object.keys(obj).includes(key))
+      throw new TypeError(`key exists: ${key}`)
+
+    desc ||= {}
+
+    if (!Object.keys(desc).includes('enumerable')) desc.enumerable = true
+    if (!Object.keys(desc).includes('configurable')) desc.configurable = false
+    if (
+      !Object.keys(desc).includes('writable') &&
+      !Object.keys(desc).includes('get')
+    ) {
+      desc.writable = false
+    }
+    Object.defineProperty(obj, key, desc)
+  },
+
   register (cmp, key = false, ...args) {
     if (this.all.has(cmp))
       throw new TypeError(`attempted re-registration of ${key}`)
 
     this.all.add(cmp)
+
     if (this.checkName(key)) {
+      this.augment(this, key, { get: () => this.keys.get(key) })
       this.keys.set(key, cmp)
-      Object.defineProperty(this, key, {
-        get: function () {
-          return this.keys.get(key)
-        }
-      })
+      // Object.defineProperty(this, key, {
+      //   get: function () {
+      //     return this.keys.get(key)
+      //   }
+      // })
 
       // these could all be base classes with a "merge map to properties" func
     }
@@ -48,4 +69,5 @@ Walax.register(WalaxNetwork, 'net')
 Walax.register(WalaxObjects, 'obj')
 
 export const w = Walax
+window.w = w
 export default w

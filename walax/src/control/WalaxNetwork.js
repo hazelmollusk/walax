@@ -46,7 +46,6 @@ const WalaxNetwork = {
         Accept: 'application/vnd.oai.openapi+json, application/json'
       }
     if (!this._chkOpts(options)) throw new Error(options)
-
     return m.request(options)
   },
 
@@ -73,7 +72,6 @@ const WalaxNetwork = {
    */
   _reqOpts (url, params, body, options, method = 'GET') {
     const opts = { ...{ url, params, body, method }, ...(options || {}) }
-
     // todo defaults?
     return opts
   }

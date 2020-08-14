@@ -4,35 +4,44 @@ import { DjangoSchema } from '../model/DjangoSchema'
 import w from '../Walax'
 
 export const WalaxObjects = {
-  schema: observable.map(),
+  schemas: observable.map(),
   models: observable.map(),
 
   loadSchema (schema, name) {
     // pre-built WalaxSchema
     // ,todo checking, implement
+    if (this.checkName(name)) w.augment(this, name, { value: schema })
+    this.schemas.set(name, schema)
   },
 
   checkName (name) {
-    if (this.schema.has(name)) return false
-    if (!w.isValidProp(name)) return false
+    if (!name) throw new TypeError('schema name may not be blank')
+    if (this.schemas.has(name))
+      throw new TypeError(`schema name ${name} already registered`)
+    if (!w.isValidProp(name))
+      throw new TypeError(`invalid schema name: ${name}`)
     return true
   },
 
-  loadUri (uri, name = false) {
-    
-    if (name && !this.checkName(name))
-      throw new ReferenceError(`cannot assign name ${name} to URI ${uri}`)
-    
-    this.schema.set(name || uri, new DjangoSchema(uri))
+  checkModels (models) {
+    if (!models) return true
+    models.forEach((v, k) => {
+      if (!w.isValidProp(k)) throw new TypeError(`invalid name for model ${k}`)
+      if (!this.checkModel(v))
+        throw new TypeError(`custom model ${k} is not a WalaxObject`)
+    })
+    return true
+  },
+
+  load (uri, name, models = false) {
+    this.checkName(name)
+    this.checkModels(models)
+    let schema = new DjangoSchema(uri, models)
+    this.loadSchema(schema, name)
   },
 
   schema (name) {
-    return this.schema.get(name)
-  },
-
-  get models () {
-    var mods = new Map()
-    this.schema.forEach((v, k) => {})
+    return this.schemas.get(name)
   }
 }
 
