@@ -2,7 +2,7 @@
 from django.urls import path, include
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
-from django.templatetags.static import static 
+from django.templatetags.static import static
 from rest_framework import routers, serializers, viewsets
 from rest_framework.schemas import get_schema_view
 from .views import *
@@ -15,7 +15,7 @@ router.register(r'stores', StoreViewSet)
 
 urlpatterns = [
     path(r'api/', include(router.urls)),
-   # path(r'api/', include(router.urls)),
+    # path(r'api/', include(router.urls)),
     # path(r'api/', get_schema_view(
     #     title="Record Stores",
     #     description="API for example application",
