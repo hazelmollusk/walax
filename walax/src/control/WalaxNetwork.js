@@ -1,6 +1,5 @@
 const m = require('mithril')
 
-
 const WalaxNetwork = {
   /**
    * public methods for each HTTP method
@@ -11,12 +10,28 @@ const WalaxNetwork = {
    * @param {*} options
    * @returns {Promise}
    */
-  async post    (u, p, b, o) { return this._req(this._reqOpts(...[u, p, b, o, 'POST'])) },
-  async get     (u, p, b, o) { return this._req(this._reqOpts(...[u, p, b, o, 'GET'])) },
-  async put     (u, p, b, o) { return this._req(this._reqOpts(...[u, p, b, o, 'PUT'])) },
-  async delete  (u, p, b, o) { return this._req(this._reqOpts(...[u, p, b, o, 'DELETE'])) },
-  async options (u, p, b, o) { return this._req(this._reqOpts(...[u, p, b, o, 'OPTIONS'])) },
-  async patch   (u, p, b, o) { return this._req(this._reqOpts(...[u, p, b, o, 'PATCH'])) },
+  async post (u, p, b, o) {
+    return this._req(this._reqOpts(...[u, p, b, o, 'POST']))
+  },
+  async get (u, p, b, o) {
+    return this._req(this._reqOpts(...[u, p, b, o, 'GET']))
+  },
+  async put (u, p, b, o) {
+    return this._req(this._reqOpts(...[u, p, b, o, 'PUT']))
+  },
+  async delete (u, p, b, o) {
+    return this._req(this._reqOpts(...[u, p, b, o, 'DELETE']))
+  },
+  async options (u, p, b, o) {
+    return this._req(this._reqOpts(...[u, p, b, o, 'OPTIONS']))
+  },
+  async patch (u, p, b, o) {
+    return this._req(this._reqOpts(...[u, p, b, o, 'PATCH']))
+  },
+  async head (u, p, b, o) {
+    return this._req(this._reqOpts(...[u, p, b, o, 'HEAD']))
+  },
+
   // TODO: websockets
   /**
    * pass a request through to mithril
@@ -26,7 +41,10 @@ const WalaxNetwork = {
    */
   async _req (options) {
     if (!options) throw new Error(options)
-    if (!options.headers) options.headers = { Accept: 'application/vnd.oai.openapi+json, application/json' }
+    if (!options.headers)
+      options.headers = {
+        Accept: 'application/vnd.oai.openapi+json, application/json'
+      }
     if (!this._chkOpts(options)) throw new Error(options)
 
     return m.request(options)

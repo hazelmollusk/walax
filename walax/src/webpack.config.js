@@ -9,6 +9,24 @@ module.exports = {
     filename: 'walax.js'
   },
   module: {
+    options: {
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            targets: {
+              node: 10
+            }
+          }
+        ]
+      ],
+      sourceMaps: true,
+      plugins: [
+        ['@babel/plugin-proposal-decorators', { legacy: true }],
+        ['@babel/plugin-proposal-class-properties', { loose: true }],
+        '@babel/plugin-proposal-logical-assignment-operators'
+      ]
+    },
     rules: [
       {
         test: /\.js$/,
