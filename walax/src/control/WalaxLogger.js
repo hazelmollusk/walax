@@ -1,4 +1,6 @@
-import StackTrace from 'stacktrace-js'
+import { observable } from 'mobx'
+
+const stackinfo = require('stackinfo')
 
 export const FATAL = 0
 export const ERROR = 1
@@ -9,12 +11,13 @@ export const TRACE = 16
 
 //export const consoleLog = (msg, lvl) => console.log(msg)
 export const consoleLog = (msg, lvl, stack) => console.log(msg)
-export const recordLogs = (msg, lvl, stack) => true // fixne
+export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
+recordLogs.logs = observable.set()
 
 export const WalaxLogger = {
   all: new Set(),
-  level: TRACE,
-  stack: true,
+  level: DEBUG,
+  stack: false,
 
   /**
    * registers a callback: (msg, level) => { ..logging.. }
@@ -56,14 +59,11 @@ export const WalaxLogger = {
 
   async _log (s, level = INFO) {
     let promises = []
-    let stack = null
-    if (this.stack && this._shouldLog(DEBUG)) {
-      console.trace() //looking for a better way TODO
-    }
-
-    this.all.forEach((v, k, z) =>
+    let stack = this.stack && this._shouldLog(DEBUG) ? stackinfo() : false
+    this.all.forEach((v, k, z) => {
       s.forEach(msg => promises.push(this._processLog(v, msg, level, stack)))
-    )
+      if (stack) s.forEach(msg => this._processLog(v, stack, TRACE))
+    })
 
     return promises
   },

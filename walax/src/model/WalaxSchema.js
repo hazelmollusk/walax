@@ -41,21 +41,23 @@ export class WalaxSchema {
     this.load(uri)
   }
 
-  load (uri, models = false, servers = false) {
+  async load (uri, models = false, servers = false) {
     //let url = new URL(uri) // this will throw a TypeError if invalid
     this.initialize()
     this._uri = uri
     this._customModels = models
     this._servers = servers
 
-    w.net.get(uri).then(data => this.parseData(data, models))
+    return w.net.get(uri).then(data => this.parseData(uri, data, models))
   }
 
   getModelClass (name) {
-    return WalaxModel
+    return this._customModels?.has(name)
+      ? this._customModels.get(name)
+      : this._defaultModel
   }
 
-  parseData (data) {
+  parseData (uri, data, models = false) {
     throw new TypeError('schema class must implement parseData(data)')
   }
 }

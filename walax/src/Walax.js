@@ -23,7 +23,7 @@ export const Walax = observable({
     return true
   },
 
-  augment (obj, key, desc = undefined) {
+  augment (obj, key, desc = undefined, enumerate = true) {
     if (!obj || !key || !desc) throw new TypeError('augment called improperly')
     if (!this.isValidProp(key)) throw new TypeError(`invalid key: ${key}`)
     if (Object.keys(obj).includes(key))
@@ -31,7 +31,7 @@ export const Walax = observable({
 
     desc ||= {}
 
-    if (!Object.keys(desc).includes('enumerable')) desc.enumerable = true
+    if (!Object.keys(desc).includes('enumerable')) desc.enumerable = enumerate
     if (!Object.keys(desc).includes('configurable')) desc.configurable = false
     if (
       !Object.keys(desc).includes('writable') &&
@@ -51,13 +51,6 @@ export const Walax = observable({
     if (this.checkName(key)) {
       this.augment(this, key, { get: () => this.keys.get(key) })
       this.keys.set(key, cmp)
-      // Object.defineProperty(this, key, {
-      //   get: function () {
-      //     return this.keys.get(key)
-      //   }
-      // })
-
-      // these could all be base classes with a "merge map to properties" func
     }
 
     return cmp
