@@ -1,3 +1,5 @@
-w.log.register(msg => console.log(msg))
+url = '/records/api/?format=json'
+name = 'records'
 
-w.obj.load('/records/api/?format=json', 'records')
+w.obj.load(url, name)
+w.log.debug('warning')

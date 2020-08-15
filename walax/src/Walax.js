@@ -1,6 +1,6 @@
 import WalaxObjects from './control/WalaxObjects'
 import WalaxNetwork from './control/WalaxNetwork'
-import WalaxLogger from './control/WalaxLogger'
+import { WalaxLogger, consoleLog } from './control/WalaxLogger'
 
 const { observable } = require('mobx')
 
@@ -64,10 +64,13 @@ export const Walax = observable({
   }
 })
 
-Walax.register(WalaxLogger, 'log')
-Walax.register(WalaxNetwork, 'net')
-Walax.register(WalaxObjects, 'obj')
-
 export const w = Walax
 window.w = w
+
+w.register(WalaxLogger, 'log')
+w.register(WalaxNetwork, 'net')
+w.register(WalaxObjects, 'obj')
+
+w.log.register(consoleLog)
+
 export default w
