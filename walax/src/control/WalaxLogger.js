@@ -56,10 +56,10 @@ export const WalaxLogger = {
 
   async _log (s, level = INFO) {
     let promises = []
-    let stack =
-      false && this.stack && this._shouldLog(DEBUG)
-        ? StackTrace.get().then(trace => this.info(trace))
-        : null
+    let stack = null
+    if (this.stack && this._shouldLog(DEBUG)) {
+      console.trace() //looking for a better way TODO
+    }
 
     this.all.forEach((v, k, z) =>
       s.forEach(msg => promises.push(this._processLog(v, msg, level, stack)))
@@ -69,7 +69,7 @@ export const WalaxLogger = {
   },
 
   async _processLog (cb, msg, level, stack = null) {
-    cb(msg, level, stack)
+    return cb(msg, level, stack)
   }
 }
 
