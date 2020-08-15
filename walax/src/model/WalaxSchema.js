@@ -9,8 +9,8 @@ export class WalaxSchema {
   version = false
   _uri = false
   _servers = false
-  _customModels = false
-  models = observable.map()
+  _defaultModel = WalaxModel
+  models = new Map()
 
   constructor (uri = false, models = false) {
     this.initialize()
@@ -24,7 +24,6 @@ export class WalaxSchema {
     this.version = false
     this._uri = false
     this._servers = false
-    this._customModels = false
     this.models.clear()
   }
 
@@ -41,20 +40,25 @@ export class WalaxSchema {
     this.load(uri)
   }
 
+  addModel (name, model) {
+    if (!this.checkModel(model))
+      throw new TypeError(`invalid model registered in ${name}`)
+
+    this.models.set(name, model)
+  }
+
   async load (uri, models = false, servers = false) {
     //let url = new URL(uri) // this will throw a TypeError if invalid
     this.initialize()
     this._uri = uri
-    this._customModels = models
+    models?.forEach?.((v, k) => this.addModel(k, v))
     this._servers = servers
 
     return w.net.get(uri).then(data => this.parseData(uri, data, models))
   }
 
   getModelClass (name) {
-    return this._customModels?.has(name)
-      ? this._customModels.get(name)
-      : this._defaultModel
+    return this.models.get(name) || this._defaultModel
   }
 
   parseData (uri, data, models = false) {

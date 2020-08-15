@@ -24,20 +24,18 @@ export class DjangoSchema extends WalaxSchema {
         // works if you have a very generic DRF setup... todo
         let modelClassName = modelInfo.name.replace(' List', '')
         let fields = modelInfo.actions.POST
+
+        let BaseModel = models?.get?.(modelClassName) || DjangoModel
         let classes = {}
-        classes[modelClassName] = class extends DjangoModel {
+        classes[modelClassName] = class extends BaseModel {
           _fields = fields
           _name = modelClassName
+          _modelUri = modelRootUri
+          _schemaUri = uri
+          _uri = false
+          _new = true
         }
 
-        // let modelCreation = `
-        // []['${modelClassName}'] = class extends ${DjangoModel} {
-        //     _fields = fields
-        //     _name = modelClassName
-        //   }
-        //   return ${modelClassName}`
-        // let modelClass = new Function(modelCreation)()
-        // console.log(modelCreation)
         w.augment(
           this,
           modelClassName,
