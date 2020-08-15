@@ -8,8 +8,8 @@ export const DEBUG = 8
 export const TRACE = 16
 
 //export const consoleLog = (msg, lvl) => console.log(msg)
-export const consoleLog = (msg, lvl) => console.log(msg)
-export const recordLogs = (msg, lvl) => true // fixne
+export const consoleLog = (msg, lvl, stack) => console.log(msg)
+export const recordLogs = (msg, lvl, stack) => true // fixne
 
 export const WalaxLogger = {
   all: new Set(),
@@ -61,7 +61,7 @@ export const WalaxLogger = {
         ? StackTrace.get().then(trace => this.info(trace))
         : null
 
-    this.all.forEach((v, k, s) =>
+    this.all.forEach((v, k, z) =>
       s.forEach(msg => promises.push(this._processLog(v, msg, level, stack)))
     )
 
