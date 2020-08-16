@@ -45,7 +45,10 @@ const WalaxNetwork = {
       options.headers = {
         Accept: 'application/vnd.oai.openapi+json, application/json'
       }
-    if (!this._chkOpts(options)) throw new Error(options)
+    if (!this._chkOpts(options)) {
+      console.log('chkOpts', options)
+      throw new TypeError('fields are messed up ')
+    }
     return m.request(options)
   },
 
@@ -72,6 +75,7 @@ const WalaxNetwork = {
    */
   _reqOpts (url, params, body, options, method = 'GET') {
     const opts = { ...{ url, params, body, method }, ...(options || {}) }
+    console.log(opts)
     // todo defaults?
     return opts
   }

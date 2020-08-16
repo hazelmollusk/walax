@@ -6,7 +6,7 @@ export default class DjangoModel extends WalaxModel {
   _fields = {}
   _values = new Map()
   _dirty = new Set()
-  _primaryKey = 'id'
+  _primaryKey = 'url'
   _new = true
   _schemaUri = false
   _modelUri = false
@@ -16,11 +16,24 @@ export default class DjangoModel extends WalaxModel {
     super()
   }
 
+  getUri () {
+    return this._uri
+  }
+
   save () {
+    let saveFields = Object.fromEntries(this._values.entries())
+    //delete saveFields[this._primaryKey]
     if (this._new) {
-      let saveFields = Object.fromEntries(this._values)
-      w.net.post(this._modelUri, {}, saveFields, {}).then(x => console.log(x))
+      w.net.post(this._modelUri, {}, saveFields, {}).then(y => {
+        console.log('y', y)
+        this._new = false
+        this._uri = y.url
+        this.updateProperties(this, y)
+      })
     } else {
+      w.net
+        .put(this.getUri(), {}, saveFields, {})
+        .then(y => this.updateProperties(y))
     }
   }
 

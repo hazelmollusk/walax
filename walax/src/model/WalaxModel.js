@@ -3,13 +3,15 @@ export default class WalaxModel {
   _fields = false
   _values = new Map()
   _dirty = new Set()
+  _primaryKey = false
   _new = true
 
   constructor (initial = false) {}
 
   initFields () {
+    if (this._primaryKey && !(this._primaryKey in this._fields))
+      this._fields[this._primaryKey] = -1
     for (let field in this._fields) {
-      console.log(`augmenting ${field}`)
       w.augment(this, field, {
         enumerable: true,
         configurable: false,
@@ -28,6 +30,15 @@ export default class WalaxModel {
       this._dirty.add(field)
       this._values.set(field, val)
     }
+  }
+
+  updateProperties (obj) {
+    console.log('updateProps', this, obj)
+    Object.assign(this, obj)
+  }
+
+  getUri () {
+    throw new TypeError('model class must implement getUri()')
   }
 
   save () {

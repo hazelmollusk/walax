@@ -25,6 +25,7 @@ export class DjangoSchema extends WalaxSchema {
         let modelClassName = modelInfo.name.replace(' List', '')
         let fields = modelInfo.actions.POST
 
+        fields[this._primaryKey] = -1
         let BaseModel = models?.get?.(modelClassName) || DjangoModel
 
         let classes = {}
@@ -35,6 +36,7 @@ export class DjangoSchema extends WalaxSchema {
           _schemaUri = uri
           _uri = false
           _new = true
+
           constructor (data = false) {
             super()
             this.initFields()
