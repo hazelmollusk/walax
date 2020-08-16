@@ -9,7 +9,7 @@ export const INFO = 4
 export const DEBUG = 8
 export const TRACE = 16
 
-//export const consoleLog = (msg, lvl) => console.log(msg)
+
 export const consoleLog = (msg, lvl, stack) => console.log(msg)
 export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
 recordLogs.logs = observable.set()

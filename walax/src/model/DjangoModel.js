@@ -21,21 +21,35 @@ export default class DjangoModel extends WalaxModel {
   }
 
   save () {
+    if (!this._dirty.size) {
+      w.log.info('save(): object unchanged, not saving')
+      return this
+    }
+    if (this._deleted)
+      throw new ReferenceError(`saving deleted model: ${this._name}.save()`)
     let saveFields = Object.fromEntries(this._values.entries())
-    //delete saveFields[this._primaryKey]
     if (this._new) {
-      w.net.post(this._modelUri, {}, saveFields, {}).then(y => {
-        console.log('y', y)
+      w.net.post(this._modelUri, {}, saveFields, {}).then(ret => {
         this._new = false
-        this._uri = y.url
-        this.updateProperties(this, y)
+        this._uri = ret.url
+        this.updateProperties(this, ret)
       })
     } else {
       w.net
         .put(this.getUri(), {}, saveFields, {})
-        .then(y => this.updateProperties(y))
+        .then(ret => this.updateProperties(ret))
     }
+    return this
   }
 
-  delete () {}
+  delete () {
+    if (this._deleted)
+      throw new ReferenceError(`deleting deleted model: ${this._name}.delete()`)
+    w.net.delete(this.getUri()).then(ret => {
+      this._deleted = true
+      this._uri = false
+      this._values.clear()
+      this.initFields(true)
+    })
+  }
 }

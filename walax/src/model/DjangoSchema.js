@@ -27,7 +27,6 @@ export class DjangoSchema extends WalaxSchema {
 
         fields[this._primaryKey] = -1
         let BaseModel = models?.get?.(modelClassName) || DjangoModel
-
         let classes = {}
         classes[modelClassName] = class extends BaseModel {
           _fields = fields
