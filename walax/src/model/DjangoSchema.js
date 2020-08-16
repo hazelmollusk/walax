@@ -26,6 +26,7 @@ export class DjangoSchema extends WalaxSchema {
         let fields = modelInfo.actions.POST
 
         let BaseModel = models?.get?.(modelClassName) || DjangoModel
+
         let classes = {}
         classes[modelClassName] = class extends BaseModel {
           _fields = fields
@@ -34,6 +35,10 @@ export class DjangoSchema extends WalaxSchema {
           _schemaUri = uri
           _uri = false
           _new = true
+          constructor (data = false) {
+            super()
+            this.initFields()
+          }
         }
 
         w.augment(

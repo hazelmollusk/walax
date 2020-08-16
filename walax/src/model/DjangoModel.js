@@ -18,8 +18,8 @@ export default class DjangoModel extends WalaxModel {
 
   save () {
     if (this._new) {
-      let saveFields = Object.fromEntries(this._values.entries())
-      w.net.post(this._modelUri, saveFields).then(x => console.log(x))
+      let saveFields = Object.fromEntries(this._values)
+      w.net.post(this._modelUri, {}, saveFields, {}).then(x => console.log(x))
     } else {
     }
   }
