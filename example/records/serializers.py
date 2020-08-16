@@ -2,22 +2,37 @@ from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import *
 
-class BandSerializer(serializers.HyperlinkedModelSerializer):
+
+class WalaxSerializer(serializers.HyperlinkedModelSerializer):
+    def create(self, data):
+        return self.Meta.model.objects.create(**data)
+
+    def update(self, instance, data):
+        for attr, value in data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+
+class BandSerializer(WalaxSerializer):
     class Meta:
         model = Band
-        fields = ['url', 'name', 'genre']
+        fields = '__all__'
 
-class AlbumSerializer(serializers.HyperlinkedModelSerializer):
+
+class AlbumSerializer(WalaxSerializer):
     class Meta:
         model = Album
-        fields = ['url', 'name', 'genre', 'band']
+        fields = '__all__'
 
-class SongSerializer(serializers.HyperlinkedModelSerializer):
+
+class SongSerializer(WalaxSerializer):
     class Meta:
         model = Song
-        fields = ['url', 'name', 'genre', 'album']
+        fields = '__all__'
 
-class StoreSerializer(serializers.HyperlinkedModelSerializer):
+
+class StoreSerializer(WalaxSerializer):
     class Meta:
         model = Store
-        fields = ['url', 'name', 'albums']
+        fields = '__all__'
