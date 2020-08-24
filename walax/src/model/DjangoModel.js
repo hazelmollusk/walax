@@ -34,7 +34,7 @@ export default class DjangoModel extends WalaxModel {
         this._uri = ret.url
         this.updateProperties(this, ret)
       })
-    } else {
+    } else {          // ERROR CHECKING FOOL
       w.net
         .put(this.getUri(), {}, saveFields, {})
         .then(ret => this.updateProperties(ret))

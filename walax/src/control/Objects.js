@@ -3,15 +3,19 @@ import { WalaxSchema } from '../model/WalaxSchema'
 import { DjangoSchema } from '../model/DjangoSchema'
 import w from '../Walax'
 
-export const WalaxObjects = {
+export const Objects = {
   schemas: observable.map(),
   models: observable.map(),
 
   loadSchema (schema, name) {
     // pre-built WalaxSchema
     // ,todo checking, implement
-    if (this.checkName(name)) w.augment(this, name, { value: schema })
-    this.schemas.set(name, schema)
+    if (this.checkName(name)) {
+      w.augment(this, name, { value: schema })
+      this.schemas.set(name, schema)
+    } else {
+      throw new TypeError(`invalid name: ${name}`)
+    }
   },
 
   checkName (name) {
@@ -36,7 +40,7 @@ export const WalaxObjects = {
   load (uri, name, models = false) {
     this.checkName(name)
     this.checkModels(models)
-    let schema = new DjangoSchema(uri, models)
+    let schema = new DjangoSchema(uri, models) //todo genericify
     this.loadSchema(schema, name)
   },
 
@@ -45,4 +49,4 @@ export const WalaxObjects = {
   }
 }
 
-export default WalaxObjects
+export default Objects

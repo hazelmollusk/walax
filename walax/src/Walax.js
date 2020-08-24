@@ -1,6 +1,8 @@
-import WalaxObjects from './control/WalaxObjects'
-import WalaxNetwork from './control/WalaxNetwork'
-import { WalaxLogger, consoleLog } from './control/WalaxLogger'
+import Objects from './control/Objects'
+import Network from './control/Network'
+import Realm from './control/Realm'
+import Auth from './control/Auth'
+import { Logger, consoleLog } from './control/Logger'
 
 const { observable } = require('mobx')
 
@@ -54,16 +56,24 @@ export const Walax = observable({
     }
 
     return cmp
+  },
+
+  init () {
+    w.register(Logger, 'log')
+    w.register(Network, 'net')
+    w.register(Objects, 'obj')
+    w.register(Realm, 'realm')
+    w.register(Auth, 'auth')
+    w.register(Cache, 'cache')
+
+    w.log.register(consoleLog)
+
+    w.realm.init()
   }
 })
 
 export const w = Walax
 window.w = w
 
-w.register(WalaxLogger, 'log')
-w.register(WalaxNetwork, 'net')
-w.register(WalaxObjects, 'obj')
-
-w.log.register(consoleLog)
 
 export default w
