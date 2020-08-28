@@ -6,6 +6,7 @@ import w from '../Walax'
 export const Objects = {
   schemas: observable.map(),
   models: observable.map(),
+  managers: observable.map(),
 
   loadSchema (schema, name) {
     // pre-built WalaxSchema
@@ -16,6 +17,11 @@ export const Objects = {
     } else {
       throw new TypeError(`invalid name: ${name}`)
     }
+  },
+
+  getManager (mgr, model) {
+    if (!this.managers.has(model)) this.managers.set(model, new mgr(model))
+    return this.managers.get(model)
   },
 
   checkName (name) {
@@ -35,6 +41,10 @@ export const Objects = {
         throw new TypeError(`custom model ${k} is not a WalaxObject`)
     })
     return true
+  },
+
+  checkModel (model) {
+    return true // washme
   },
 
   load (uri, name, models = false) {

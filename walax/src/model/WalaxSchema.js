@@ -1,5 +1,6 @@
 import { observable } from 'mobx'
 import WalaxModel from './WalaxModel'
+import WalaxManager from './WalaxManager'
 
 //todo schema versioning/collision detection/etc
 export class WalaxSchema {
@@ -10,6 +11,7 @@ export class WalaxSchema {
   _uri = false
   _servers = false
   _defaultModel = WalaxModel
+  _defaultManager = WalaxManager
   models = new Map()
 
   constructor (uri = false, models = false) {
@@ -28,7 +30,7 @@ export class WalaxSchema {
   }
 
   checkModel (model) {
-    if (!(model instanceof WalaxModel)) return false
+    if (!w.checkClass(WalaxModel, model)) return false
     return true
   }
 
@@ -37,13 +39,26 @@ export class WalaxSchema {
   }
 
   set uri (uri) {
-    this.load(uri)
+    this.load(uri).then( () => { this._uri = uri })
   }
 
   addModel (name, model) {
     if (!this.checkModel(model))
       throw new TypeError(`invalid model registered in ${name}`)
 
+    w.augment(
+      this,
+      name,
+      { value: model },
+      true
+    )
+
+    w.augment(
+      w.obj,
+      name,
+      { value: model },
+      true
+    )
     this.models.set(name, model)
   }
 
@@ -59,6 +74,13 @@ export class WalaxSchema {
 
   getModelClass (name) {
     return this.models.get(name) || this._defaultModel
+  }
+
+  getModelManager (name) {
+    cls = this.getModelClass(name)
+    return w.cache.get('managers', cls, m => {
+      return new this._defaultManager(cls)
+    })
   }
 
   parseData (uri, data, models = false) {

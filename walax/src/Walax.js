@@ -1,7 +1,7 @@
 import Objects from './control/Objects'
 import Network from './control/Network'
-import Realm from './control/Realm'
 import Auth from './control/Auth'
+import Cache from './control/Cache'
 import { Logger, consoleLog } from './control/Logger'
 
 const { observable } = require('mobx')
@@ -9,6 +9,7 @@ const { observable } = require('mobx')
 export const Walax = observable({
   all: new Set(),
   keys: new Map(),
+  _init: false,
 
   isValidProp (name) {
     if (!name) return false
@@ -58,22 +59,33 @@ export const Walax = observable({
     return cmp
   },
 
+  checkClass(req, cls) {
+    if (!cls) return false
+    if (cls == req) return true
+    return this.checkClass(req, cls.__proto__)
+  },
+
+  signal(sig) {
+
+  },
+
   init () {
-    w.register(Logger, 'log')
-    w.register(Network, 'net')
-    w.register(Objects, 'obj')
-    w.register(Realm, 'realm')
-    w.register(Auth, 'auth')
-    w.register(Cache, 'cache')
+    if (!this._init) {
+      w.register(Logger, 'log')
+      w.register(Cache, 'cache')
+      w.register(Network, 'net')
+      w.register(Objects, 'obj')
+      w.register(Auth, 'auth')
 
-    w.log.register(consoleLog)
+      w.log.register(consoleLog)
 
-    w.realm.init()
-  }
+
+      this._init = true
+    }
+  },
 })
 
 export const w = Walax
 window.w = w
-
 
 export default w

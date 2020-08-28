@@ -1,3 +1,5 @@
+import WalaxManager from "./WalaxManager"
+
 export default class WalaxModel {
   _name = false
   _fields = false
@@ -6,6 +8,18 @@ export default class WalaxModel {
   _primaryKey = false
   _new = true
   _deleted = false
+
+  static _manager = false
+  static _managerClass = WalaxManager
+  
+  static get objects () {
+    if (!this._manager && this.checkManager(this._managerClass)) 
+      this._manager = w.obj.getManager(this._managerClass, this)
+    return this._manager
+  }
+  static checkManager(mgr) {
+    return true  // wixme
+  }
 
   constructor (initial = false) {}
 

@@ -4,10 +4,12 @@ var { observable } = require('mobx')
 
 class WalaxManager {
   _model = false
-  _cache = observable.map()
 
   constructor (model) {
     this._model = model
+  }
+
+  all() {
   }
 
   get(id) {
