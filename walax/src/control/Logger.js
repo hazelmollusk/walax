@@ -14,7 +14,7 @@ export const consoleLog = (msg, lvl, stack) => console.log(msg)
 export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
 recordLogs.logs = observable.set()
 
-export const WalaxLogger = {
+export const Logger = {
   all: new Set(),
   level: DEBUG,
   stack: false,
@@ -73,4 +73,4 @@ export const WalaxLogger = {
   }
 }
 
-export default WalaxLogger
+export default Logger

@@ -1,12 +1,15 @@
-import WalaxObjects from './control/WalaxObjects'
-import WalaxNetwork from './control/WalaxNetwork'
-import { WalaxLogger, consoleLog } from './control/WalaxLogger'
+import Objects from './control/Objects'
+import Network from './control/Network'
+import Auth from './control/Auth'
+import Cache from './control/Cache'
+import { Logger, consoleLog } from './control/Logger'
 
 const { observable } = require('mobx')
 
 export const Walax = observable({
   all: new Set(),
   keys: new Map(),
+  _init: false,
 
   isValidProp (name) {
     if (!name) return false
@@ -42,9 +45,16 @@ export const Walax = observable({
     Object.defineProperty(obj, key, desc)
   },
 
+  assert (val, msg, dbginfo) {
+    if (!val) {
+      this.log?.error(msg, dbginfo) 
+      throw new TypeError(msg)
+      // crash and reload?  what now?
+    }
+  },
+
   register (cmp, key = false, ...args) {
-    if (this.all.has(cmp))
-      throw new TypeError(`attempted re-registration of ${key}`)
+    this.assert(!this.all.has(cmp), `attempted re-registration of ${key}`)
 
     this.all.add(cmp)
 
@@ -54,16 +64,36 @@ export const Walax = observable({
     }
 
     return cmp
-  }
+  },
+
+  checkClass(req, cls) {
+    if (!cls) return false
+    if (cls == req) return true
+    return this.checkClass(req, cls.__proto__)
+  },
+
+  signal(sig) {
+    //for each controller, is ctrl.signal is callable, call it with arg sig TODO
+  },
+
+  init (force=false) {
+    //todo if force clear out maps, etc
+    if (!this._init) {
+      w.register(Logger, 'log')
+      w.register(Cache, 'cache')
+      w.register(Network, 'net')
+      w.register(Objects, 'obj')
+      w.register(Auth, 'auth')
+
+      w.log.register(consoleLog)
+
+
+      this._init = true
+    }
+  },
 })
 
 export const w = Walax
 window.w = w
-
-w.register(WalaxLogger, 'log')
-w.register(WalaxNetwork, 'net')
-w.register(WalaxObjects, 'obj')
-
-w.log.register(consoleLog)
 
 export default w

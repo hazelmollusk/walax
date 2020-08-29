@@ -7,30 +7,8 @@ from rest_framework.decorators import action
 from .models import *
 from .serializers import *
 
-
-class BandViewSet(viewsets.ModelViewSet):
-    queryset = Band.objects.all()
-    serializer_class = BandSerializer
+class ArikiCardViewSet(viewsets.ModelViewSet):
+    queryset = ArikiCardBase.objects.all()
+    serializer_class = ArikiCardSerializer
     permission_classes = []
-    authentication_classes = []
-
-
-class AlbumViewSet(viewsets.ModelViewSet):
-    queryset = Album.objects.all()
-    serializer_class = AlbumSerializer
-    permission_classes = []
-    authentication_classes = []
-
-
-class SongViewSet(viewsets.ModelViewSet):
-    queryset = Song.objects.all()
-    serializer_class = SongSerializer
-    permission_classes = []
-    authentication_classes = []
-
-
-class StoreViewSet(viewsets.ModelViewSet):
-    queryset = Store.objects.all()
-    serializer_class = StoreSerializer
-    permission_classes = []
-    authentication_classes = []
+    authentication_classes = []    

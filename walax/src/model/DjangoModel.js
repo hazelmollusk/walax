@@ -12,6 +12,8 @@ export default class DjangoModel extends WalaxModel {
   _modelUri = false
   _uri = false
 
+
+
   constructor (name, fields) {
     super()
   }
@@ -35,6 +37,7 @@ export default class DjangoModel extends WalaxModel {
         this.updateProperties(this, ret)
       })
     } else {
+      // ERROR CHECKING FOOL
       w.net
         .put(this.getUri(), {}, saveFields, {})
         .then(ret => this.updateProperties(ret))

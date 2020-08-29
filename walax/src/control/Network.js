@@ -1,6 +1,6 @@
 const m = require('mithril')
 
-const WalaxNetwork = {
+const Network = {
   /**
    * public methods for each HTTP method
    *
@@ -79,4 +79,4 @@ const WalaxNetwork = {
   }
 }
 
-export default WalaxNetwork
+export default Network
