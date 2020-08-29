@@ -19,8 +19,8 @@ export class DjangoSchema extends WalaxSchema {
     if (model?._model) model = model._model
 
     return w.cache.find('managers', model, m => {
-      mgrClass = `${m._name}Manager`
-      if (this._models.has(mgrClass)) 
+      let mgrClass = `${m._name}Manager`
+      if (this.models.has(mgrClass)) 
         return new mgrClass(m)
       return new this._defaultManager(model)
     })
@@ -68,7 +68,7 @@ export class DjangoSchema extends WalaxSchema {
           
         classes[modelClassName]._model = classes[modelClassName]
 
-        this.addModel(modelClassName, classes[modelClassName])  // fixme
+        this.addModel(modelClassName, classes[modelClassName])
         
       })
     }

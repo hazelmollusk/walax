@@ -3,7 +3,7 @@ import { observable } from 'mobx'
 const Cache = observable({
   _storage: observable.map(),
 
-  store (cache, key, func = undefined) {
+  store (cache, key, func=undefined) {
     if (typeof cache != 'string')
       throw new TypeError('cache buckets must be strings')
     
@@ -20,19 +20,21 @@ const Cache = observable({
     return this._storage.get(cache).get(key)
   },
 
-  find (cache, key, val = undefined) {
+  find (cache, key, val=undefined) {
+    let func = val
     if (typeof cache != 'string')
       throw new TypeError('cache buckets must be strings')
     
     if (!this._storage.has(cache) && val === undefined) return undefined
-    
-    if (!this._storage.get(cache).has(key) && func)
+    if (!this._storage.has(cache)) this._storage.set(cache, observable.map())
+
+    if (!this._storage.get(cache)?.has(key) && func)
       if (typeof func == 'function') 
         this._storage.get(cache).set(key, func(key))
       else if (func) 
         this._storage.get(cache).set(key, func)
 
-    return this._storage.get(cache).get(key)
+    return this._storage.get(cache)?.get(key)
   },
 })
 

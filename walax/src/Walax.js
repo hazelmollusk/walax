@@ -45,9 +45,16 @@ export const Walax = observable({
     Object.defineProperty(obj, key, desc)
   },
 
+  assert (val, msg, dbginfo) {
+    if (!val) {
+      this.log?.error(msg, dbginfo) 
+      throw new TypeError(msg)
+      // crash and reload?  what now?
+    }
+  },
+
   register (cmp, key = false, ...args) {
-    if (this.all.has(cmp))
-      throw new TypeError(`attempted re-registration of ${key}`)
+    this.assert(!this.all.has(cmp), `attempted re-registration of ${key}`)
 
     this.all.add(cmp)
 
@@ -66,10 +73,11 @@ export const Walax = observable({
   },
 
   signal(sig) {
-
+    //for each controller, is ctrl.signal is callable, call it with arg sig TODO
   },
 
-  init () {
+  init (force=false) {
+    //todo if force clear out maps, etc
     if (!this._init) {
       w.register(Logger, 'log')
       w.register(Cache, 'cache')

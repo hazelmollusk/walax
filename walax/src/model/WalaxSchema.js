@@ -43,8 +43,7 @@ export class WalaxSchema {
   }
 
   addModel (name, model) {
-    if (!this.checkModel(model))
-      throw new TypeError(`invalid model registered in ${name}`)
+    w.assert(this.checkModel(model), `invalid model registered in ${name}`)
 
     w.augment(
       this,
