@@ -12,7 +12,7 @@ class WalaxManager {
   all() {
   }
 
-  get(id) {
+  get(pk) {
     
   }
 }
