@@ -63,16 +63,14 @@ export class WalaxSchema {
     return w.net.get(uri).then(data => this.parseData(uri, data, models))
   }
 
-  getModelClass (name) {
-    return this.models.get(name) || this._defaultModel
-  }
+  // getModelClass (name) {
+  //   return this.models.get(name) || this._defaultModel
+  // }
 
-  getModelManager (name) {
-    cls = this.getModelClass(name)
-    return w.cache.get('managers', cls, m => {
-      return new this._defaultManager(cls)
-    })
-  }
+  // getModelManager (name) {
+  //   cls = this.getModelClass(name)
+  //   return w.cache.get(m => new cls.managerClass(cls), 'managers', cls)
+  // }
 
   parseData (uri, data, models = false) {
     throw new TypeError('schema class must implement parseData(data)')

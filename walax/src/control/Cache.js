@@ -11,16 +11,18 @@ class WalaxCache {
     return this._storage.get(key)
   }
   find (func, ...args) {
+    console.log('FIND', func, args)
     if (args.length) {
-      let key = args.pop()
-      w.log.debug('args.length')
-      w.log.debug(key, args)
+      let testVal = args.pop()
+      if (testVal !== undefined) args.push(testVal)
+      let key = args.shift()
       if (args.length) return this.cache(key).find(func, ...args)
-      w.log.debug('is value')
-      if (!this._storage.has(key))
+      if (!this._storage.has(key)) {
         if (typeof func == 'function') this._storage.set(key, func(key))
         else if (func === undefined) this._storage.delete(key)
         else this._storage.set(key, func)
+        console.log('STOR', this._storage, key, func)
+      }
       return this._storage.get(key)
     }
     return undefined
@@ -28,11 +30,12 @@ class WalaxCache {
   remove (...args) {
     let c = this
     while (args.length > 1) c = c.cache(args.pop())
-    c.delete(args.pop())
+    c._storage.delete(args.pop())
     return true
   }
   store (func, ...args) {
-    return this.remove(...args) && this.find(func, ...args)
+    this.remove(...args)
+    return this.find(func, ...args)
   }
 }
 

@@ -14,8 +14,8 @@ export default class DjangoModel extends WalaxModel {
   _new = true
   _uri = false
 
-  constructor (name, fields) {
-    super()
+  constructor (data) {
+    super(data)
   }
 
   save () {

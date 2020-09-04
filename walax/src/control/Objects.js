@@ -28,6 +28,20 @@ export const Objects = {
     let obj = w.cache.find(undefined, 'objects', model, pk)
   },
 
+  recieveObject (model, data) {
+    w.log.debug('RECIEVE', model, data)
+    let obj = new model(data)
+
+    Object.assign(obj, data)
+
+    console.debug('WTF', obj, 'RRR')
+    obj._new = false
+    obj._dirty.clear()
+
+    w.cache.store(obj, 'objects', model, obj.pk)
+    return obj
+  },
+
   checkName (name) {
     if (!name) throw new TypeError('schema name may not be blank')
     if (this.schemas.has(name))

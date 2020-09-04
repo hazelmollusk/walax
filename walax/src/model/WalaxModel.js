@@ -11,6 +11,10 @@ export default class WalaxModel {
   _new = true
   _deleted = false
 
+  static get fields () {
+    return this._fields
+  }
+
   static get manager () {
     this._manager ||= w.obj.getManager(this.managerClass, this)
     return this._manager
@@ -29,23 +33,33 @@ export default class WalaxModel {
   }
 
   get fields () {
-    return this.__proto__._fields
+    return this.constructor._fields
   }
 
-  constructor (initial = false) {}
+  constructor (data = false) {
+    this.initFields(data)
+  }
 
-  initFields (deleted = false) {
-    console.log(this)
+  get pk () {
+    return this._values.get(this._primaryKey)
+  }
+
+  initFields (data = false, deleted = false) {
     // if (this.primaryKey && !(this.primaryKey in this.fields))
     //   this.fields[this._primaryKey] = -1
-    for (let field in this.fields) {
-      console.log(this, field)
-      this._defineField(field, deleted) // todo: actually look at field def, etc
-    }
+    console.log('fields', this.fields)
+    console.log('data', data)
+    if (Object.keys(this.fields).length)
+      Object.keys(this.fields).forEach(fn => {
+        this._defineField(fn, deleted)
+      })
+    Object.assign(this, data)
+    console.log('done', this._values)
   }
 
   _defineField (field, deleted = false) {
-    delete this[field]
+    if (!field || field === 'undefined') return // FIXME why the string?
+    //delete this[field]
     let desc = deleted
       ? {
           enumerable: true,
@@ -71,19 +85,17 @@ export default class WalaxModel {
   }
 
   _getField (field) {
+    //todo: this could be static?
     return () => this._values.get(field)
   }
 
   //todo insert validation hooks
-  _setField (field) {
+  _setField (field, val) {
     return val => {
+      console.log('set', field, val)
       this._dirty.add(field)
       this._values.set(field, val)
     }
-  }
-
-  updateProperties (obj) {
-    Object.assign(this, obj)
   }
 
   getUri () {

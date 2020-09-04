@@ -72,6 +72,8 @@ export const Walax = observable({
     return this.checkClass(req, cls.__proto__)
   },
 
+  findProperty (cls, prop) {},
+
   signal (sig) {
     //for each controller, if ctrl.signal is callable, call it with arg sig TODO
   },

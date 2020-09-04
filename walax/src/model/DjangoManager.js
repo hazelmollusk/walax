@@ -10,17 +10,21 @@ export default class DjangoManager extends WalaxManager {
     return new DjangoQuery(this)
   }
 
-  filter (...args) {
-    return this.all().filter(...args)
+  filter (args) {
+    return this.all().filter(args)
   }
 
   exclude (...args) {
-    return this.all().exclude(...args)
+    return this.all().exclude(args)
   }
 
   none () {
     return this.all().none()
   }
 
-  get (pk) {}
+  getPk (pk) {}
+
+  get serialized () {
+    return `{${this._model._name}}`
+  }
 }

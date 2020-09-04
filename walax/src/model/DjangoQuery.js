@@ -1,3 +1,5 @@
+import w from '../Walax'
+
 class DjangoQueryProxy {
   query = false
   keys = false
@@ -8,6 +10,7 @@ class DjangoQueryProxy {
 
   [Symbol.iterator] () {
     this.keys = this.query.cache
+    return this
   }
 
   next () {
@@ -19,7 +22,6 @@ class DjangoQueryProxy {
 }
 
 class DjangoQuery {
-  _model = false
   _parent = false
   _flip = false
   _filter = false
@@ -36,28 +38,52 @@ class DjangoQuery {
    */
   constructor (parent, filter = false, flip = false, single = false) {
     // todo: sanity check
-    this._model = parent._model
     this._parent = parent
     this._flip = flip
     this._filter = filter
     this._single = single
   }
 
+  get _model () {
+    return this._parent._model
+  }
+
   get serialized () {
-    return this // FIXME SHOULD BE STRING OF ALL PARENTS TO MANAGER
+    let rec = ''
+    for (let f in this._filter) rec += `(${f}=${this._filter[f]})`
+    if (this._single) rec = '#' + rec
+    if (this._flip) rec = '!' + rec
+    rec = `${this._parent.serialized}+[${rec}]`
+    return rec
   }
 
   [Symbol.iterator] () {
     return new DjangoQueryProxy(this)
   }
 
+  get cached () {
+    return w.cache.find(false, 'queries', this.serialized)
+  }
+
+  set cached (val) {
+    return w.cache.store(val, 'queries', this.serialized)
+  }
+
   get cache () {
-    this._cache ||= w.cache.find(s => this.fetch(), 'queries', this.serialized)
-    return this._cache
+    if (!this.cached) this.fetch()
+    return this.cached
   }
 
   fetch () {
-    return new Set()
+    console.log(this, 'fetch')
+    let res = new Set()
+    return w.net.get(this._model._modelUri).then(data => {
+      console.log('qqqqq', data)
+      if (data.length)
+        data.forEach(o => res.add(w.obj.recieveObject(this._model, o)))
+      console.log('res', this._model, res)
+      this.cached = res
+    })
   }
 
   all () {
@@ -68,11 +94,11 @@ class DjangoQuery {
     return new DjangoQuery(this, false, true)
   }
 
-  filter (...args) {
+  filter (args) {
     return new DjangoQuery(this, args)
   }
 
-  exclude (...args) {
+  exclude (args) {
     return new DjangoQuery(this, args, true)
   }
 }
