@@ -1,33 +1,45 @@
-import WalaxManager from "./WalaxManager"
+import WalaxManager from './WalaxManager'
 
 export default class WalaxModel {
-  _name = false
-  _fields = false
+  static _name = false
+  static _fields = false
+  static _primaryKey = false
+  static _manager = false
+  static _managerClass = WalaxManager
   _values = new Map()
   _dirty = new Set()
-  _primaryKey = false
   _new = true
   _deleted = false
 
-  static _manager = false
-  static _managerClass = WalaxManager
-  
-  static get objects () {
-    if (!this._manager && this.checkManager(this._managerClass)) 
-      this._manager = w.obj.getManager(this._managerClass, this)
+  static get manager () {
+    this._manager ||= w.obj.getManager(this.managerClass, this)
     return this._manager
   }
-  static checkManager(mgr) {
-    return true  // wixme
+
+  static get managerClass () {
+    return this._managerClass
+  }
+
+  static get objects () {
+    return this.manager
+  }
+
+  static checkManager (mgr) {
+    return true // wixme
+  }
+
+  get fields () {
+    return this.__proto__._fields
   }
 
   constructor (initial = false) {}
 
   initFields (deleted = false) {
     console.log(this)
-    if (this._primaryKey && !(this._primaryKey in this._fields))
-      this._fields[this._primaryKey] = -1
-    for (let field in this._fields) {
+    // if (this.primaryKey && !(this.primaryKey in this.fields))
+    //   this.fields[this._primaryKey] = -1
+    for (let field in this.fields) {
+      console.log(this, field)
       this._defineField(field, deleted) // todo: actually look at field def, etc
     }
   }
@@ -61,7 +73,7 @@ export default class WalaxModel {
   _getField (field) {
     return () => this._values.get(field)
   }
-  
+
   //todo insert validation hooks
   _setField (field) {
     return val => {

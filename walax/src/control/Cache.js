@@ -1,41 +1,41 @@
 import { observable } from 'mobx'
+import w from '../Walax'
 
-const Cache = observable({
-  _storage: observable.map(),
+class WalaxCache {
+  _storage = false
+  constructor () {
+    this._storage = new Map()
+  }
+  cache (key) {
+    if (!this._storage.has(key)) this._storage.set(key, new WalaxCache())
+    return this._storage.get(key)
+  }
+  find (func, ...args) {
+    if (args.length) {
+      let key = args.pop()
+      w.log.debug('args.length')
+      w.log.debug(key, args)
+      if (args.length) return this.cache(key).find(func, ...args)
+      w.log.debug('is value')
+      if (!this._storage.has(key))
+        if (typeof func == 'function') this._storage.set(key, func(key))
+        else if (func === undefined) this._storage.delete(key)
+        else this._storage.set(key, func)
+      return this._storage.get(key)
+    }
+    return undefined
+  }
+  remove (...args) {
+    let c = this
+    while (args.length > 1) c = c.cache(args.pop())
+    c.delete(args.pop())
+    return true
+  }
+  store (func, ...args) {
+    return this.remove(...args) && this.find(func, ...args)
+  }
+}
 
-  store (cache, key, func=undefined) {
-    if (typeof cache != 'string')
-      throw new TypeError('cache buckets must be strings')
-    
-    if (!this._storage.has(cache)) this._storage.set(cache, observable.map())
-    
-    if (func === undefined && this._storage.get(cache).has(key))
-      return this._storage.delete(key)
-
-    if (typeof func == 'function') 
-      this._storage.get(cache).set(key, func(key))
-    else if (func) 
-      this._storage.get(cache).set(key, func)
-
-    return this._storage.get(cache).get(key)
-  },
-
-  find (cache, key, val=undefined) {
-    let func = val
-    if (typeof cache != 'string')
-      throw new TypeError('cache buckets must be strings')
-    
-    if (!this._storage.has(cache) && val === undefined) return undefined
-    if (!this._storage.has(cache)) this._storage.set(cache, observable.map())
-
-    if (!this._storage.get(cache)?.has(key) && func)
-      if (typeof func == 'function') 
-        this._storage.get(cache).set(key, func(key))
-      else if (func) 
-        this._storage.get(cache).set(key, func)
-
-    return this._storage.get(cache)?.get(key)
-  },
-})
+const Cache = new WalaxCache()
 
 export default Cache

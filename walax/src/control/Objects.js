@@ -24,6 +24,10 @@ export const Objects = {
     return this.managers.get(model)
   },
 
+  getObject (model, pk) {
+    let obj = w.cache.find(undefined, 'objects', model, pk)
+  },
+
   checkName (name) {
     if (!name) throw new TypeError('schema name may not be blank')
     if (this.schemas.has(name))

@@ -39,25 +39,17 @@ export class WalaxSchema {
   }
 
   set uri (uri) {
-    this.load(uri).then( () => { this._uri = uri })
+    this.load(uri).then(() => {
+      this._uri = uri
+    })
   }
 
   addModel (name, model) {
     w.assert(this.checkModel(model), `invalid model registered in ${name}`)
 
-    w.augment(
-      this,
-      name,
-      { value: model },
-      true
-    )
+    w.augment(this, name, { value: model }, true)
 
-    w.augment(
-      w.obj,
-      name,
-      { value: model },
-      true
-    )
+    w.augment(w.obj, name, { value: model }, true)
     this.models.set(name, model)
   }
 

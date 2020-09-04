@@ -1,7 +1,31 @@
+class DjangoQueryProxy {
+  query = false
+  keys = false
+
+  constructor (query) {
+    this.query = query
+  }
+
+  [Symbol.iterator] () {
+    this.keys = this.query.cache
+  }
+
+  next () {
+    let cur = this.keys.next()
+    if (cur.done) return cur
+    let obj = w.obj.getObject(this.query._model, cur.value)
+    return { value: obj, done: false }
+  }
+}
+
 class DjangoQuery {
   _model = false
   _parent = false
   _flip = false
+  _filter = false
+  _single = false
+  _cache = false
+
   /**
    * Creates an instance of DjangoQuery.
    * @param {*} model
@@ -10,28 +34,47 @@ class DjangoQuery {
    * @param {boolean} [flip=false]
    * @memberof DjangoQuery
    */
-  constructor (model, parent, args = false, flip = false) {
-    this._model = model
+  constructor (parent, filter = false, flip = false, single = false) {
+    // todo: sanity check
+    this._model = parent._model
     this._parent = parent
     this._flip = flip
-    if (args) this.process(args)
+    this._filter = filter
+    this._single = single
   }
 
-  process (args) {}
+  get serialized () {
+    return this // FIXME SHOULD BE STRING OF ALL PARENTS TO MANAGER
+  }
+
+  [Symbol.iterator] () {
+    return new DjangoQueryProxy(this)
+  }
+
+  get cache () {
+    this._cache ||= w.cache.find(s => this.fetch(), 'queries', this.serialized)
+    return this._cache
+  }
+
+  fetch () {
+    return new Set()
+  }
 
   all () {
-    return new DjangoQuery(this.model, this)
+    return new DjangoQuery(this)
   }
 
   none () {
-    return new DjangoQuery(this.model, this, false, true)
+    return new DjangoQuery(this, false, true)
   }
 
-  filter (args) {
-    return new DjangoQuery(this.model, this, args)
+  filter (...args) {
+    return new DjangoQuery(this, args)
   }
 
-  exclude (args) {
-    return new DjangoQuery(this.model, this, args, true)
+  exclude (...args) {
+    return new DjangoQuery(this, args, true)
   }
 }
+
+export default DjangoQuery
