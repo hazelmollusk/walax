@@ -103,9 +103,9 @@ export const Logger = {
   async trace (...s) {
     return this._shouldLog(TRACE) && this._log(s, TRACE)
   },
-  assert (val, msg, dbginfo) {
+  assert (val, msg, name = false, dbginfo = false) {
     if (!val) {
-      this.error(msg, dbginfo)
+      this.error(name || '<assert>', msg, dbginfo)
       throw new TypeError(msg)
       // crash and reload?  what now?
     }
@@ -129,6 +129,13 @@ export const Logger = {
 
   async _processLog (cb, msg, level, stack = null) {
     return cb(msg, level, stack)
+  },
+
+  debugger (name) {
+    return (...msg) => Logger.debug(name, ...msg)
+  },
+  asserter (name) {
+    return (cond, msg, d) => Logger.assert(cond, msg, name, d)
   }
 }
 
