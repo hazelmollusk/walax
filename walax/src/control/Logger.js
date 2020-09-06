@@ -14,7 +14,7 @@ const COLOR = []
 COLOR[DEBUG] = {
   fg: 'lightblue',
   bg: '#555',
-  border: 'darkgoldenrod'
+  border: 'purple'
 }
 
 COLOR[INFO] = {
@@ -37,34 +37,37 @@ export const consoleLog = (msg, lvl, stack) =>
     'color: #55aa23; \
      font-family: "Helvetica", "Verdana", "Arial", sans-serif; \
      font-variant: small-caps; \
-     position: absolute; \
-     right: 20px; \
      font-weight: bold; \
      font-size: small; \
-     line-height: 200%; \
     ',
     `font-size: large; \
       font-variant: small-caps; \
       font-weight: bold; \
       font-family: "Times New Roman", serif; \
       margin: 5px; \
-      border-width: 2px;  \
-      border-style: solid; \
+      border-width: 4px;  \
+      border-style: ridge; \
       border-bottom-left-radius: 15px; \
       border-top-right-radius: 15px; \
       padding: 5px; \
-      color: ${COLOR[lvl].fg}; \
-      background-color: ${COLOR[lvl].bg}; \
-      border-color: ${COLOR[lvl].border}; `,
+      color: ${COLOR[lvl]?.fg || 'white'}; \
+      background-color: ${COLOR[lvl]?.bg || 'black'}; \
+      border-color: ${COLOR[lvl]?.border || 'gray'}; `,
     ...msg
   )
+// &&
+// stack &&
+// console.log('%c trace', 'font-size: large; color:green;', stack)
+
 consoleLog.multiple = true
+
 export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
 recordLogs.logs = observable.set()
 
 export const Logger = {
   all: new Set(),
   level: DEBUG,
+  // stack: falsefalse,
   stack: false,
 
   /**
