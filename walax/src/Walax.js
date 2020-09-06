@@ -13,6 +13,10 @@ export const Walax = observable({
   keys: new Map(),
   _init: false,
 
+  get dbg () {
+    return this.keys.has('log') ? this.log.debug : d
+  },
+
   isValidProp (name) {
     if (!name) return false
     if (typeof name != 'string') return false

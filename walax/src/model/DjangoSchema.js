@@ -5,6 +5,10 @@ import DjangoModel from './DjangoModel'
 import DjangoManager from './DjangoManager'
 import w from '../Walax'
 
+let f = 'djangoSchema'
+let d = (...a) => w.log.debug(f, ...a)
+let a = (b, m, d) => w.log.assert(b, `!![ ${f} ]!! ${m}`, d)
+
 export class DjangoSchema extends WalaxSchema {
   _defaultModel = DjangoModel
   _defaultManager = DjangoManager
@@ -44,7 +48,7 @@ export class DjangoSchema extends WalaxSchema {
         let fields = modelInfo.actions.POST
 
         fields[this._primaryKey] = -1
-        console.debug(modelName, fields, 'UU')
+        d(modelName, fields, 'UU')
         let BaseModel = models?.get?.(modelClassName) || this._defaultModel
         let classes = {}
         classes[modelClassName] = class extends BaseModel {

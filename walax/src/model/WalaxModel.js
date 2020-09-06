@@ -1,10 +1,14 @@
 import WalaxManager from './WalaxManager'
+import w from '../Walax'
+
+let f = 'walaxModel'
+let d = (...a) => w.log.debug(f, ...a)
+let a = (b, m, d) => w.log.assert(b, `!![ ${f} ]!! ${m}`, d)
 
 export default class WalaxModel {
   static _name = false
   static _fields = false
   static _primaryKey = false
-  static _manager = false
   static _managerClass = WalaxManager
   _values = new Map()
   _dirty = new Set()
@@ -16,8 +20,7 @@ export default class WalaxModel {
   }
 
   static get manager () {
-    this._manager ||= w.obj.getManager(this.managerClass, this)
-    return this._manager
+    return w.obj.getManager(this, this.managerClass)
   }
 
   static get managerClass () {
@@ -41,20 +44,21 @@ export default class WalaxModel {
   }
 
   get pk () {
+    //fixme
     return this._values.get(this._primaryKey)
   }
 
   initFields (data = false, deleted = false) {
     // if (this.primaryKey && !(this.primaryKey in this.fields))
     //   this.fields[this._primaryKey] = -1
-    console.log('fields', this.fields)
-    console.log('data', data)
+    d('fields', this.fields)
+    d('data', data)
     if (Object.keys(this.fields).length)
       Object.keys(this.fields).forEach(fn => {
         this._defineField(fn, deleted)
       })
     Object.assign(this, data)
-    console.log('done', this._values)
+    d('done', this._values)
   }
 
   _defineField (field, deleted = false) {
@@ -92,7 +96,7 @@ export default class WalaxModel {
   //todo insert validation hooks
   _setField (field, val) {
     return val => {
-      console.log('set', field, val)
+      d('set', field, val)
       this._dirty.add(field)
       this._values.set(field, val)
     }
