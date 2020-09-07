@@ -1,4 +1,5 @@
 import { observable } from 'mobx'
+import w from '../Walax'
 
 const stackinfo = require('stackinfo')
 
@@ -9,19 +10,27 @@ export const INFO = 4
 export const DEBUG = 8
 export const TRACE = 16
 
-const COLOR = []
+const LEVELS = [FATAL, ERROR, WARN, INFO, DEBUG, TRACE]
 
-COLOR[DEBUG] = {
-  fg: 'lightblue',
-  bg: '#555',
-  border: 'purple'
-}
+const COLOR = []
+LEVELS.map(
+  x =>
+    (COLOR[x] = {
+      fg: 'silver',
+      bg: '#111',
+      border: 'lightblue'
+    })
+)
+
+COLOR[DEBUG].border = 'purple'
 
 COLOR[INFO] = {
   fg: 'lightblue',
   bg: '#555',
   border: '#bada55'
 }
+
+COLOR[WARN] = {}
 
 COLOR[ERROR] = {
   fg: 'white',
@@ -33,18 +42,26 @@ export const consoleLog = (msg, lvl, stack) =>
   console.log(
     // tpdp any need to check for chrome here?
     // todo make "walax" configurable via proxy logging class
-    `%cWalax %c${msg.shift()}`,
+    `%c⋞%c༺⟅༼₩₳₤Ⱥ᙭༽⟆༻%c≽%c⟹%c≣ ${msg.shift()}`,
+    'color: lime; font-size: medium;',
     'color: #55aa23; \
+     background-color: #115511; \
      font-family: "Helvetica", "Verdana", "Arial", sans-serif; \
-     font-variant: small-caps; \
      font-weight: bold; \
-     font-size: small; \
+     font-size: x-small; \
+     border: 2px solid lime; \
+     padding: 4px; \
+     border-radius: 11px; \
+     border-radius-top-left: 0px; \
+     border-radius-top-right: 0px; \
     ',
-    `font-size: large; \
+    'color: lime; font-size: medium;',
+    'color: pink; font-size: medium;',
+    `font-size: small; \
       font-variant: small-caps; \
-      font-weight: bold; \
       font-family: "Times New Roman", serif; \
       margin: 5px; \
+      margin-left: 0px; \
       border-width: 4px;  \
       border-style: ridge; \
       border-bottom-left-radius: 15px; \
@@ -132,10 +149,18 @@ export const Logger = {
   },
 
   debugger (name) {
-    return (...msg) => Logger.debug(name, ...msg)
+    // return (...msg) => console.log(...msg)
+    return (...msg) => w.log.debug(name, ...msg)
+  },
+  errorer (name) {
+    return (msg, dbg) => {
+      w.log.error(name, msg)
+      if (dbg) w.log.debug(name, dbg)
+      /* throw new TypeError(msg) ?? */
+    }
   },
   asserter (name) {
-    return (cond, msg, d) => Logger.assert(cond, msg, name, d)
+    return (cond, msg, d) => w.log.assert(cond, msg, name, d)
   }
 }
 
