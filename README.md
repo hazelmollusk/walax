@@ -44,12 +44,18 @@ For now, here are some examples of the walax API:
 
 ### Objects (remote API)
 
-    w.ctl.obj.loadUri('/records/openapi/?format=openapi-json', 'records')
-    w.ctl.obj.loadUri('/somethingelse/api/', 'cool')
+    w.obj.loadUri('/records/openapi/?format=openapi-json', 'records')
+    w.obj.loadUri('/somethingelse/api/', 'cool')
     
-    let aStore = new w.ctl.models.records.Store()
+    let aStore = new w.obj.records.Store()
     aStore.name = 'new name'
     aStore.save()
+
+### Miscellaneous batteries
+
+class a {}
+class b extends a {}
+class c extends b {}
 
 ## Author
 
