@@ -1,12 +1,9 @@
 import { observable, computed } from 'mobx'
 import { WalaxSchema } from '../model/WalaxSchema'
 import { DjangoSchema } from '../model/DjangoSchema'
-import Logger from './Logger'
 
-// let { d, a } = w.df('w.obj')
-let f = 'w.obj'
-let d = (...a) => Logger.debug(`[ ${f}] ]`, ...a)
-let a = (b, m, d) => Logger.assert(b, `!![ ${f} ]!! ${m}`, d)
+import Logger from './Logger'
+const { d, a, e, i } = Logger.daei('Object')
 
 export const Objects = {
   schemas: observable.map(),
@@ -34,9 +31,10 @@ export const Objects = {
     manager ||= model._managerClass
     manager ||= model._schema._defaultManager
 
-    this.checkManager(manager)
     // todo use cache? not sure.
-    if (!this.managers.has(model)) this.managers.set(model, new manager(model))
+    if (!this.managers.has(model))
+      this.checkManager(manager) && this.managers.set(model, new manager(model))
+
     return this.managers.get(model)
   },
 
@@ -45,7 +43,7 @@ export const Objects = {
   },
 
   receiveObject (model, data) {
-    d(`receving object data: ${model._schema._name}, ${model._name}`, data)
+    d(`receving object data: ${model._schema._name} :: ${model._name}`, data)
     this.checkModels([model])
 
     let obj = new model(data)

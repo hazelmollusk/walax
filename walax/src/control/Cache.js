@@ -1,16 +1,14 @@
 import { observable } from 'mobx'
 import Logger from './Logger'
 
-let f = 'w.cache'
-let d = (...a) => Logger.debug(f, ...a)
-let e = (...a) => Logger.error(f, ...a)
-let a = (b, m, d) => Logger.assert(b, `!![ ${f} ]!! ${m}`, d)
+const f = 'Cache'
+const { d, a, e, i } = Logger.daei(f)
 
 class WalaxCache {
   _name = false
   _storage = false
   constructor (name = 'root') {
-    d(`CACHE NEW: ${name}`)
+    d(`new cache bucket: ${name}`)
     this._name = name
     this._storage = new Map()
   }
@@ -19,27 +17,30 @@ class WalaxCache {
     return this._storage.get(key)
   }
   find (key, func, ...args) {
-    d(`CACHE: ${this._name}.${key}`, func, ...args)
-    if (args.length) return this.cache(args.shift()).find(key, func, ...args)
+    d(`${this._name}.${key}`, func, ...args)
+    let cachePath =
+      args.length == 1 && args[0].has('.') ? args.shift().split('.') : args
+    if (cachePath.length)
+      return this.cache(cachePath.shift()).find(key, func, ...cachePath)
     if (!this._storage.has(key)) {
-      d(`CACHE MISS: ${this._name}.${key} (${typeof func})`)
+      d('miss', `${this._name}.${key} (${typeof func})`)
       if (typeof func == 'function') this._storage.set(key, func(key))
       else if (func === undefined) this._storage.delete(key)
       else this._storage.set(key, func)
-      d('CACHE STORE: ', this._storage.get(key))
+      d('store', `${this._name}.${key} == ${this._storage.get(key)}`)
     } else {
-      d(`CACHE HIT: ${this._name}.${key}`)
+      d('hit', `${this._name}.${key}`)
     }
     return this._storage.get(key)
   }
   remove (key, ...args) {
     let c = this
     while (args.length) c = c.cache(args.pop())
-    d(`CACHE DEL: ${this._name}.${key}`)
+    d(`delete: ${this._name}.${key}`)
     return c._storage.delete(key)
   }
   store (key, func, ...args) {
-    d(`CACHE PUT: ${this._name}.${key}`)
+    d(`put: ${this._name}.${key}`)
     this.remove(key, ...args)
     return this.find(key, func, ...args)
   }

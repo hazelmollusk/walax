@@ -2,36 +2,48 @@ import m from 'mithril'
 import w from '../Walax'
 import { observable, action } from 'mobx'
 
+/* logging shortcuts */
+import Logger from './Logger'
+const { d, a, e, i } = Logger.daei('Auth')
+
 const Auth = observable({
-  getAccess: function () { return this.access },
+  getAccess: function () {
+    return this.access
+  },
   access: 'no',
   refresh: 'no',
   state: false,
   loaded: false,
   authenticate: function (alias, passcode) {
-    if (!this.loaded) { this.initialize() }
+    if (!this.loaded) {
+      this.initialize()
+    }
     if (this.access && this.refresh) {
-      w.log.debug('already logged in')
+      d('already logged in')
       this.state = true
       return
     }
-    h.post('/api/token/', {
-      username: alias,
-      password: passcode
-    }, {
-      username: alias,
-      password: passcode
-    }).then(function (result) {
-      this.access = result.access
-      this.refresh = result.refresh
-      this.state = true
-    }).catch(function (err) {
-      w.log.error(err)
-    })
+    h.post(
+      '/api/token/',
+      {
+        username: alias,
+        password: passcode
+      },
+      {
+        username: alias,
+        password: passcode
+      }
+    )
+      .then(function (result) {
+        this.access = result.access
+        this.refresh = result.refresh
+        this.state = true
+      })
+      .catch(function (err) {
+        e(err)
+      })
   },
-  refreshToken: function () {
-
-  },
+  refreshToken: function () {},
   loadStorage: function () {
     var s = window.localStorage
     var access = s.getItem('access')
@@ -48,8 +60,10 @@ const Auth = observable({
     s.refresh = this.refresh
   },
   initialize: function () {
-    w.log.debug('auth init called')
-    if (typeof (Storage) === 'undefined') { throw 'no storage available' }
+    d('auth init called')
+    if (typeof Storage === 'undefined') {
+      throw 'no storage available'
+    }
 
     this.loadStorage()
     this.loaded = true

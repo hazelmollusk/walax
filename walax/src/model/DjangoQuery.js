@@ -1,5 +1,8 @@
 import w from '../Walax'
 
+import Logger from '../control/Logger'
+const { d, a, e, i } = Logger.daei('Auth')
+
 class DjangoQueryProxy {
   query = false
   keys = false

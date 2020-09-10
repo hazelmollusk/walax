@@ -4,10 +4,10 @@ import { WalaxSchema } from './WalaxSchema'
 import DjangoModel from './DjangoModel'
 import DjangoManager from './DjangoManager'
 import w from '../Walax'
+import Logger from '../control/Logger'
 
 let f = 'djangoSchema'
-let d = (...a) => w.log.debug(f, ...a)
-let a = (b, m, d) => w.log.assert(b, `!![ ${f} ]!! ${m}`, d)
+const { d, a, e, i } = Logger.daei(f)
 
 export class DjangoSchema extends WalaxSchema {
   _defaultModel = DjangoModel

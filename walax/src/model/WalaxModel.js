@@ -51,8 +51,7 @@ export default class WalaxModel {
   initFields (data = false, deleted = false) {
     // if (this.primaryKey && !(this.primaryKey in this.fields))
     //   this.fields[this._primaryKey] = -1
-    d('fields', this.fields)
-    d('data', data)
+    d('initializing fields', this.fields, data)
     if (Object.keys(this.fields).length)
       Object.keys(this.fields).forEach(fn => {
         this._defineField(fn, deleted)

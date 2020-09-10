@@ -7,6 +7,7 @@ import View from './control/View'
 import { Logger, consoleLog } from './control/Logger'
 
 const { observable } = require('mobx')
+const { d, a, e, i } = Logger.daei('walax')
 
 export const Walax = observable({
   all: new Set(),
@@ -61,7 +62,6 @@ export const Walax = observable({
     this.assert(!this.all.has(cmp), `attempted re-registration of ${key}`)
 
     this.all.add(cmp)
-
     if (this.checkName(key)) {
       this.augment(this, key, { get: () => this.keys.get(key) })
       this.keys.set(key, cmp)
@@ -92,7 +92,7 @@ export const Walax = observable({
       w.register(Auth, 'auth')
       w.register(View, 'view')
 
-      w.log.register(consoleLog)
+      Logger.register(consoleLog)
 
       this._init = true
     }
