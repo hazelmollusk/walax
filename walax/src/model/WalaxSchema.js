@@ -2,7 +2,7 @@ import { observable } from 'mobx'
 import WalaxModel from './WalaxModel'
 import WalaxManager from './WalaxManager'
 
-import Logger from './Logger'
+import Logger from '../control/Logger'
 const { d, a, e, i } = Logger.daei('Auth')
 
 //todo schema versioning/collision detection/etc
