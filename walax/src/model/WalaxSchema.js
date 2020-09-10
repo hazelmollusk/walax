@@ -2,6 +2,9 @@ import { observable } from 'mobx'
 import WalaxModel from './WalaxModel'
 import WalaxManager from './WalaxManager'
 
+import Logger from './Logger'
+const { d, a, e, i } = Logger.daei('Auth')
+
 //todo schema versioning/collision detection/etc
 export class WalaxSchema {
   schema = false
@@ -45,7 +48,7 @@ export class WalaxSchema {
   }
 
   addModel (name, model) {
-    w.assert(this.checkModel(model), `invalid model registered in ${name}`)
+    a(this.checkModel(model), `invalid model registered in ${name}`)
 
     w.augment(this, name, { value: model }, true)
 

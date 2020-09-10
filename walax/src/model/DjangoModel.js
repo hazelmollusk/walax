@@ -2,6 +2,9 @@ import WalaxModel from './WalaxModel'
 import w from '../Walax'
 import DjangoManager from './DjangoManager'
 
+import Logger from '../control/Logger'
+const { d, a, e, i } = Logger.daei('Auth')
+
 export default class DjangoModel extends WalaxModel {
   static _name = ''
   static _fields = {}
@@ -20,11 +23,10 @@ export default class DjangoModel extends WalaxModel {
 
   save () {
     if (!this._dirty.size) {
-      w.log.info('save(): object unchanged, not saving')
+      d('save(): object unchanged, not saving')
       return this
     }
-    if (this._deleted)
-      throw new ReferenceError(`saving deleted model: ${this._name}.save()`)
+    a(!this._deleted, `saving deleted model: ${this._name}.save()`)
     let saveFields = Object.fromEntries(this._values.entries())
     if (this._new) {
       w.net.post(this.modelUri, {}, saveFields, {}).then(ret => {

@@ -43,19 +43,20 @@ export const consoleLog = (msg, lvl, stack) =>
     // tpdp any need to check for chrome here?
     // todo make "walax" configurable via proxy logging class
     `%c⋞%c༺⟅༼₩₳₤Ⱥ᙭༽⟆༻%c≽%c⟹%c≣ ${msg.shift()}`,
-    'color: lime; font-size: medium;',
+    'color: #66bb34; font-size: medium;',
     'color: #55aa23; \
-     background-color: #115511; \
+     background-color: #090c09; \
      font-family: "Helvetica", "Verdana", "Arial", sans-serif; \
      font-weight: bold; \
      font-size: x-small; \
-     border: 2px solid lime; \
-     padding: 4px; \
+     border: 2px solid #66bb34; \
+     padding: 1px; \
+     padding-top: 3px; \
      border-radius: 11px; \
      border-radius-top-left: 0px; \
      border-radius-top-right: 0px; \
     ',
-    'color: lime; font-size: medium;',
+    'color: #66bb34; font-size: medium;',
     'color: pink; font-size: medium;',
     `font-size: medium; \
       font-variant: small-caps; \
@@ -67,8 +68,8 @@ export const consoleLog = (msg, lvl, stack) =>
       border-style: ridge; \
       border-bottom-left-radius: 15px; \
       border-top-right-radius: 15px; \
-      padding: 5px; \
-      padding-top: 1px; \
+      padding: 2px; \
+      padding-top: 0px; \
       color: ${COLOR[lvl]?.fg || 'white'}; \
       background-color: ${COLOR[lvl]?.bg || 'black'}; \
       border-color: ${COLOR[lvl]?.border || 'gray'}; `,
@@ -161,11 +162,15 @@ export const Logger = {
   asserter (name) {
     return (cond, msg, d) => Logger.assert(cond, msg, name, d)
   },
-  dae (name) {
+  informer (name) {
+    return (...msg) => Logger.info(name, ...msg)
+  },
+  daei (name) {
     return {
       d: Logger.debugger(name),
       a: Logger.asserter(name),
-      e: Logger.errorer(name)
+      e: Logger.errorer(name),
+      i: Logger.informer(name)
     }
   }
 }

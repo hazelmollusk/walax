@@ -7,7 +7,7 @@ import View from './control/View'
 import { Logger, consoleLog } from './control/Logger'
 
 const { observable } = require('mobx')
-const { d, a, e } = Logger.dae('walax')
+const { d, a, e, i } = Logger.daei('walax')
 
 export const Walax = observable({
   all: new Set(),

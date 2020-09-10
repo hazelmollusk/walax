@@ -2,7 +2,7 @@ import { observable } from 'mobx'
 import Logger from './Logger'
 
 const f = 'Cache'
-const { d, a, e } = Logger.dae(f)
+const { d, a, e, i } = Logger.daei(f)
 
 class WalaxCache {
   _name = false

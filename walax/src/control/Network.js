@@ -1,7 +1,7 @@
 const m = require('mithril')
 
 import Logger from './Logger'
-const { d, a, e } = Logger.dae('Network')
+const { d, a, e, i } = Logger.daei('Network')
 
 const Network = {
   /**
@@ -47,7 +47,7 @@ const Network = {
     options.headers ||=
       'Accept: application/vnd.oai.openapi+json, application/json'
     a(this._chkOpts(options), 'bad request options', options)
-    d(`${options.method.toUpperCase()} ${options.url}`, options)
+    d(`Request: ${options.method.toUpperCase()} ${options.url}`, options)
     return m.request(options)
   },
 

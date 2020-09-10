@@ -4,11 +4,8 @@ import { observable, action } from 'mobx'
 
 /* logging shortcuts */
 import Logger from './Logger'
-const { d, a, e } = Logger.dae('Auth')
-d('asdf')
+const { d, a, e, i } = Logger.daei('Auth')
 
-w?.log.debug('qwer')
-Logger.debug('llsdl')
 const Auth = observable({
   getAccess: function () {
     return this.access

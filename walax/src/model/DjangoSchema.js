@@ -7,7 +7,7 @@ import w from '../Walax'
 import Logger from '../control/Logger'
 
 let f = 'djangoSchema'
-const { d, a, e } = Logger.dae(f)
+const { d, a, e, i } = Logger.daei(f)
 
 export class DjangoSchema extends WalaxSchema {
   _defaultModel = DjangoModel
