@@ -2,14 +2,21 @@ import Objects from './control/Objects'
 import Network from './control/Network'
 import Auth from './control/Auth'
 import Cache from './control/Cache'
+import View from './control/View'
+
 import { Logger, consoleLog } from './control/Logger'
 
 const { observable } = require('mobx')
+const { d, a, e, i } = Logger.daei('walax')
 
 export const Walax = observable({
   all: new Set(),
   keys: new Map(),
   _init: false,
+
+  get dbg () {
+    return this.keys.has('log') ? this.log.debug : d
+  },
 
   isValidProp (name) {
     if (!name) return false
@@ -32,8 +39,6 @@ export const Walax = observable({
     if (Object.keys(obj).includes(key))
       throw new TypeError(`key exists: ${key}`)
 
-    desc ||= {}
-
     if (!Object.keys(desc).includes('enumerable')) desc.enumerable = enumerate
     if (!Object.keys(desc).includes('configurable')) desc.configurable = false
     if (
@@ -47,7 +52,7 @@ export const Walax = observable({
 
   assert (val, msg, dbginfo) {
     if (!val) {
-      this.log?.error(msg, dbginfo) 
+      this.log?.error(msg, dbginfo)
       throw new TypeError(msg)
       // crash and reload?  what now?
     }
@@ -57,7 +62,6 @@ export const Walax = observable({
     this.assert(!this.all.has(cmp), `attempted re-registration of ${key}`)
 
     this.all.add(cmp)
-
     if (this.checkName(key)) {
       this.augment(this, key, { get: () => this.keys.get(key) })
       this.keys.set(key, cmp)
@@ -66,17 +70,19 @@ export const Walax = observable({
     return cmp
   },
 
-  checkClass(req, cls) {
+  checkClass (req, cls) {
     if (!cls) return false
     if (cls == req) return true
     return this.checkClass(req, cls.__proto__)
   },
 
-  signal(sig) {
-    //for each controller, is ctrl.signal is callable, call it with arg sig TODO
+  findProperty (cls, prop) {},
+
+  signal (sig) {
+    //for each controller, if ctrl.signal is callable, call it with arg sig TODO
   },
 
-  init (force=false) {
+  init (force = false) {
     //todo if force clear out maps, etc
     if (!this._init) {
       w.register(Logger, 'log')
@@ -84,13 +90,13 @@ export const Walax = observable({
       w.register(Network, 'net')
       w.register(Objects, 'obj')
       w.register(Auth, 'auth')
+      w.register(View, 'view')
 
-      w.log.register(consoleLog)
-
+      Logger.register(consoleLog)
 
       this._init = true
     }
-  },
+  }
 })
 
 export const w = Walax

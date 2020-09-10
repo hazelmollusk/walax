@@ -1,30 +1,66 @@
 import { observable, computed } from 'mobx'
 import { WalaxSchema } from '../model/WalaxSchema'
 import { DjangoSchema } from '../model/DjangoSchema'
-import w from '../Walax'
+
+import Logger from './Logger'
+const { d, a, e, i } = Logger.daei('Object')
 
 export const Objects = {
   schemas: observable.map(),
   models: observable.map(),
   managers: observable.map(),
 
-  loadSchema (schema, name) {
-    // pre-built WalaxSchema
-    // ,todo checking, implement
-    if (this.checkName(name)) {
-      w.augment(this, name, { value: schema })
-      this.schemas.set(name, schema)
-    } else {
-      throw new TypeError(`invalid name: ${name}`)
-    }
+  get defaultSchemaClass () {
+    // limit the sin :)
+    return DjangoSchema
   },
 
-  getManager (mgr, model) {
-    if (!this.managers.has(model)) this.managers.set(model, new mgr(model))
+  loadSchema (name, schema) {
+    d(`loading schema ${name}`)
+    a(this.checkName(name), `invalid name ${name}`)
+    a(this.checkSchema(schema), `invalid schema ${name}`)
+    w.augment(this, name, { value: schema })
+    this.schemas.set(name, schema)
+  },
+
+  checkManager (manager) {
+    return true // not even sure we should check inheritance here
+  },
+
+  getManager (model, manager = false) {
+    manager ||= model._managerClass
+    manager ||= model._schema._defaultManager
+
+    // todo use cache? not sure.
+    if (!this.managers.has(model))
+      this.checkManager(manager) && this.managers.set(model, new manager(model))
+
     return this.managers.get(model)
   },
 
+  getObject (model, pk) {
+    let obj = w.cache.find(undefined, 'objects', model, pk)
+  },
+
+  receiveObject (model, data) {
+    d(`receving object data: ${model._schema._name} :: ${model._name}`, data)
+    this.checkModels([model])
+
+    let obj = new model(data)
+
+    Object.assign(obj, data)
+    obj._new = false
+    obj._dirty.clear()
+
+    d(`object created (${model._name})`, obj)
+
+    // k, v, ...cache ident
+    w.cache.store(obj.pk, obj, 'objects', model._schema, model)
+    return obj
+  },
+
   checkName (name) {
+    // todo generic, move to Walax
     if (!name) throw new TypeError('schema name may not be blank')
     if (this.schemas.has(name))
       throw new TypeError(`schema name ${name} already registered`)
@@ -44,14 +80,20 @@ export const Objects = {
   },
 
   checkModel (model) {
-    return true // washme
+    return w.checkClass(WalaxModel, model) // todo maybe
   },
 
-  load (uri, name, models = false) {
+  checkSchema (cls) {
+    return true
+  },
+
+  load (uri, name, models = false, schemaCls = false) {
     this.checkName(name)
     this.checkModels(models)
-    let schema = new DjangoSchema(uri, models) //todo genericify
-    this.loadSchema(schema, name)
+    schemaCls ||= this.defaultSchemaClass
+    this.checkSchema(schemaCls)
+    let schema = new schemaCls(uri, models)
+    this.loadSchema(name, schema)
   },
 
   schema (name) {

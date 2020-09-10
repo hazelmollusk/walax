@@ -9,12 +9,9 @@ class WalaxManager {
     this._model = model
   }
 
-  all() {
-  }
-
-  get(pk) {
-    
-  }
+  all () {}
+  filter (...args) {}
+  get (pk) {}
 }
 
 export default WalaxManager

@@ -1,37 +1,35 @@
 import WalaxModel from './WalaxModel'
 import w from '../Walax'
+import DjangoManager from './DjangoManager'
+
+import Logger from '../control/Logger'
+const { d, a, e, i } = Logger.daei('Auth')
 
 export default class DjangoModel extends WalaxModel {
-  _name = ''
-  _fields = {}
+  static _name = ''
+  static _fields = {}
+  static _primaryKey = 'xin'
+  static _schemaUri = false
+  static _modelUri = false
+  static _managerClass = DjangoManager
   _values = new Map()
   _dirty = new Set()
-  _primaryKey = 'url'
   _new = true
-  _schemaUri = false
-  _modelUri = false
   _uri = false
 
-
-
-  constructor (name, fields) {
-    super()
-  }
-
-  getUri () {
-    return this._uri
+  constructor (data) {
+    super(data)
   }
 
   save () {
     if (!this._dirty.size) {
-      w.log.info('save(): object unchanged, not saving')
+      d('save(): object unchanged, not saving')
       return this
     }
-    if (this._deleted)
-      throw new ReferenceError(`saving deleted model: ${this._name}.save()`)
+    a(!this._deleted, `saving deleted model: ${this._name}.save()`)
     let saveFields = Object.fromEntries(this._values.entries())
     if (this._new) {
-      w.net.post(this._modelUri, {}, saveFields, {}).then(ret => {
+      w.net.post(this.modelUri, {}, saveFields, {}).then(ret => {
         this._new = false
         this._uri = ret.url
         this.updateProperties(this, ret)
@@ -39,7 +37,7 @@ export default class DjangoModel extends WalaxModel {
     } else {
       // ERROR CHECKING FOOL
       w.net
-        .put(this.getUri(), {}, saveFields, {})
+        .put(this.modelUri, {}, saveFields, {})
         .then(ret => this.updateProperties(ret))
     }
     return this
@@ -48,7 +46,7 @@ export default class DjangoModel extends WalaxModel {
   delete () {
     if (this._deleted)
       throw new ReferenceError(`deleting deleted model: ${this._name}.delete()`)
-    w.net.delete(this.getUri()).then(ret => {
+    w.net.delete(this.modelUri).then(ret => {
       this._deleted = true
       this._uri = false
       this._values.clear()

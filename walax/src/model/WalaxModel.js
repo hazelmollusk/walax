@@ -1,39 +1,68 @@
-import WalaxManager from "./WalaxManager"
+import WalaxManager from './WalaxManager'
+import w from '../Walax'
+
+let f = 'walaxModel'
+let d = (...a) => w.log.debug(f, ...a)
+let a = (b, m, d) => w.log.assert(b, `!![ ${f} ]!! ${m}`, d)
 
 export default class WalaxModel {
-  _name = false
-  _fields = false
+  static _name = false
+  static _fields = false
+  static _primaryKey = false
+  static _managerClass = WalaxManager
   _values = new Map()
   _dirty = new Set()
-  _primaryKey = false
   _new = true
   _deleted = false
 
-  static _manager = false
-  static _managerClass = WalaxManager
-  
+  static get fields () {
+    return this._fields
+  }
+
+  static get manager () {
+    return w.obj.getManager(this, this.managerClass)
+  }
+
+  static get managerClass () {
+    return this._managerClass
+  }
+
   static get objects () {
-    if (!this._manager && this.checkManager(this._managerClass)) 
-      this._manager = w.obj.getManager(this._managerClass, this)
-    return this._manager
-  }
-  static checkManager(mgr) {
-    return true  // wixme
+    return this.manager
   }
 
-  constructor (initial = false) {}
+  static checkManager (mgr) {
+    return true // wixme
+  }
 
-  initFields (deleted = false) {
-    console.log(this)
-    if (this._primaryKey && !(this._primaryKey in this._fields))
-      this._fields[this._primaryKey] = -1
-    for (let field in this._fields) {
-      this._defineField(field, deleted) // todo: actually look at field def, etc
-    }
+  get fields () {
+    return this.constructor._fields
+  }
+
+  constructor (data = false) {
+    this.initFields(data)
+  }
+
+  get pk () {
+    //fixme
+    return this._values.get(this._primaryKey)
+  }
+
+  initFields (data = false, deleted = false) {
+    // if (this.primaryKey && !(this.primaryKey in this.fields))
+    //   this.fields[this._primaryKey] = -1
+    d('initializing fields', this.fields, data)
+    if (Object.keys(this.fields).length)
+      Object.keys(this.fields).forEach(fn => {
+        this._defineField(fn, deleted)
+      })
+    Object.assign(this, data)
+    d('done', this._values)
   }
 
   _defineField (field, deleted = false) {
-    delete this[field]
+    if (!field || field === 'undefined') return // FIXME why the string?
+    //delete this[field]
     let desc = deleted
       ? {
           enumerable: true,
@@ -59,19 +88,17 @@ export default class WalaxModel {
   }
 
   _getField (field) {
+    //todo: this could be static?
     return () => this._values.get(field)
   }
-  
+
   //todo insert validation hooks
-  _setField (field) {
+  _setField (field, val) {
     return val => {
+      d('set', field, val)
       this._dirty.add(field)
       this._values.set(field, val)
     }
-  }
-
-  updateProperties (obj) {
-    Object.assign(this, obj)
   }
 
   getUri () {

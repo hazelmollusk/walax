@@ -2,6 +2,9 @@ import { observable } from 'mobx'
 import WalaxModel from './WalaxModel'
 import WalaxManager from './WalaxManager'
 
+import Logger from '../control/Logger'
+const { d, a, e, i } = Logger.daei('Auth')
+
 //todo schema versioning/collision detection/etc
 export class WalaxSchema {
   schema = false
@@ -39,25 +42,17 @@ export class WalaxSchema {
   }
 
   set uri (uri) {
-    this.load(uri).then( () => { this._uri = uri })
+    this.load(uri).then(() => {
+      this._uri = uri
+    })
   }
 
   addModel (name, model) {
-    w.assert(this.checkModel(model), `invalid model registered in ${name}`)
+    a(this.checkModel(model), `invalid model registered in ${name}`)
 
-    w.augment(
-      this,
-      name,
-      { value: model },
-      true
-    )
+    w.augment(this, name, { value: model }, true)
 
-    w.augment(
-      w.obj,
-      name,
-      { value: model },
-      true
-    )
+    w.augment(w.obj, name, { value: model }, true)
     this.models.set(name, model)
   }
 
@@ -71,16 +66,14 @@ export class WalaxSchema {
     return w.net.get(uri).then(data => this.parseData(uri, data, models))
   }
 
-  getModelClass (name) {
-    return this.models.get(name) || this._defaultModel
-  }
+  // getModelClass (name) {
+  //   return this.models.get(name) || this._defaultModel
+  // }
 
-  getModelManager (name) {
-    cls = this.getModelClass(name)
-    return w.cache.get('managers', cls, m => {
-      return new this._defaultManager(cls)
-    })
-  }
+  // getModelManager (name) {
+  //   cls = this.getModelClass(name)
+  //   return w.cache.get(m => new cls.managerClass(cls), 'managers', cls)
+  // }
 
   parseData (uri, data, models = false) {
     throw new TypeError('schema class must implement parseData(data)')

@@ -4,6 +4,10 @@ import { WalaxSchema } from './WalaxSchema'
 import DjangoModel from './DjangoModel'
 import DjangoManager from './DjangoManager'
 import w from '../Walax'
+import Logger from '../control/Logger'
+
+let f = 'djangoSchema'
+const { d, a, e, i } = Logger.daei(f)
 
 export class DjangoSchema extends WalaxSchema {
   _defaultModel = DjangoModel
@@ -13,15 +17,14 @@ export class DjangoSchema extends WalaxSchema {
     super(uri, models)
   }
 
-  getManager(model) {
+  getManager (model) {
     // allows instances/names to be passed in
     if (typeof model == 'string') model = this.models.get(model)
     if (model?._model) model = model._model
-
+    w.debug(model)
     return w.cache.find('managers', model, m => {
       let mgrClass = `${m._name}Manager`
-      if (this.models.has(mgrClass)) 
-        return new mgrClass(m)
+      if (this.models.has(mgrClass)) return new mgrClass(m)
       return new this._defaultManager(model)
     })
   }
@@ -45,31 +48,30 @@ export class DjangoSchema extends WalaxSchema {
         let fields = modelInfo.actions.POST
 
         fields[this._primaryKey] = -1
+        d(modelName, fields, 'UU')
         let BaseModel = models?.get?.(modelClassName) || this._defaultModel
         let classes = {}
         classes[modelClassName] = class extends BaseModel {
-          _fields = fields
-          _name = modelClassName
-          _modelUri = modelRootUri
-          _schemaUri = uri
+          static _fields = fields
+          static _name = modelClassName
+          static _modelUri = modelRootUri
+          static _schemaUri = uri
+          static _schema = schemaObject
           _uri = false
           _new = true
 
-          static get schema() { return schemaObject }
-          static get objects() {
-            return schemaObject.getManager(modelClassName)
+          constructor (data = false) {
+            super(data)
           }
 
-          constructor (data = false) {
-            super()
-            this.initFields()
+          static get schema () {
+            return this._schemaObject
           }
         }
-          
+
         classes[modelClassName]._model = classes[modelClassName]
 
         this.addModel(modelClassName, classes[modelClassName])
-        
       })
     }
   }
