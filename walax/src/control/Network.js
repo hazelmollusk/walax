@@ -1,5 +1,8 @@
 const m = require('mithril')
 
+import Logger from './Logger'
+const { d, a, e } = Logger.dae('Network')
+
 const Network = {
   /**
    * public methods for each HTTP method
@@ -40,14 +43,11 @@ const Network = {
    * @returns {Promise}
    */
   async _req (options) {
-    if (!options) throw new Error(options)
-    if (!options.headers)
-      options.headers = {
-        Accept: 'application/vnd.oai.openapi+json, application/json'
-      }
-    if (!this._chkOpts(options)) {
-      throw new TypeError('fields are messed up ')
-    }
+    a(options, 'empty request options')
+    options.headers ||=
+      'Accept: application/vnd.oai.openapi+json, application/json'
+    a(this._chkOpts(options), 'bad request options', options)
+    d(`${options.method.toUpperCase()} ${options.url}`, options)
     return m.request(options)
   },
 

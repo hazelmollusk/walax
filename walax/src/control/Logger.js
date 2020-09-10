@@ -57,9 +57,10 @@ export const consoleLog = (msg, lvl, stack) =>
     ',
     'color: lime; font-size: medium;',
     'color: pink; font-size: medium;',
-    `font-size: small; \
+    `font-size: medium; \
       font-variant: small-caps; \
       font-family: "Times New Roman", serif; \
+      font-family: "Verdana", "Arial", sans-serif; \
       margin: 5px; \
       margin-left: 0px; \
       border-width: 4px;  \
@@ -67,14 +68,12 @@ export const consoleLog = (msg, lvl, stack) =>
       border-bottom-left-radius: 15px; \
       border-top-right-radius: 15px; \
       padding: 5px; \
+      padding-top: 1px; \
       color: ${COLOR[lvl]?.fg || 'white'}; \
       background-color: ${COLOR[lvl]?.bg || 'black'}; \
       border-color: ${COLOR[lvl]?.border || 'gray'}; `,
     ...msg
   )
-// &&
-// stack &&
-// console.log('%c trace', 'font-size: large; color:green;', stack)
 
 consoleLog.multiple = true
 
@@ -138,7 +137,7 @@ export const Logger = {
       if (v.multiple) promises.push(this._processLog(v, s, level, stack))
       else
         s.forEach(msg => promises.push(this._processLog(v, msg, level, stack)))
-      if (stack) s.forEach(msg => this._processLog(v, stack, TRACE))
+      if (stack) promises.push(this._processLog(v, stack, TRACE))
     })
 
     return promises
@@ -149,18 +148,25 @@ export const Logger = {
   },
 
   debugger (name) {
-    // return (...msg) => console.log(...msg)
-    return (...msg) => w.log.debug(name, ...msg)
+    // return (...msg) =>
+    return (...msg) => Logger.debug(name, ...msg)
   },
   errorer (name) {
     return (msg, dbg) => {
-      w.log.error(name, msg)
-      if (dbg) w.log.debug(name, dbg)
+      Logger.error(name, msg)
+      if (dbg) Logger.debug(name, dbg)
       /* throw new TypeError(msg) ?? */
     }
   },
   asserter (name) {
-    return (cond, msg, d) => w.log.assert(cond, msg, name, d)
+    return (cond, msg, d) => Logger.assert(cond, msg, name, d)
+  },
+  dae (name) {
+    return {
+      d: Logger.debugger(name),
+      a: Logger.asserter(name),
+      e: Logger.errorer(name)
+    }
   }
 }
 

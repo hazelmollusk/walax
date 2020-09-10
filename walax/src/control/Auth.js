@@ -4,11 +4,11 @@ import { observable, action } from 'mobx'
 
 /* logging shortcuts */
 import Logger from './Logger'
-const n = 'control/Auth'
-const d = Logger.debugger(n)
-const a = Logger.asserter(n)
-const e = Logger.errorer(n)
+const { d, a, e } = Logger.dae('Auth')
+d('asdf')
 
+w?.log.debug('qwer')
+Logger.debug('llsdl')
 const Auth = observable({
   getAccess: function () {
     return this.access
@@ -64,7 +64,6 @@ const Auth = observable({
   },
   initialize: function () {
     d('auth init called')
-    console.log(d)
     if (typeof Storage === 'undefined') {
       throw 'no storage available'
     }
