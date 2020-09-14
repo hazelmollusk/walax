@@ -19,10 +19,10 @@ export class WalaxSchema {
   managers = new Map()
   models = new Map()
 
-  constructor (uri = false, models = false, name = false) {
+  constructor (url = false, models = false, name = false) {
     this.initialize()
     this._name = name
-    if (uri) this.load(uri, models)
+    if (url) this.load(url, models)
   }
 
   initialize () {
@@ -40,13 +40,13 @@ export class WalaxSchema {
     return true
   }
 
-  get uri () {
+  get url () {
     return this._uri
   }
 
-  set uri (uri) {
-    this.load(uri).then(() => {
-      this._uri = uri
+  set url (url) {
+    this.load(url).then(() => {
+      this._uri = url
     })
   }
 
@@ -59,14 +59,14 @@ export class WalaxSchema {
     this.models.set(name, model)
   }
 
-  async load (uri, models = false, servers = false) {
-    //let url = new URL(uri) // this will throw a TypeError if invalid
+  async load (url, models = false, servers = false) {
+    //let url = new URL(url) // this will throw a TypeError if invalid
     this.initialize()
-    this._uri = uri
+    this._uri = url
     models?.forEach?.((v, k) => this.addModel(k, v))
     this._servers = servers
 
-    return w.net.get(uri).then(data => this.parseData(uri, data, models))
+    return w.net.get(url).then(data => this.parseData(url, data, models))
   }
 
   // getModelClass (name) {
@@ -78,7 +78,7 @@ export class WalaxSchema {
   //   return w.cache.get(m => new cls.managerClass(cls), 'managers', cls)
   // }
 
-  parseData (uri, data, models = false) {
+  parseData (url, data, models = false) {
     throw new TypeError('schema class must implement parseData(data)')
   }
 }

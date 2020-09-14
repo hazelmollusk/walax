@@ -22,11 +22,11 @@ export default class DjangoModel extends WalaxModel {
 
   get url () {
     //fixme?
-    return this.hyper ? this.url : '/'.join([this.modelUri, this.pk])
+    return this.hyper ? this.url : '/'.join([this.modelUrl, this.pk])
   }
 
-  get modelUri () {
-    return this.__prototype__.uri
+  get modelUrl () {
+    return this.__prototype__.url
   }
 
   save () {
@@ -45,7 +45,7 @@ export default class DjangoModel extends WalaxModel {
     } else {
       // ERROR CHECKING FOOL
       w.net
-        .put(this.uri, {}, saveFields, {})
+        .put(this.url, {}, saveFields, {})
         .then(ret => this.updateProperties(ret))
     }
     return this

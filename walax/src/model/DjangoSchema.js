@@ -13,8 +13,8 @@ export class DjangoSchema extends WalaxSchema {
   _defaultModel = DjangoModel
   _defaultManager = DjangoManager
 
-  constructor (uri = false, models = false) {
-    super(uri, models)
+  constructor (url = false, models = false) {
+    super(url, models)
   }
 
   getManager (model) {
@@ -28,10 +28,10 @@ export class DjangoSchema extends WalaxSchema {
       return new this._defaultManager(model)
     })
   }
-  // uri in this case is expected to be a DRF API root URL
+  // url in this case is expected to be a DRF API root URL
 
-  async parseData (uri, data, models) {
-    w.net.options(uri).then(info => {
+  async parseData (url, data, models) {
+    w.net.options(url).then(info => {
       this.title = info.name || 'Untitled'
       this.description = info.description || ''
     })
@@ -55,7 +55,7 @@ export class DjangoSchema extends WalaxSchema {
           static _fields = fields
           static _name = modelClassName
           static _modelUri = modelRootUri
-          static _schemaUri = uri
+          static _schemaUri = url
           static _schema = schemaObject
           _uri = false
           _new = true
