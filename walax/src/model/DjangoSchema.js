@@ -47,8 +47,8 @@ export class DjangoSchema extends WalaxSchema {
 
         let fields = modelInfo.actions.POST
 
-        fields[this._primaryKey] = -1
-        d(modelName, fields, 'UU')
+        // fields[this._primaryKey] = -1
+        d(`creating model class for ${modelName}:`, fields)
         let BaseModel = models?.get?.(modelClassName) || this._defaultModel
         let classes = {}
         classes[modelClassName] = class extends BaseModel {

@@ -6,19 +6,27 @@ import Logger from '../control/Logger'
 const { d, a, e, i } = Logger.daei('Auth')
 
 export default class DjangoModel extends WalaxModel {
-  static _name = ''
-  static _fields = {}
   static _primaryKey = 'xin'
   static _schemaUri = false
   static _modelUri = false
   static _managerClass = DjangoManager
-  _values = new Map()
-  _dirty = new Set()
-  _new = true
-  _uri = false
+  static _hyper = false
 
   constructor (data) {
     super(data)
+  }
+
+  static get primaryKey () {
+    return this.hyper ? 'url' : 'xin'
+  }
+
+  get url () {
+    //fixme?
+    return this.hyper ? this.url : '/'.join([this.modelUri, this.pk])
+  }
+
+  get modelUri () {
+    return this.__prototype__.uri
   }
 
   save () {
@@ -31,13 +39,13 @@ export default class DjangoModel extends WalaxModel {
     if (this._new) {
       w.net.post(this.modelUri, {}, saveFields, {}).then(ret => {
         this._new = false
-        this._uri = ret.url
+        this._uri = this.hyper ? ret.url : '/'.join(this.modelUri, this.pk)
         this.updateProperties(this, ret)
       })
     } else {
       // ERROR CHECKING FOOL
       w.net
-        .put(this.modelUri, {}, saveFields, {})
+        .put(this.uri, {}, saveFields, {})
         .then(ret => this.updateProperties(ret))
     }
     return this

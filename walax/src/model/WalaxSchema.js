@@ -3,7 +3,7 @@ import WalaxModel from './WalaxModel'
 import WalaxManager from './WalaxManager'
 
 import Logger from '../control/Logger'
-const { d, a, e, i } = Logger.daei('Auth')
+const { d, a, e, i } = Logger.daei('model/WalaxSchema')
 
 //todo schema versioning/collision detection/etc
 export class WalaxSchema {
@@ -11,14 +11,17 @@ export class WalaxSchema {
   title = false
   description = false
   version = false
+  _name = false
   _uri = false
   _servers = false
   _defaultModel = WalaxModel
   _defaultManager = WalaxManager
+  managers = new Map()
   models = new Map()
 
-  constructor (uri = false, models = false) {
+  constructor (uri = false, models = false, name = false) {
     this.initialize()
+    this._name = name
     if (uri) this.load(uri, models)
   }
 
@@ -48,7 +51,7 @@ export class WalaxSchema {
   }
 
   addModel (name, model) {
-    a(this.checkModel(model), `invalid model registered in ${name}`)
+    a(this.checkModel(model), `invalid model registered: ${name}`)
 
     w.augment(this, name, { value: model }, true)
 
