@@ -11,7 +11,6 @@ export default class WalaxModel {
   static _primaryKey = false
   static _managerClass = WalaxManager
   static _schema = false
-  static _modelUrl = false
 
   _values = new Map()
   _dirty = new Set()
@@ -43,12 +42,12 @@ export default class WalaxModel {
     return this.manager
   }
 
-  get url() {
+  get url () {
     return this._url
   }
 
   get fields () {
-    return this.constructor._fields
+    return this.constructor.fields
   }
 
   constructor (data = false) {

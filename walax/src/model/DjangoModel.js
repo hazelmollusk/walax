@@ -1,5 +1,5 @@
 import WalaxModel from './WalaxModel'
-import w from '../Walax'
+import w, { Walax } from '../Walax'
 import DjangoManager from './DjangoManager'
 
 import Logger from '../control/Logger'
@@ -7,8 +7,6 @@ const { d, a, e, i } = Logger.daei('Auth')
 
 export default class DjangoModel extends WalaxModel {
   static _primaryKey = 'xin'
-  static _schemaUri = false
-  static _modelUri = false
   static _managerClass = DjangoManager
   static _hyper = false
 
@@ -20,13 +18,27 @@ export default class DjangoModel extends WalaxModel {
     return this.hyper ? 'url' : 'xin'
   }
 
+  static get hyper () {
+    return this._hyper
+  }
+
+  initFields (data = false, deleted = false) {
+    super.initFields(data, deleted)
+
+    this._hyper = this.fields.has('url')
+  }
+
   get url () {
     //fixme?
-    return this.hyper ? this.url : '/'.join([this.modelUrl, this.pk])
+    return this.hyper ? this.url : [this.modelUrl, this.pk].join('/')
+  }
+
+  get hyper () {
+    return this.constructor.hyper
   }
 
   get modelUrl () {
-    return this.__prototype__.url
+    return this.constructor.url
   }
 
   save () {
