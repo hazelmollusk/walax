@@ -5,11 +5,21 @@ import DjangoManager from './DjangoManager'
 import Logger from '../control/Logger'
 const { d, a, e, i } = Logger.daei('Auth')
 
+/**
+ * DjangoModel
+ * @class 
+ */
 export default class DjangoModel extends WalaxModel {
   static _primaryKey = 'xin'
   static _managerClass = DjangoManager
   static _hyper = false
 
+  /**
+   * builds a new DjangoModel
+   * @class
+   * @classdesc a WalaxModel backed by Django Rest Framework
+   * @param {*} data
+   */
   constructor (data) {
     super(data)
   }
