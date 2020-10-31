@@ -3,7 +3,7 @@ import WalaxModel from './WalaxModel'
 import WalaxManager from './WalaxManager'
 
 import Logger from '../control/Logger'
-const { d, a, e, i } = Logger.daei('Auth')
+const { d, a, e, i } = Logger.daei('model/WalaxSchema')
 
 //todo schema versioning/collision detection/etc
 export class WalaxSchema {
@@ -11,15 +11,18 @@ export class WalaxSchema {
   title = false
   description = false
   version = false
+  _name = false
   _uri = false
   _servers = false
   _defaultModel = WalaxModel
   _defaultManager = WalaxManager
+  managers = new Map()
   models = new Map()
 
-  constructor (uri = false, models = false) {
+  constructor (url = false, models = false, name = false) {
     this.initialize()
-    if (uri) this.load(uri, models)
+    this._name = name
+    if (url) this.load(url, models)
   }
 
   initialize () {
@@ -37,18 +40,18 @@ export class WalaxSchema {
     return true
   }
 
-  get uri () {
+  get url () {
     return this._uri
   }
 
-  set uri (uri) {
-    this.load(uri).then(() => {
-      this._uri = uri
+  set url (url) {
+    this.load(url).then(() => {
+      this._uri = url
     })
   }
 
   addModel (name, model) {
-    a(this.checkModel(model), `invalid model registered in ${name}`)
+    a(this.checkModel(model), `invalid model registered: ${name}`)
 
     w.augment(this, name, { value: model }, true)
 
@@ -56,14 +59,14 @@ export class WalaxSchema {
     this.models.set(name, model)
   }
 
-  async load (uri, models = false, servers = false) {
-    //let url = new URL(uri) // this will throw a TypeError if invalid
+  async load (url, models = false, servers = false) {
+    //let url = new URL(url) // this will throw a TypeError if invalid
     this.initialize()
-    this._uri = uri
+    this._uri = url
     models?.forEach?.((v, k) => this.addModel(k, v))
     this._servers = servers
 
-    return w.net.get(uri).then(data => this.parseData(uri, data, models))
+    return w.net.get(url).then(data => this.parseData(url, data, models))
   }
 
   // getModelClass (name) {
@@ -75,7 +78,7 @@ export class WalaxSchema {
   //   return w.cache.get(m => new cls.managerClass(cls), 'managers', cls)
   // }
 
-  parseData (uri, data, models = false) {
+  parseData (url, data, models = false) {
     throw new TypeError('schema class must implement parseData(data)')
   }
 }

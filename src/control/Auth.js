@@ -24,6 +24,7 @@ const Auth = observable({
       return
     }
     h.post(
+      // fixme: dunno
       '/api/token/',
       {
         username: alias,
