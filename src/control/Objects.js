@@ -87,12 +87,12 @@ export const Objects = {
     return true
   },
 
-  load (uri, name, models = false, schemaCls = false) {
+  load (url, name, models = false, schemaCls = false) {
     this.checkName(name)
     this.checkModels(models)
     schemaCls ||= this.defaultSchemaClass
     this.checkSchema(schemaCls)
-    let schema = new schemaCls(uri, models)
+    let schema = new schemaCls(url, models)
     this.loadSchema(name, schema)
   },
 

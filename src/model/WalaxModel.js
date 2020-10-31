@@ -1,19 +1,30 @@
 import WalaxManager from './WalaxManager'
 import w from '../Walax'
 
-let f = 'walaxModel'
-let d = (...a) => w.log.debug(f, ...a)
-let a = (b, m, d) => w.log.assert(b, `!![ ${f} ]!! ${m}`, d)
+import Logger from '../control/Logger'
+const { d, a, e, i } = Logger.daei('model/WalaxModel')
 
 export default class WalaxModel {
   static _name = false
-  static _fields = false
+  static _url = false
+  static _fields = new Map()
   static _primaryKey = false
   static _managerClass = WalaxManager
+  static _schema = false
+
   _values = new Map()
   _dirty = new Set()
   _new = true
   _deleted = false
+  _url = false
+
+  static get schema () {
+    return this._schema
+  }
+
+  static get url () {
+    return this._url
+  }
 
   static get fields () {
     return this._fields
@@ -31,12 +42,12 @@ export default class WalaxModel {
     return this.manager
   }
 
-  static checkManager (mgr) {
-    return true // wixme
+  get url () {
+    return this._url
   }
 
   get fields () {
-    return this.constructor._fields
+    return this.constructor.fields
   }
 
   constructor (data = false) {
@@ -44,8 +55,11 @@ export default class WalaxModel {
   }
 
   get pk () {
-    //fixme
-    return this._values.get(this._primaryKey)
+    return this._values.get(this.primaryKey)
+  }
+
+  get primaryKey () {
+    return this._primaryKey
   }
 
   initFields (data = false, deleted = false) {
@@ -56,8 +70,8 @@ export default class WalaxModel {
       Object.keys(this.fields).forEach(fn => {
         this._defineField(fn, deleted)
       })
-    Object.assign(this, data)
-    d('done', this._values)
+    if (data) Object.assign(this, data)
+    d('finished initializing', this)
   }
 
   _defineField (field, deleted = false) {
@@ -88,14 +102,13 @@ export default class WalaxModel {
   }
 
   _getField (field) {
-    //todo: this could be static?
     return () => this._values.get(field)
   }
 
   //todo insert validation hooks
   _setField (field, val) {
     return val => {
-      d('set', field, val)
+      d('set', this, field, val)
       this._dirty.add(field)
       this._values.set(field, val)
     }

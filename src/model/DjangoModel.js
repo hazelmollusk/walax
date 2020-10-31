@@ -1,24 +1,54 @@
 import WalaxModel from './WalaxModel'
-import w from '../Walax'
+import w, { Walax } from '../Walax'
 import DjangoManager from './DjangoManager'
 
 import Logger from '../control/Logger'
 const { d, a, e, i } = Logger.daei('Auth')
 
+/**
+ * DjangoModel
+ * @class 
+ */
 export default class DjangoModel extends WalaxModel {
-  static _name = ''
-  static _fields = {}
   static _primaryKey = 'xin'
-  static _schemaUri = false
-  static _modelUri = false
   static _managerClass = DjangoManager
-  _values = new Map()
-  _dirty = new Set()
-  _new = true
-  _uri = false
+  static _hyper = false
 
+  /**
+   * builds a new DjangoModel
+   * @class
+   * @classdesc a WalaxModel backed by Django Rest Framework
+   * @param {*} data
+   */
   constructor (data) {
     super(data)
+  }
+
+  static get primaryKey () {
+    return this.hyper ? 'url' : 'xin'
+  }
+
+  static get hyper () {
+    return this._hyper
+  }
+
+  initFields (data = false, deleted = false) {
+    super.initFields(data, deleted)
+
+    this._hyper = this.fields.has('url')
+  }
+
+  get url () {
+    //fixme?
+    return this.hyper ? this.url : [this.modelUrl, this.pk].join('/')
+  }
+
+  get hyper () {
+    return this.constructor.hyper
+  }
+
+  get modelUrl () {
+    return this.constructor.url
   }
 
   save () {
@@ -31,13 +61,13 @@ export default class DjangoModel extends WalaxModel {
     if (this._new) {
       w.net.post(this.modelUri, {}, saveFields, {}).then(ret => {
         this._new = false
-        this._uri = ret.url
+        this._uri = this.hyper ? ret.url : '/'.join(this.modelUri, this.pk)
         this.updateProperties(this, ret)
       })
     } else {
       // ERROR CHECKING FOOL
       w.net
-        .put(this.modelUri, {}, saveFields, {})
+        .put(this.url, {}, saveFields, {})
         .then(ret => this.updateProperties(ret))
     }
     return this
