@@ -60,10 +60,10 @@
     "mobx": "^5.15.5",
     "stackinfo": "^1.1.5",
     "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12"
-  },
-  "dependencies": {
+    "webpack-cli": "^3.3.12",
     "documentation": "^13.1.0",
     "prettier": "^2.0.5"
+  },
+  "dependencies": {
   }
 }
