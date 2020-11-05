@@ -172,6 +172,9 @@ export const Logger = {
       e: Logger.errorer(name),
       i: Logger.informer(name)
     }
+  },
+  daeiAugment (obj, name) {
+    name ||= obj
   }
 }
 
