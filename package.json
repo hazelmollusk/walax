@@ -4,6 +4,7 @@
   "description": "walax is a Javascript framework for interacting with objects remotely via Django.",
   "main": "dist/walax.js",
   "scripts": {
+    "test": "jasmine",
     "start": "webpack -d --watch",
     "build": "webpack -d --watch",
     "docs": "documentation build src/** -f html -o docs/"
@@ -82,6 +83,7 @@
     "@babel/template": "^7.10.4",
     "babel-plugin-macros": "^2.8.0",
     "babel-preset-react-app": "^10.0.0",
-    "http": "0.0.1-security"
+    "http": "0.0.1-security",
+    "jasmine": "^3.6.3"
   }
 }
