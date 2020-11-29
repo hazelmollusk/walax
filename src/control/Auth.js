@@ -1,20 +1,21 @@
 import m from 'mithril'
-import w from '../Walax'
+import walax from '../Walax'
 import { observable, action } from 'mobx'
 
-/* logging shortcuts */
-import Logger from './Logger'
-const { d, a, e, i } = Logger.daei('Auth')
+const w = walax()
+const { d, a, e, i } = w.log.daei('Auth')
 
-const Auth = observable({
-  getAccess: function () {
+export default class Auth extends BaseControl {
+  constructor (wlx) {
+    this.access = 'no'
+    this.refresh = 'no'
+    this.state = false
+    this.loaded = false
+  }
+  getAccess () {
     return this.access
-  },
-  access: 'no',
-  refresh: 'no',
-  state: false,
-  loaded: false,
-  authenticate: function (alias, passcode) {
+  }
+  authenticate (alias, passcode) {
     if (!this.loaded) {
       this.initialize()
     }
@@ -23,18 +24,19 @@ const Auth = observable({
       this.state = true
       return
     }
-    h.post(
-      // fixme: dunno
-      '/api/token/',
-      {
-        username: alias,
-        password: passcode
-      },
-      {
-        username: alias,
-        password: passcode
-      }
-    )
+    w.net
+      .post(
+        // fixme: dunno
+        '/api/token/',
+        {
+          username: alias,
+          password: passcode
+        },
+        {
+          username: alias,
+          password: passcode
+        }
+      )
       .then(function (result) {
         this.access = result.access
         this.refresh = result.refresh
@@ -43,9 +45,9 @@ const Auth = observable({
       .catch(function (err) {
         e(err)
       })
-  },
-  refreshToken: function () {},
-  loadStorage: function () {
+  }
+  refreshToken () {} //TODO
+  loadStorage () {
     var s = window.localStorage
     var access = s.getItem('access')
     var refresh = s.getItem('refresh')
@@ -54,13 +56,13 @@ const Auth = observable({
       this.refresh = refresh
       this.state = true
     }
-  },
-  saveStorage: function () {
+  }
+  saveStorage () {
     var s = window.localStorage
     s.access = this.access
     s.refresh = this.refresh
-  },
-  initialize: function () {
+  }
+  initialize () {
     d('auth init called')
     if (typeof Storage === 'undefined') {
       throw 'no storage available'
@@ -69,6 +71,4 @@ const Auth = observable({
     this.loadStorage()
     this.loaded = true
   }
-})
-
-export default Auth
+}

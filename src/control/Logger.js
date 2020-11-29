@@ -1,5 +1,6 @@
 import { observable } from 'mobx'
 import w from '../Walax'
+import ControlBase from './BaseControl'
 
 const stackinfo = require('stackinfo')
 
@@ -81,11 +82,15 @@ consoleLog.multiple = true
 export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
 recordLogs.logs = observable.set()
 
-export const Logger = {
-  all: new Set(),
-  level: DEBUG,
-  // stack: falsefalse,
-  stack: false,
+export default class Logger extends BaseControl  {
+  constructor (wlx) {
+    super(wlx)
+
+    this.all = new Set()
+    this.level = DEBUG
+    // stack: falsefalse,
+    this.stack = false
+  }
 
   /**
    * registers a callback: (msg, level) => { ..logging.. }
@@ -94,7 +99,7 @@ export const Logger = {
    */
   register (cb) {
     this.all.add(cb)
-  },
+  }
 
   /**
    * public methods for each log level.  accepts arbitrary
@@ -104,32 +109,32 @@ export const Logger = {
    */
   async fatal (...s) {
     return this._shouldLog(FATAL) && this._log(s, FATAL)
-  },
+  }
   async info (...s) {
     return this._shouldLog(INFO) && this._log(s, INFO)
-  },
+  }
   async warn (...s) {
     return this._shouldLog(WARN) && this._log(s, WARN)
-  },
+  }
   async error (...s) {
     return this._shouldLog(ERROR) && this._log(s, ERROR)
-  },
+  }
   async debug (...s) {
     return this._shouldLog(DEBUG) && this._log(s, DEBUG)
-  },
+  }
   async trace (...s) {
     return this._shouldLog(TRACE) && this._log(s, TRACE)
-  },
+  }
   assert (val, msg, name = false, dbginfo = false) {
     if (!val) {
       this.error(name || '<assert>', msg, dbginfo)
       throw new TypeError(msg)
       // crash and reload?  what now?
     }
-  },
+  }
   _shouldLog (level) {
     return this.level >= level
-  },
+  }
 
   async _log (s, level = INFO) {
     let promises = []
@@ -142,37 +147,51 @@ export const Logger = {
     })
 
     return promises
-  },
+  }
 
   async _processLog (cb, msg, level, stack = null) {
     return cb(msg, level, stack)
-  },
+  }
 
   debugger (name) {
     // return (...msg) =>
-    return (...msg) => Logger.debug(name, ...msg)
-  },
+    return (...msg) => this.debug(name, ...msg)
+  }
   errorer (name) {
     return (msg, dbg) => {
-      Logger.error(name, msg)
-      if (dbg) Logger.debug(name, dbg)
+      this.error(name, msg)
+      if (dbg) this.debug(name, dbg)
       /* throw new TypeError(msg) ?? */
     }
-  },
+  }
   asserter (name) {
-    return (cond, msg, d) => Logger.assert(cond, msg, name, d)
-  },
+    return (cond, msg, d) => this.assert(cond, msg, name, d)
+  }
   informer (name) {
-    return (...msg) => Logger.info(name, ...msg)
-  },
-  daei (name) {
+    return (...msg) => this.info(name, ...msg)
+  }
+  _daeiReal (name) {
     return {
-      d: Logger.debugger(name),
-      a: Logger.asserter(name),
-      e: Logger.errorer(name),
-      i: Logger.informer(name)
+      d: this.debugger(name),
+      a: this.asserter(name),
+      e: this.errorer(name),
+      i: this.informer(name)
     }
   }
-}
+  daei (...args) {
+    let obj, name
+    let arg1 = length(args) ? args.shift() : null
+    let arg2 = length(args) ? args.shift() : null
 
-export default Logger
+    // todo polymorphism?
+    if (true) obj = arg1
+    if (typeof arg2 == 'string') name = arg2
+
+    this.w.assert(obj, 'i dunno.. loger not initialized')
+    name ||= obj.name || obj.__proto__.constructor.name
+
+    this._daeiReal(name).forEach((v, k) => {
+      this.w.augment(obj, k, v)
+    })
+  }
+}

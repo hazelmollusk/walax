@@ -3,17 +3,20 @@ import { WalaxSchema } from '../model/WalaxSchema'
 import { DjangoSchema } from '../model/DjangoSchema'
 
 import Logger from './Logger'
+import BaseControl from './BaseControl'
 const { d, a, e, i } = Logger.daei('Object')
 
-export const Objects = {
-  schemas: observable.map(),
-  models: observable.map(),
-  managers: observable.map(),
+export default class Objects extends BaseControl {
+  constructor () {
+    this.schemas = observable.map()
+    this.models = observable.map()
+    this.managers = observable.map()
+  }
 
   get defaultSchemaClass () {
     // limit the sin :)
     return DjangoSchema
-  },
+  }
 
   loadSchema (name, schema) {
     d(`loading schema ${name}`)
@@ -21,11 +24,11 @@ export const Objects = {
     a(this.checkSchema(schema), `invalid schema ${name}`)
     w.augment(this, name, { value: schema })
     this.schemas.set(name, schema)
-  },
+  }
 
   checkManager (manager) {
     return true // not even sure we should check inheritance here
-  },
+  }
 
   getManager (model, manager = false) {
     manager ||= model._managerClass
@@ -36,11 +39,11 @@ export const Objects = {
       this.checkManager(manager) && this.managers.set(model, new manager(model))
 
     return this.managers.get(model)
-  },
+  }
 
-  getObject (model, pk) {
-    let obj = w.cache.find(undefined, 'objects', model, pk)
-  },
+  // get Object (model, pk) {
+  //   let obj = w.cache.find(undefined, 'objects', model, pk)
+  // }
 
   receiveObject (model, data) {
     d(`receving object data: ${model._schema._name} :: ${model._name}`, data)
@@ -57,7 +60,7 @@ export const Objects = {
     // k, v, ...cache ident
     w.cache.store(obj.pk, obj, 'objects', model._schema, model)
     return obj
-  },
+  }
 
   checkName (name) {
     // todo generic, move to Walax
@@ -67,7 +70,7 @@ export const Objects = {
     if (!w.isValidProp(name))
       throw new TypeError(`invalid schema name: ${name}`)
     return true
-  },
+  }
 
   checkModels (models) {
     if (!models) return true
@@ -77,15 +80,15 @@ export const Objects = {
         throw new TypeError(`custom model ${k} is not a WalaxObject`)
     })
     return true
-  },
+  }
 
   checkModel (model) {
     return w.checkClass(WalaxModel, model) // todo maybe
-  },
+  }
 
   checkSchema (cls) {
     return true
-  },
+  }
 
   load (url, name, models = false, schemaCls = false) {
     this.checkName(name)
@@ -94,11 +97,9 @@ export const Objects = {
     this.checkSchema(schemaCls)
     let schema = new schemaCls(url, models)
     this.loadSchema(name, schema)
-  },
+  }
 
   schema (name) {
     return this.schemas.get(name)
   }
 }
-
-export default Objects

@@ -1,9 +1,6 @@
 const m = require('mithril')
 
-import Logger from './Logger'
-const { d, a, e, i } = Logger.daei('Network')
-
-const Network = {
+export default class Network extends BaseControl {
   /**
    * public methods for each HTTP method
    *
@@ -15,25 +12,25 @@ const Network = {
    */
   async post (u, p, b, o) {
     return this._req(this._reqOpts(...[u, p, b, o, 'POST']))
-  },
+  }
   async get (u, p, b, o) {
     return this._req(this._reqOpts(...[u, p, b, o, 'GET']))
-  },
+  }
   async put (u, p, b, o) {
     return this._req(this._reqOpts(...[u, p, b, o, 'PUT']))
-  },
+  }
   async delete (u, p, b, o) {
     return this._req(this._reqOpts(...[u, p, b, o, 'DELETE']))
-  },
+  }
   async options (u, p, b, o) {
     return this._req(this._reqOpts(...[u, p, b, o, 'OPTIONS']))
-  },
+  }
   async patch (u, p, b, o) {
     return this._req(this._reqOpts(...[u, p, b, o, 'PATCH']))
-  },
+  }
   async head (u, p, b, o) {
     return this._req(this._reqOpts(...[u, p, b, o, 'HEAD']))
-  },
+  }
 
   // TODO: websockets
   /**
@@ -49,7 +46,7 @@ const Network = {
     a(this._chkOpts(options), 'bad request options', options)
     d(`Request: ${options.method.toUpperCase()} ${options.url}`, options)
     return m.request(options)
-  },
+  }
 
   /**
    * check validity of request options object
@@ -60,7 +57,7 @@ const Network = {
   _chkOpts (opts) {
     // todo better sanity?
     return opts.url && opts.method
-  },
+  }
 
   /**
    * formats parameters into request options for mithril
@@ -78,5 +75,3 @@ const Network = {
     return opts
   }
 }
-
-export default Network
