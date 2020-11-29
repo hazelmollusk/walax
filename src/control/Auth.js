@@ -2,16 +2,13 @@ import m from 'mithril'
 import walax from '../Walax'
 import { observable, action } from 'mobx'
 
-/* logging shortcuts */
-import Logger from './Logger'
-
 const w = walax()
 const { d, a, e, i } = w.log.daei('Auth')
 
-export default class Auth {
-  constructor(wlx) {
-    this.access= 'no'
-    this.refresh= 'no'
+export default class Auth extends BaseControl {
+  constructor (wlx) {
+    this.access = 'no'
+    this.refresh = 'no'
     this.state = false
     this.loaded = false
   }
@@ -27,18 +24,19 @@ export default class Auth {
       this.state = true
       return
     }
-    w.net.post(
-      // fixme: dunno
-      '/api/token/',
-      {
-        username: alias,
-        password: passcode
-      },
-      {
-        username: alias,
-        password: passcode
-      }
-    )
+    w.net
+      .post(
+        // fixme: dunno
+        '/api/token/',
+        {
+          username: alias,
+          password: passcode
+        },
+        {
+          username: alias,
+          password: passcode
+        }
+      )
       .then(function (result) {
         this.access = result.access
         this.refresh = result.refresh

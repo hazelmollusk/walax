@@ -1,11 +1,11 @@
-import ControlBase from './control/ControlBase'
+import ControlBase from './control/BaseControl'
 import Objects from './control/Objects'
 import Network from './control/Network'
 import Auth from './control/Auth'
 import Cache from './control/Cache'
 import View from './control/View'
 
-import { Logger, consoleLog } from './control/Logger'
+import Logger from './control/Logger'
 import KeyedSingleton from './util/KeyedSingleton'
 
 const { observable } = require('mobx')
@@ -43,9 +43,9 @@ export class Walax extends KeyedSingleton {
   static instance (name, ...args) {
     if (!name) name = DEFAULT_KEY
 
-    if (!Walax.instances.has(name)) Walax.instances.set(new Walax(...args))
+    if (!Walax._instances.has(name)) Walax._instances.set(new Walax(...args))
 
-    return Walax.instances.get(name)
+    return Walax._instances.get(name)
   }
 
   static configure (data) {

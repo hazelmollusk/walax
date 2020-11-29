@@ -4,7 +4,7 @@ import Logger from './Logger'
 const f = 'Cache'
 const { d, a, e, i } = Logger.daei(f)
 
-class WalaxCache {
+export default class WalaxCache extends BaseControl  {
   _name = false
   _storage = false
   constructor (name = 'root') {
@@ -45,7 +45,3 @@ class WalaxCache {
     return this.find(key, func, ...args)
   }
 }
-
-const Cache = new WalaxCache()
-
-export default Cache
