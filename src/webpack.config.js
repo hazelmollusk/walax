@@ -16,15 +16,16 @@ module.exports = {
         use: [
           {
             loader: 'babel-loader',
+            sourceMaps: true,
             options: {
               presets: ['@babel/preset-env'],
               plugins: [
                 ['@babel/plugin-transform-runtime'],
                 ['@babel/plugin-syntax-dynamic-import'],
-                ['@babel/plugin-proposal-optional-chaining'],
                 ['@babel/plugin-proposal-decorators', { legacy: true }],
                 ['@babel/plugin-proposal-class-properties', { loose: true }],
-                ['@babel/plugin-proposal-logical-assignment-operators']
+                ['@babel/plugin-proposal-logical-assignment-operators'],
+                ['@babel/plugin-proposal-optional-chaining']
               ]
             }
           }

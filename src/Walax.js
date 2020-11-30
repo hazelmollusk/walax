@@ -12,7 +12,6 @@ const { observable } = require('mobx')
 const { d, a, e, i } = Logger.daei('walax')
 
 export class Walax extends KeyedSingleton {
-  static globalConfig = observable.map()
 
   constructor (...args) {
     this.all = new Set()
