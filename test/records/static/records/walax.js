@@ -1,1 +1,1 @@
-../../../../walax/dist/walax.js
+../../../../dist/walax/walax.js
