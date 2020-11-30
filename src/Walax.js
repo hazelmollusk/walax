@@ -12,8 +12,6 @@ const { observable } = require('mobx')
 const { d, a, e, i } = Logger.daei('walax')
 
 export class Walax extends KeyedSingleton {
-  static globalConfig = observable.map()
-
   constructor (...args) {
     this.all = new Set()
     this.keys = new Map()
@@ -96,7 +94,7 @@ export class Walax extends KeyedSingleton {
 
   assert (val, msg, dbginfo) {
     if (!val) {
-      this.log?.error(msg, dbginfo)
+      this.log.error(msg, dbginfo)
       throw new TypeError(msg)
       // crash and reload?  what now?
     }
