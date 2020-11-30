@@ -83,7 +83,6 @@
     "@babel/template": "^7.10.4",
     "babel-plugin-macros": "^2.8.0",
     "babel-preset-react-app": "^10.0.0",
-    "http": "0.0.1-security",
     "jasmine": "^3.6.3"
   }
 }
