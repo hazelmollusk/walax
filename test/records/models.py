@@ -38,3 +38,5 @@ class Inventory(models.Model):
     album = models.ForeignKey(Album, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     count = models.PositiveSmallIntegerField(default=0)
+    class Meta:
+        verbose_name_plural = 'Inventories'
