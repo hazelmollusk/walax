@@ -6,7 +6,8 @@ const w = walax()
 const { d, a, e, i } = w.log.daei('Auth')
 
 export default class Auth extends BaseControl {
-  constructor (wlx) {
+  constructor (w) {
+    super(w)
     this.access = 'no'
     this.refresh = 'no'
     this.state = false

@@ -1,6 +1,6 @@
 import { observable } from 'mobx'
 import w from '../Walax'
-import ControlBase from './BaseControl'
+import BaseControl from './BaseControl'
 
 const stackinfo = require('stackinfo')
 
@@ -83,8 +83,8 @@ export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
 recordLogs.logs = observable.set()
 
 export default class Logger extends BaseControl  {
-  constructor (wlx) {
-    super(wlx)
+  constructor (w) {
+    super(w)
 
     this.all = new Set()
     this.level = DEBUG

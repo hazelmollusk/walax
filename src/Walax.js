@@ -6,7 +6,7 @@ import Cache from './control/Cache'
 import View from './control/View'
 
 import Logger from './control/Logger'
-import KeyedSingleton from './util/KeyedSingleton'
+import KeyedSingleton from './util/WalaxUtil'
 
 const { observable } = require('mobx')
 const { d, a, e, i } = Logger.daei('walax')
@@ -121,10 +121,5 @@ export class Walax extends KeyedSingleton {
 }
 
 /* shortcut functions */
-export const walax = (...args) => observable(new Walax(...args))
-
-// TODO is it our place to do this here?  is this a switch?
-export const w = Walax
-window.w = w
-
+//const walax = (...args) => observable(new Walax(...args))
 export default Walax
