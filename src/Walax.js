@@ -121,10 +121,10 @@ export class Walax extends KeyedSingleton {
 }
 
 /* shortcut functions */
-export const walax = (...args) => observable(new Walax(...args))
+export const getWalax = (...args) => observable(new Walax(...args))
 
 // TODO is it our place to do this here?  is this a switch?
-export const w = Walax
+export const w = Walax()
 window.w = w
 
 export default Walax
