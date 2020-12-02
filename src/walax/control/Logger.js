@@ -1,6 +1,6 @@
 import { observable } from 'mobx'
-import w from '../Walax'
-import ControlBase from './BaseControl'
+import Walax from '../Walax'
+import BaseControl from './BaseControl'
 
 const stackinfo = require('stackinfo')
 
@@ -82,7 +82,7 @@ consoleLog.multiple = true
 export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
 recordLogs.logs = observable.set()
 
-export default class Logger extends BaseControl  {
+export default class Logger extends BaseControl {
   constructor (wlx) {
     super(wlx)
 
@@ -153,45 +153,45 @@ export default class Logger extends BaseControl  {
     return cb(msg, level, stack)
   }
 
-  debugger (name) {
+  static debugger (name) {
     // return (...msg) =>
-    return (...msg) => this.debug(name, ...msg)
+    return (...msg) => Logger.debug(name, ...msg)
   }
-  errorer (name) {
+  static errorer (name) {
     return (msg, dbg) => {
-      this.error(name, msg)
-      if (dbg) this.debug(name, dbg)
+      Logger.error(name, msg)
+      if (dbg) Logger.debug(name, dbg)
       /* throw new TypeError(msg) ?? */
     }
   }
-  asserter (name) {
-    return (cond, msg, d) => this.assert(cond, msg, name, d)
+  static asserter (name) {
+    return (cond, msg, d) => Logger.assert(cond, msg, name, d)
   }
-  informer (name) {
-    return (...msg) => this.info(name, ...msg)
+  static informer (name) {
+    return (...msg) => Logger.info(name, ...msg)
   }
-  _daeiReal (name) {
-    return {
-      d: this.debugger(name),
-      a: this.asserter(name),
-      e: this.errorer(name),
-      i: this.informer(name)
-    }
+  static _daeiReal (name) {
+    return Object.entries({
+      d: Logger.debugger(name),
+      a: Logger.asserter(name),
+      e: Logger.errorer(name),
+      i: Logger.informer(name)
+    })
   }
-  daei (...args) {
+  static daei (...args) {
     let obj, name
-    let arg1 = length(args) ? args.shift() : null
-    let arg2 = length(args) ? args.shift() : null
+    let arg1 = args.length ? args.shift() : null
+    let arg2 = args.length ? args.shift() : null
 
     // todo polymorphism?
     if (true) obj = arg1
     if (typeof arg2 == 'string') name = arg2
 
-    this.w.assert(obj, 'i dunno.. loger not initialized')
+    // should be good if we're here
     name ||= obj.name || obj.__proto__.constructor.name
 
     this._daeiReal(name).forEach((v, k) => {
-      this.w.augment(obj, k, v)
+      Walax.augment(obj, k, v)
     })
   }
 }

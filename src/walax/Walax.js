@@ -11,10 +11,11 @@ import KeyedSingleton from './util/KeyedSingleton'
 const { observable } = require('mobx')
 const { d, a, e, i } = Logger.daei('walax')
 
-export class Walax extends KeyedSingleton {
+export class Walax  {
+  all = observable.set()
+  keys = observable.map()
+
   constructor (...args) {
-    this.all = new Set()
-    this.keys = new Map()
     this.init()
   }
 

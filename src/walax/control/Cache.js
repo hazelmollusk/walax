@@ -8,7 +8,6 @@ export default class WalaxCache extends BaseControl  {
   _name = false
   _storage = false
   constructor (name = 'root') {
-    d(`new cache bucket: ${name}`)
     this._name = name
     this._storage = new Map()
   }
