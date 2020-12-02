@@ -2,8 +2,8 @@ import WalaxManager from './WalaxManager'
 import DjangoQuery from './DjangoQuery'
 
 export default class DjangoManager extends WalaxManager {
-  constructor (model) {
-    super(model)
+  constructor (w, model) {
+    super(w, model)
   }
 
   all () {

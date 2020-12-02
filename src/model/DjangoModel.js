@@ -20,8 +20,8 @@ export default class DjangoModel extends WalaxModel {
    * @classdesc a WalaxModel backed by Django Rest Framework
    * @param {*} data
    */
-  constructor (data) {
-    super(data)
+  constructor (w, data) {
+    super(w, data)
   }
 
   static get primaryKey () {

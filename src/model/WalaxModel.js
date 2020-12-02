@@ -2,9 +2,10 @@ import WalaxManager from './WalaxManager'
 import w from '../Walax'
 
 import Logger from '../control/Logger'
+import { WalaxEntity } from '../util/WalaxUtil'
 const { d, a, e, i } = Logger.daei('model/WalaxModel')
 
-export default class WalaxModel {
+export default class WalaxModel extends WalaxEntity {
   static _name = false
   static _url = false
   static _fields = new Map()
@@ -50,7 +51,8 @@ export default class WalaxModel {
     return this.constructor.fields
   }
 
-  constructor (data = false) {
+  constructor (w, data = false) {
+    super(w)
     this.initFields(data)
   }
 

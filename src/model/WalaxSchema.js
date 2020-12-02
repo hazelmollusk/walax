@@ -3,10 +3,11 @@ import WalaxModel from './WalaxModel'
 import WalaxManager from './WalaxManager'
 
 import Logger from '../control/Logger'
+import { WalaxEntity } from '../util/WalaxUtil'
 const { d, a, e, i } = Logger.daei('model/WalaxSchema')
 
 //todo schema versioning/collision detection/etc
-export class WalaxSchema {
+export class WalaxSchema extends WalaxEntity {
   schema = false
   title = false
   description = false
@@ -19,7 +20,8 @@ export class WalaxSchema {
   managers = new Map()
   models = new Map()
 
-  constructor (url = false, models = false, name = false) {
+  constructor (w, url = false, models = false, name = false) {
+    super(w)
     this.initialize()
     this._name = name
     if (url) this.load(url, models)

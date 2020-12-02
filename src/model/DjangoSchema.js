@@ -13,8 +13,8 @@ export class DjangoSchema extends WalaxSchema {
   _defaultModel = DjangoModel
   _defaultManager = DjangoManager
 
-  constructor (url = false, models = false) {
-    super(url, models)
+  constructor (w, url = false, models = false) {
+    super(w, url, models)
   }
 
   getManager (model) {
