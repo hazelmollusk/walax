@@ -62,7 +62,7 @@ class DjangoQuery {
   }
 
   [Symbol.iterator] () {
-    return new DjangoQueryProxy(this)
+    return new DjangoQueryProxy(this.w, this)
   }
 
   get cached () {

@@ -11,11 +11,12 @@ import KeyedSingleton from './util/WalaxUtil'
 const { observable } = require('mobx')
 const { d, a, e, i } = Logger.daei('walax')
 
-export class Walax extends KeyedSingleton {
+export default class Walax {
+  all = observable.set()
+  keys = observable.set()
+
   constructor (...args) {
-    this.all = new Set()
-    this.keys = new Map()
-    this.init()
+    this.init(...args)
   }
 
   init (force = false) {
@@ -36,20 +37,6 @@ export class Walax extends KeyedSingleton {
 
   get dbg () {
     return this.keys.has('log') ? this.log.debug : d
-  }
-
-  static instance (name, ...args) {
-    if (!name) name = DEFAULT_KEY
-
-    if (!Walax._instances.has(name)) Walax._instances.set(new Walax(...args))
-
-    return Walax._instances.get(name)
-  }
-
-  static configure (data) {
-    Object.keys(data).map((v, k) =>
-      Walax.checkName(k) ? Walax.globalConfig.set(k, v) : false
-    )
   }
 
   static isValidProp (name) {
@@ -103,14 +90,12 @@ export class Walax extends KeyedSingleton {
   register (cmp, key = false, ...args) {
     this.assert(!this.all.has(cmp), `attempted re-registration of ${key}`)
     this.assert(!Walax.checkClass(ControlBase, cmp))
+    this.assert(this.checkName(key), 'invalid key name')
 
     newComp = cmp(this, ...args)
-
     this.all.add(newCmp)
-    if (this.checkName(key)) {
-      this.augment(this, key, { get: () => this.keys.get(key) })
-      this.keys.set(key, newCmp)
-    }
+    this.augment(this, key, { get: () => this.keys.get(key) })
+    this.keys.set(key, newCmp)
 
     return cmp
   }
@@ -119,7 +104,3 @@ export class Walax extends KeyedSingleton {
     //for each controller, if ctrl.signal is callable, call it with arg sig TODO
   }
 }
-
-/* shortcut functions */
-//const walax = (...args) => observable(new Walax(...args))
-export default Walax

@@ -7,7 +7,7 @@ export default class DjangoManager extends WalaxManager {
   }
 
   all () {
-    return new DjangoQuery(this)
+    return new DjangoQuery(this.w, this)
   }
 
   filter (args) {
