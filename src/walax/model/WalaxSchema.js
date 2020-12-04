@@ -1,12 +1,11 @@
 import { observable } from 'mobx'
 import WalaxModel from './WalaxModel'
 import WalaxManager from './WalaxManager'
-
-import Logger from '../control/Logger'
-const { d, a, e, i } = Logger.daei('model/WalaxSchema')
+import w from '../Walax'
+import WalaxEntity from '../util/WalaxEntity'
 
 //todo schema versioning/collision detection/etc
-export class WalaxSchema {
+export class WalaxSchema extends WalaxEntity {
   schema = false
   title = false
   description = false

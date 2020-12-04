@@ -1,8 +1,9 @@
+import WalaxEntity from '../util/WalaxEntity'
+
 const { observable } = require('mobx')
 
-export default class BaseControl {
-  constructor (wlx) {
-    this.w = wlx
-    this.walax = wlx
+export default class BaseControl extends WalaxEntity {
+  constructor () {
+    super()
   }
 }

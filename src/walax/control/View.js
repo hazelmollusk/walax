@@ -1,3 +1,5 @@
+import BaseControl from './BaseControl'
+
 export default class View extends BaseControl {
   toggle (elm) {
     if (typeof elm == 'string') elm = document.getElementById(elm)

@@ -4,10 +4,10 @@ import { DjangoSchema } from '../model/DjangoSchema'
 
 import Logger from './Logger'
 import BaseControl from './BaseControl'
-const { d, a, e, i } = Logger.daei('Object')
 
 export default class Objects extends BaseControl {
   constructor () {
+    super()
     this.schemas = observable.map()
     this.models = observable.map()
     this.managers = observable.map()

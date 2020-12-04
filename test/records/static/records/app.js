@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime'
+
 url = '/records/api/?format=json'
 name = 'records'
 

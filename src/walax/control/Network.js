@@ -1,6 +1,10 @@
+import BaseControl from './BaseControl'
 const m = require('mithril')
 
 export default class Network extends BaseControl {
+  constructor() {
+    super()
+  }
   /**
    * public methods for each HTTP method
    *

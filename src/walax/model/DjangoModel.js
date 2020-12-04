@@ -3,7 +3,6 @@ import w, { Walax } from '../Walax'
 import DjangoManager from './DjangoManager'
 
 import Logger from '../control/Logger'
-const { d, a, e, i } = Logger.daei('Auth')
 
 /**
  * DjangoModel

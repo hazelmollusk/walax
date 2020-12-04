@@ -1,9 +1,9 @@
 import w from '../Walax'
 
 import Logger from '../control/Logger'
-const { d, a, e, i } = Logger.daei('Auth')
+import WalaxEntity from '../util/WalaxEntity'
 
-class DjangoQueryProxy {
+class DjangoQueryProxy extends WalaxEntity {
   query = false
   keys = false
 

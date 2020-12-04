@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime' // i guess
+import { Logger, consoleLog} from './control/Logger'
 import ControlBase from './control/BaseControl'
 import Objects from './control/Objects'
 import Network from './control/Network'
@@ -5,72 +7,54 @@ import Auth from './control/Auth'
 import Cache from './control/Cache'
 import View from './control/View'
 
-import Logger from './control/Logger'
 import KeyedSingleton from './util/KeyedSingleton'
+import BaseControl from './control/BaseControl'
 
 const { observable } = require('mobx')
-const { d, a, e, i } = Logger.daei('walax')
 
-export class Walax  {
-  all = observable.set()
-  keys = observable.map()
+const Walax = {
+  all: observable.set(),
+  keys: observable.map(),
 
-  constructor (...args) {
-    this.init()
-  }
-
-  init (force = false) {
+  setup: (force = false) => {
     //todo if force clear out maps, etc
-    if (!this._init) {
-      this.register(Logger, 'log')
-      this.register(Cache, 'cache')
-      this.register(Network, 'net')
-      this.register(Objects, 'obj')
-      this.register(Auth, 'auth')
-      this.register(View, 'view')
+    if (!Walax._init) {
+      Walax.register(Logger, 'log')
+      Walax.register(Cache, 'cache') / Walax.register(Network, 'net')
+      Walax.register(Objects, 'obj')
+      Walax.register(Auth, 'auth')
+      Walax.register(View, 'view')
 
-      this.log.register(consoleLog)
+      Walax.log.register(consoleLog)
 
-      this._init = true
+      Walax._init = true
     }
-  }
+  },
 
-  get dbg () {
-    return this.keys.has('log') ? this.log.debug : d
-  }
-
-  static instance (name, ...args) {
-    if (!name) name = DEFAULT_KEY
-
-    if (!Walax._instances.has(name)) Walax._instances.set(new Walax(...args))
-
-    return Walax._instances.get(name)
-  }
-
-  static configure (data) {
+  configure: data => {
     Object.keys(data).map((v, k) =>
       Walax.checkName(k) ? Walax.globalConfig.set(k, v) : false
     )
-  }
+  },
 
-  static isValidProp (name) {
+  isValidProp: name => {
     if (!name) return false
     if (typeof name != 'string') return false
     if (name.search(/[^\w]/) != -1) return false
     return true
-  }
+  },
 
-  static checkName (key) {
-    if (!this.isValidProp(key))
+  checkName: key => {
+    if (!Walax.isValidProp(key))
       throw new TypeError(`invalid component name ${key}`)
-    if (this.keys.has(key))
+    if (Walax.keys.has(key))
       throw new TypeError(`component ${key} is already registered`)
     return true
-  }
+  },
 
-  static augment (obj, key, desc = undefined, enumerate = true) {
+  augment: (obj, key, desc = undefined, enumerate = true) => {
     if (!obj || !key || !desc) throw new TypeError('augment called improperly')
-    if (!this.isValidProp(key)) throw new TypeError(`invalid key: ${key}`)
+    if (!Walax.isValidProp(key)) throw new TypeError(`invalid key: ${key}`)
     if (Object.keys(obj).includes(key))
       throw new TypeError(`key exists: ${key}`)
 
@@ -83,49 +67,48 @@ export class Walax  {
       desc.writable = false
     }
     Object.defineProperty(obj, key, desc)
-  }
+  },
 
-  static checkClass (req, cls) {
+  checkClass: (req, cls) => {
     if (!cls || !req) return false
     if (cls == req) return true
-    return this.checkClass(req, cls.__proto__)
-  }
+    return Walax.checkClass(req, cls.__proto__)
+  },
 
-  static findProperty (cls, prop) {}
+  findProperty: (cls, prop) => {},
 
-  assert (val, msg, dbginfo) {
+  assert: (val, msg, dbginfo) => {
+    console.log(val, msg, dbginfo)
     if (!val) {
-      this.log.error(msg, dbginfo)
-      throw new TypeError(msg)
+      console.log(msg, dbginfo)
+      console.trace()
+      // throw new TypeError(msg)
       // crash and reload?  what now?
     }
-  }
+  },
 
-  register (cmp, key = false, ...args) {
-    this.assert(!this.all.has(cmp), `attempted re-registration of ${key}`)
-    this.assert(!Walax.checkClass(ControlBase, cmp))
+  register: (cmp, key = false, ...args) => {
+    // Walax.assert(Walax.all.has(key), `attempted re-registration of ${key}`)
+    // Walax.assert(!Walax.checkClass(BaseControl, cmp))
 
-    newComp = cmp(this, ...args)
+    let newCmp = new cmp(Walax, ...args)
 
-    this.all.add(newCmp)
-    if (this.checkName(key)) {
-      this.augment(this, key, { get: () => this.keys.get(key) })
-      this.keys.set(key, newCmp)
+    Walax.all.add(newCmp)
+    if (Walax.checkName(key)) {
+      Walax.augment(Walax, key, { get: () => Walax.keys.get(key) })
+      Walax.keys.set(key, newCmp)
     }
 
     return cmp
-  }
+  },
 
-  signal (sig) {
+  signal: sig => {
     //for each controller, if ctrl.signal is callable, call it with arg sig TODO
   }
 }
 
-/* shortcut functions */
-export const getWalax = (...args) => observable(new Walax(...args))
-
-// TODO is it our place to do this here?  is this a switch?
-export const w = Walax()
+export const w = observable(Walax)
+w.setup()
 window.w = w
 
 export default Walax

@@ -83,13 +83,11 @@ export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
 recordLogs.logs = observable.set()
 
 export default class Logger extends BaseControl {
-  constructor (wlx) {
-    super(wlx)
-
-    this.all = new Set()
-    this.level = DEBUG
-    // stack: falsefalse,
-    this.stack = false
+  all = observable.set()
+  level = DEBUG
+  stack = false
+  constructor () {
+    super()
   }
 
   /**
@@ -170,28 +168,13 @@ export default class Logger extends BaseControl {
   static informer (name) {
     return (...msg) => Logger.info(name, ...msg)
   }
+
   static _daeiReal (name) {
     return Object.entries({
       d: Logger.debugger(name),
       a: Logger.asserter(name),
       e: Logger.errorer(name),
       i: Logger.informer(name)
-    })
-  }
-  static daei (...args) {
-    let obj, name
-    let arg1 = args.length ? args.shift() : null
-    let arg2 = args.length ? args.shift() : null
-
-    // todo polymorphism?
-    if (true) obj = arg1
-    if (typeof arg2 == 'string') name = arg2
-
-    // should be good if we're here
-    name ||= obj.name || obj.__proto__.constructor.name
-
-    this._daeiReal(name).forEach((v, k) => {
-      Walax.augment(obj, k, v)
     })
   }
 }
