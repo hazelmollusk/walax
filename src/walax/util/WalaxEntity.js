@@ -1,5 +1,5 @@
 export default class WalaxEntity {
   constructor (w) {
-    w?.log?.daei(this)
+    w.log?.daei(this)
   }
 }

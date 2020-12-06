@@ -8,6 +8,7 @@ class DjangoQueryProxy extends WalaxEntity {
   keys = false
 
   constructor (query) {
+    super()
     this.query = query
   }
 

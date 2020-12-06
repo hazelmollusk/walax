@@ -82,10 +82,11 @@ consoleLog.multiple = true
 export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
 recordLogs.logs = observable.set()
 
-export default class Logger extends BaseControl {
+export class Logger extends BaseControl {
   all = observable.set()
   level = DEBUG
   stack = false
+
   constructor () {
     super()
   }
@@ -178,3 +179,5 @@ export default class Logger extends BaseControl {
     })
   }
 }
+
+export default { Logger, consoleLog, recordLogs }
