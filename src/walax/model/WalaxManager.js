@@ -1,9 +1,9 @@
-import { WalaxEntity } from '../util/WalaxUtil'
+import WalaxEntity from '../util/WalaxEntity'
 import w from '../Walax'
 var m = require('mithril')
 var { observable } = require('mobx')
 
-class WalaxManager extends WalaxEntity {
+class WalaxManager extends WalaxEntity{
   _model = false
 
   constructor (w, model) {

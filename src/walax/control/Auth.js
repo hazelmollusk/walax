@@ -1,13 +1,11 @@
 import m from 'mithril'
 import walax from '../Walax'
 import { observable, action } from 'mobx'
-
-const w = walax()
-const { d, a, e, i } = w.log.daei('Auth')
+import BaseControl from './BaseControl'
 
 export default class Auth extends BaseControl {
-  constructor (w) {
-    super(w)
+  constructor (wlx) {
+    super()
     this.access = 'no'
     this.refresh = 'no'
     this.state = false

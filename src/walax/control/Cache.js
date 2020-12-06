@@ -1,15 +1,14 @@
 import { observable } from 'mobx'
 import Logger from './Logger'
+import BaseControl from './BaseControl'
 
 const f = 'Cache'
-const { d, a, e, i } = Logger.daei(f)
 
 export default class WalaxCache extends BaseControl  {
   _name = false
   _storage = false
-  constructor (w, name = 'root') {
-    super(w)
-    d(`new cache bucket: ${name}`)
+  constructor (name = 'root') {
+    super()
     this._name = name
     this._storage = new Map()
   }

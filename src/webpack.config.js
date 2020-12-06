@@ -3,9 +3,9 @@
 const path = require('path')
 
 module.exports = {
-  entry: path.resolve(__dirname, 'index.js'),
+  entry: path.resolve(__dirname, 'walax/Walax.js'),
   output: {
-    path: path.resolve(`${__dirname}/../dist/walax/`),
+    path: path.resolve(`${__dirname}/../dist/`),
     filename: 'walax.js'
   },
   module: {
@@ -19,6 +19,7 @@ module.exports = {
             options: {
               presets: ['@babel/preset-env'],
               plugins: [
+
                 ['@babel/plugin-transform-runtime'],
                 ['@babel/plugin-syntax-dynamic-import'],
                 ['@babel/plugin-proposal-class-properties', { loose: true }],

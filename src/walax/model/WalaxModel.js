@@ -1,9 +1,6 @@
 import WalaxManager from './WalaxManager'
+import WalaxEntity from '../util/WalaxEntity'
 import w from '../Walax'
-
-import Logger from '../control/Logger'
-import { WalaxEntity } from '../util/WalaxUtil'
-const { d, a, e, i } = Logger.daei('model/WalaxModel')
 
 export default class WalaxModel extends WalaxEntity {
   static _name = false
@@ -18,6 +15,11 @@ export default class WalaxModel extends WalaxEntity {
   _new = true
   _deleted = false
   _url = false
+
+  constructor (w, data = false) {
+    super(w, data)
+    this.initFields(data)
+  }
 
   static get schema () {
     return this._schema
@@ -49,11 +51,6 @@ export default class WalaxModel extends WalaxEntity {
 
   get fields () {
     return this.constructor.fields
-  }
-
-  constructor (w, data = false) {
-    super(w)
-    this.initFields(data)
   }
 
   get pk () {
