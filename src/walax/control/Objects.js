@@ -13,15 +13,19 @@ export default class Objects extends BaseControl {
     this.managers = observable.map()
   }
 
+  init (opts) {
+    this.logSetup()
+  }
+
   get defaultSchemaClass () {
     // limit the sin :)
     return DjangoSchema
   }
 
   loadSchema (name, schema) {
-    d(`loading schema ${name}`)
-    a(this.checkName(name), `invalid name ${name}`)
-    a(this.checkSchema(schema), `invalid schema ${name}`)
+    this.d(`loading schema ${name}`)
+    this.a(this.checkName(name), `invalid name ${name}`)
+    this.a(this.checkSchema(schema), `invalid schema ${name}`)
     w.augment(this, name, { value: schema })
     this.schemas.set(name, schema)
   }
@@ -46,7 +50,10 @@ export default class Objects extends BaseControl {
   // }
 
   receiveObject (model, data) {
-    d(`receving object data: ${model._schema._name} :: ${model._name}`, data)
+    this.d(
+      `receving object data: ${model._schema._name} :: ${model._name}`,
+      data
+    )
     this.checkModels([model])
 
     let obj = new model(data)
@@ -55,7 +62,7 @@ export default class Objects extends BaseControl {
     obj._new = false
     obj._dirty.clear()
 
-    d(`object created (${model._name})`, obj)
+    this.d(`object created (${model._name})`, obj)
 
     // k, v, ...cache ident
     w.cache.store(obj.pk, obj, 'objects', model._schema, model)

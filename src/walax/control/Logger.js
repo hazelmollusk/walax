@@ -1,3 +1,4 @@
+import { logicalExpression } from '@babel/types'
 import { observable } from 'mobx'
 import Walax from '../Walax'
 import BaseControl from './BaseControl'
@@ -152,30 +153,37 @@ export class Logger extends BaseControl {
     return cb(msg, level, stack)
   }
 
-  static debugger (name) {
+  debugger (name) {
     // return (...msg) =>
-    return (...msg) => Logger.debug(name, ...msg)
+    return (...msg) => this.debug(name, ...msg)
   }
-  static errorer (name) {
+  errorer (name) {
     return (msg, dbg) => {
-      Logger.error(name, msg)
-      if (dbg) Logger.debug(name, dbg)
+      this.error(name, msg)
+      if (dbg) this.debug(name, dbg)
       /* throw new TypeError(msg) ?? */
     }
   }
-  static asserter (name) {
-    return (cond, msg, d) => Logger.assert(cond, msg, name, d)
+  asserter (name) {
+    return (cond, msg, d) => this.assert(cond, msg, name, d)
   }
-  static informer (name) {
-    return (...msg) => Logger.info(name, ...msg)
+  informer (name) {
+    return (...msg) => this.info(name, ...msg)
   }
-
-  static _daeiReal (name) {
+  _daeiReal (name) {
     return Object.entries({
-      d: Logger.debugger(name),
-      a: Logger.asserter(name),
-      e: Logger.errorer(name),
-      i: Logger.informer(name)
+      d: this.debugger(name),
+      a: this.asserter(name),
+      e: this.errorer(name),
+      i: this.informer(name)
+    })
+  }
+  daei (obj, name = undefined) {
+    let resp = this._daeiReal(name)
+    if (!name) name = obj
+    resp.forEach(lg => {
+      console.log(obj, lg)
+      Walax.augment(obj, lg[0], { value: lg[1], writeable: false })
     })
   }
 }

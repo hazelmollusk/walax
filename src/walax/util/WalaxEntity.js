@@ -1,5 +1,10 @@
+import WalaxMain from '../Walax'
+
 export default class WalaxEntity {
+  static _miss = 0
   constructor (w) {
-    w.log?.daei(this)
+  }
+  logSetup () {
+    WalaxMain?.log?.daei(this)
   }
 }
