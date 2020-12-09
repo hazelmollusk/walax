@@ -26,7 +26,7 @@ export default class Objects extends BaseControl {
     this.d(`loading schema ${name}`)
     this.a(this.checkName(name), `invalid name ${name}`)
     this.a(this.checkSchema(schema), `invalid schema ${name}`)
-    w.augment(this, name, { value: schema })
+    w.augment(this, name, () => this.schemas.get(name))
     this.schemas.set(name, schema)
   }
 

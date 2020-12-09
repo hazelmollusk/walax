@@ -35,7 +35,7 @@ const d = (...m) =>
       )
     : null
 
-const WalaxMain = {
+const w = {
   _plugins: new Map(),
   _config: new Map(),
   _init: 0,
@@ -43,36 +43,36 @@ const WalaxMain = {
   setup: (force = false) => {
     //todo if force clear out maps, etc
     if (force) {
-      WalaxMain._init = false
-      WalaxMain._config.clear()
-      WalaxMain._plugins.clear()
+      w._init = false
+      w._config.clear()
+      w._plugins.clear()
     }
-    if (!WalaxMain._init) {
+    if (!w._init) {
       d('WalaxMain initializing')
-      WalaxMain.register(Logger, 'log')
-      WalaxMain.register(Cache, 'cache')
-      WalaxMain.register(Network, 'net')
-      WalaxMain.register(Objects, 'obj')
-      WalaxMain.register(Auth, 'auth')
-      WalaxMain.register(View, 'view')
+      w.register(Logger, 'log')
+      w.register(Cache, 'cache')
+      w.register(Network, 'net')
+      w.register(Objects, 'obj')
+      w.register(Auth, 'auth')
+      w.register(View, 'view')
       d('plugins registered')
 
-      WalaxMain.log.register(consoleLog)
-      WalaxMain.log.info('setup complete')
-      WalaxMain._init = 1
+      w.log.register(consoleLog)
+      w.log.info('setup complete')
+      w._init = 1
       d('setup complete')
     }
   },
 
   init: data => {
-    WalaxMain.configure(data)
-    WalaxMain._plugins.forEach((v, k) => (v.init ? v.init() : undefined))
+    w.configure(data)
+    w._plugins.forEach((v, k) => (v.init ? v.init() : undefined))
   },
 
   configure: data => {
     data ||= { dummy: 0 }
     Object.keys(data).map((v, k) =>
-      WalaxMain.isValidProp(k) ? WalaxMain._config.set(k, v) : false
+      w.isValidProp(k) ? w._config.set(k, v) : false
     )
   },
 
@@ -84,20 +84,25 @@ const WalaxMain = {
   },
 
   augment: (obj, key, getter, setter = undefined) => {
-    d('augmenting', obj, key, getter, setter)
-    if (!obj || !key || !getter)
-      throw new TypeError('augment called improperly')
-    if (!WalaxMain.isValidProp(key)) throw new TypeError(`invalid key: ${key}`)
+    d('augmenting', name, obj, key, getter, setter)
+    w.assert(
+      obj && key && getter,
+      'augment called improperly',
+      obj,
+      key,
+      getter
+    )
+    if (!w.isValidProp(key)) throw new TypeError(`invalid key: ${key}`)
     if (Object.keys(obj).includes(key))
       throw new TypeError(`key exists: ${key}`)
     let desc = {
       //   enumerable: true,
       //   configurable: false,
-      get: () => getter
+      get: getter
     }
-    if (setter) desc.setter = setter
+    if (setter) desc.set = setter
     Object.defineProperty(obj, key, desc)
-    WalaxMain.assert(Object.getOwnPropertyNames(obj), 'augmentation failed')
+    w.assert(Object.getOwnPropertyNames(obj), 'augmentation failed')
     d('augmented', obj, obj[key])
   },
 
@@ -106,42 +111,38 @@ const WalaxMain = {
     if (req instanceof cls) return true
     if (!cls || !req) return false
     if (cls == req) return true
-    return WalaxMain.checkClass(req, cls.__proto__)
+    return w.checkClass(req, cls.__proto__)
   },
 
   findProperty: (cls, prop) => {},
 
-  assert: (val, msg, dbginfo) => {
+  assert: (val, msg, ...dbg) => {
     if (!val) {
-      d(msg, dbginfo)
+      d(msg, ...dbg)
       console.trace()
-      throw new TypeError([`assertion failed: ${msg}`, val, dbginfo])
+      throw new TypeError([`assertion failed: ${msg}`, dbg])
     }
   },
 
   register: (cmp, key = false, ...args) => {
     d(`registering plugin ${key}`, cmp)
-    WalaxMain.assert(
-      !WalaxMain._plugins.has(key),
+    w.assert(
+      !w._plugins.has(key),
       `attempted control re-registration of ${key}`,
       cmp
     )
-    WalaxMain.assert(
-      WalaxMain.checkClass(BaseControl, cmp),
+    w.assert(
+      w.checkClass(BaseControl, cmp),
       `control ${key} must inherit from BaseControl`,
       cmp
     )
-    WalaxMain.assert(
-      WalaxMain.isValidProp(key),
-      `invalid control key ${key}`,
-      cmp
-    )
+    w.assert(w.isValidProp(key), `invalid control key ${key}`, cmp)
 
     d(`validated plugin ${key}`, cmp)
-    let newCmp = new cmp(WalaxMain, ...args)
+    let newCmp = new cmp(w, ...args)
 
-    WalaxMain._plugins.set(key, newCmp)
-    WalaxMain.augment(WalaxMain, key, () => WalaxMain._plugins.get(key))
+    w._plugins.set(key, newCmp)
+    w.augment(w, key, () => w._plugins.get(key))
 
     return cmp
   },
@@ -151,10 +152,10 @@ const WalaxMain = {
   }
 }
 
-export const WalaxMainBox = observable.box(WalaxMain)
+export const WalaxMainBox = observable.box(w)
 // export const Walax = WalaxMainBox.get()
-export const Walax = WalaxMain
-export const w = Walax
+export const Walax = w
+// export const w = Walax
 window.w = w
 w.setup()
 export default w

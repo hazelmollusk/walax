@@ -81,10 +81,10 @@ export const consoleLog = (msg, lvl, stack) =>
 consoleLog.multiple = true
 
 export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
-recordLogs.logs = observable.set()
+recordLogs.logs = new Set()
 
 export class Logger extends BaseControl {
-  all = observable.set()
+  all = new Set()
   level = DEBUG
   stack = false
 
@@ -153,37 +153,16 @@ export class Logger extends BaseControl {
     return cb(msg, level, stack)
   }
 
-  debugger (name) {
-    // return (...msg) =>
-    return (...msg) => this.debug(name, ...msg)
-  }
-  errorer (name) {
-    return (msg, dbg) => {
-      this.error(name, msg)
-      if (dbg) this.debug(name, dbg)
-      /* throw new TypeError(msg) ?? */
-    }
-  }
-  asserter (name) {
-    return (cond, msg, d) => this.assert(cond, msg, name, d)
-  }
-  informer (name) {
-    return (...msg) => this.info(name, ...msg)
-  }
-  _daeiReal (name) {
+ 
+  daei (obj, name = undefined) {
+    if (name) this._daeiName = name
     return Object.entries({
       d: this.debugger(name),
       a: this.asserter(name),
       e: this.errorer(name),
       i: this.informer(name)
-    })
-  }
-  daei (obj, name = undefined) {
-    let resp = this._daeiReal(name)
-    if (!name) name = obj
-    resp.forEach(lg => {
-      console.log(obj, lg)
-      Walax.augment(obj, lg[0], { value: lg[1], writeable: false })
+    }).forEach(v => {
+      Walax.augment(obj, v[0], v[1])
     })
   }
 }
