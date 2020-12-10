@@ -21,6 +21,7 @@ export default class DjangoModel extends WalaxModel {
    */
   constructor (w, data) {
     super(w, data)
+    this.initFields(data)
   }
 
   static get primaryKey () {

@@ -2,7 +2,7 @@ import BaseControl from './BaseControl'
 const m = require('mithril')
 
 export default class Network extends BaseControl {
-  constructor() {
+  constructor () {
     super()
   }
   /**
@@ -47,8 +47,8 @@ export default class Network extends BaseControl {
     a(options, 'empty request options')
     options.headers ||=
       'Accept: application/vnd.oai.openapi+json, application/json'
-    a(this._chkOpts(options), 'bad request options', options)
-    d(`Request: ${options.method.toUpperCase()} ${options.url}`, options)
+    this.a(this._chkOpts(options), 'bad request options', options)
+    this.d(`Request: ${options.method.toUpperCase()} ${options.url}`, options)
     return m.request(options)
   }
 

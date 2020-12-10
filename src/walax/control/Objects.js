@@ -13,21 +13,13 @@ export default class Objects extends BaseControl {
     this.managers = observable.map()
   }
 
-  init (opts) {
-    this.logSetup()
-  }
-
   get defaultSchemaClass () {
     // limit the sin :)
     return DjangoSchema
   }
 
-  loadSchema (name, schema) {
-    this.d(`loading schema ${name}`)
-    this.a(this.checkName(name), `invalid name ${name}`)
-    this.a(this.checkSchema(schema), `invalid schema ${name}`)
-    w.augment(this, name, () => this.schemas.get(name))
-    this.schemas.set(name, schema)
+  get defaultManagerClass () {
+    return true // fixme
   }
 
   checkManager (manager) {
@@ -36,11 +28,12 @@ export default class Objects extends BaseControl {
 
   getManager (model, manager = false) {
     manager ||= model._managerClass
-    manager ||= model._schema._defaultManager
+    manager ||= model._schema._defaultManagerClass
+    manager ||= this.defaultManagerClass
 
+    this.a(this.checkManager(manager), 'could not find a valid manager class')
     // todo use cache? not sure.
-    if (!this.managers.has(model))
-      this.checkManager(manager) && this.managers.set(model, new manager(model))
+    if (!this.managers.has(model)) this.managers.set(model, new manager(model))
 
     return this.managers.get(model)
   }
@@ -103,7 +96,8 @@ export default class Objects extends BaseControl {
     schemaCls ||= this.defaultSchemaClass
     this.checkSchema(schemaCls)
     let schema = new schemaCls(url, models)
-    this.loadSchema(name, schema)
+    w.augment(this, name, () => this.schemas.get(name))
+    this.schemas.set(name, schema)
   }
 
   schema (name) {

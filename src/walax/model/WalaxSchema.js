@@ -18,10 +18,13 @@ export class WalaxSchema extends WalaxEntity {
   managers = new Map()
   models = new Map()
 
-  constructor (w, url = false, models = false, name = false) {
-    super(w)
+  constructor (url = false, name = false, models = false) {
+    super()
     this.initialize()
+    this.a(name || !url, `need a name for schema ${url}`)
     this._name = name
+    this._models = models
+    this.d(`new Django schema ${name}: ${url}`)
     if (url) this.load(url, models)
   }
 
@@ -51,22 +54,24 @@ export class WalaxSchema extends WalaxEntity {
   }
 
   addModel (name, model) {
-    a(this.checkModel(model), `invalid model registered: ${name}`)
-
-    w.augment(this, name, { value: model }, true)
-
-    w.augment(w.obj, name, { value: model }, true)
+    this.a(this.checkModel(model), `invalid model registered: ${name}`)
+    this.d(`adding model ${name}`)
+    w.augment(this, name, () => model)
+    w.augment(w.obj, name, () => model)
     this.models.set(name, model)
   }
 
-  async load (url, models = false, servers = false) {
+  load (url, models = false, servers = false) {
     //let url = new URL(url) // this will throw a TypeError if invalid
     this.initialize()
     this._uri = url
+    models ||= this._models
+    this._models ||= models
     models?.forEach?.((v, k) => this.addModel(k, v))
     this._servers = servers
-
-    return w.net.get(url).then(data => this.parseData(url, data, models))
+    console.log('going in')
+    this.d('DJ')
+    return this.loadUrl(url)
   }
 
   // getModelClass (name) {
@@ -78,7 +83,7 @@ export class WalaxSchema extends WalaxEntity {
   //   return w.cache.get(m => new cls.managerClass(cls), 'managers', cls)
   // }
 
-  parseData (url, data, models = false) {
-    throw new TypeError('schema class must implement parseData(data)')
+  loadUrl (url) {
+    this.e('schema class must implement loadUrl')
   }
 }

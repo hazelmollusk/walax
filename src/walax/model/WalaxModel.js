@@ -67,6 +67,7 @@ export default class WalaxModel extends WalaxEntity {
     d('initializing fields', this.fields, data)
     if (Object.keys(this.fields).length)
       Object.keys(this.fields).forEach(fn => {
+        this.augment()
         this._defineField(fn, deleted)
       })
     if (data) Object.assign(this, data)
