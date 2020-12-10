@@ -18,7 +18,6 @@ export class DjangoSchema extends WalaxSchema {
     // allows instances/names to be passed in
     if (typeof model == 'string') model = this.models.get(model)
     if (model?._model) model = model._model
-    w.debug(model)
     return w.cache.find('managers', model, m => {
       let mgrClass = `${m._name}Manager`
       if (this.models.has(mgrClass)) return new mgrClass(m)

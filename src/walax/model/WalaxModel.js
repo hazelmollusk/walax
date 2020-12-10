@@ -14,7 +14,7 @@ export default class WalaxModel extends WalaxEntity {
   _dirty = new Set()
   _new = true
   _deleted = false
-  _url = false
+  _init = false
 
   constructor (w, data = false) {
     super(w, data)
@@ -23,10 +23,6 @@ export default class WalaxModel extends WalaxEntity {
 
   static get schema () {
     return this._schema
-  }
-
-  static get url () {
-    return this._url
   }
 
   static get fields () {
@@ -45,10 +41,6 @@ export default class WalaxModel extends WalaxEntity {
     return this.manager
   }
 
-  get url () {
-    return this._url
-  }
-
   get fields () {
     return this.constructor.fields
   }
@@ -62,6 +54,10 @@ export default class WalaxModel extends WalaxEntity {
   }
 
   initFields (data = false, deleted = false) {
+    if (this._init) {
+      this.d('re-init, exiting')
+      return
+    }
     // if (this.primaryKey && !(this.primaryKey in this.fields))
     //   this.fields[this._primaryKey] = -1
     this.d('initializing fields', this.fields, data)
@@ -77,33 +73,13 @@ export default class WalaxModel extends WalaxEntity {
       })
     if (data) Object.assign(this, data)
     this.d('finished initializing', this)
+    this._init = true
   }
 
   _defineField (field, deleted = false) {
     if (!field || field === 'undefined') return // FIXME why the string?
-    //delete this[field]
-    let desc = deleted
-      ? {
-          enumerable: true,
-          configurable: false,
-          get: () => {
-            throw new ReferenceError(
-              `access to deleted field: ${this._name}.${field}`
-            )
-          },
-          set: val => {
-            throw new ReferenceError(
-              `access to deleted field: ${this._name}.${field}`
-            )
-          }
-        }
-      : {
-          enumerable: true,
-          configurable: true,
-          get: this._getField(field),
-          set: this._setField(field)
-        }
-    w.augment(this, field, desc)
+
+    w.augment(this, field, this._getField(field), this._setField(field))
   }
 
   _getField (field) {
