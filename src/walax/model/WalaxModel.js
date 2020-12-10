@@ -64,14 +64,19 @@ export default class WalaxModel extends WalaxEntity {
   initFields (data = false, deleted = false) {
     // if (this.primaryKey && !(this.primaryKey in this.fields))
     //   this.fields[this._primaryKey] = -1
-    d('initializing fields', this.fields, data)
+    this.d('initializing fields', this.fields, data)
     if (Object.keys(this.fields).length)
       Object.keys(this.fields).forEach(fn => {
-        this.augment()
+        w.augment(
+          this,
+          fn,
+          () => this._getField(fn),
+          v => this._setField(fn, v)
+        )
         this._defineField(fn, deleted)
       })
     if (data) Object.assign(this, data)
-    d('finished initializing', this)
+    this.d('finished initializing', this)
   }
 
   _defineField (field, deleted = false) {
@@ -106,11 +111,13 @@ export default class WalaxModel extends WalaxEntity {
   }
 
   //todo insert validation hooks
-  _setField (field, val) {
+  _setField (field) {
     return val => {
-      d('set', this, field, val)
+      this.d('set', this, field, val)
+      let newVal = val
       this._dirty.add(field)
       this._values.set(field, val)
+      return newVal
     }
   }
 

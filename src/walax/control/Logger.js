@@ -74,7 +74,7 @@ export const consoleLog = (msg, lvl, stack) =>
       padding-top: 0px; \
       color: ${COLOR[lvl]?.fg || 'white'}; \
       background-color: ${COLOR[lvl]?.bg || 'black'}; \
-      border-color: ${COLOR[lvl]?.border || 'gray'}; `,
+      border-color: ${COLOR[lvl]?.border || 'gray'};  `,
     ...msg
   )
 
@@ -136,7 +136,7 @@ export class Logger extends BaseControl {
     return this.level >= level
   }
 
-  async _log (s, level = INFO) {
+  async _log (s, level = INFO, obj = null) {
     let promises = []
     let stack = this.stack && this._shouldLog(DEBUG) ? stackinfo() : false
     this.all.forEach((v, k, z) => {
@@ -152,8 +152,10 @@ export class Logger extends BaseControl {
   async _processLog (cb, msg, level, stack = null) {
     return cb(msg, level, stack)
   }
+  toString () {
+    return 'Logger'
+  }
 
- 
   daei (obj, name = undefined) {
     if (name) this._daeiName = name
     return Object.entries({

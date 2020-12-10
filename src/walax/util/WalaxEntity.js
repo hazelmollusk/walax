@@ -22,9 +22,13 @@ export default class WalaxEntity {
     w.log.info(this._daeiGetName(), ...msg)
   }
 
+  toString () {
+    return 'Walax Entity'
+  }
+
   _daeiGetName () {
     if (this._daeiName) return this._daeiName
     if (this.toString) return this.toString()
-    return 'Walax Entity'
+    return 'Undefined Entity'
   }
 }

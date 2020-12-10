@@ -11,6 +11,10 @@ export default class Auth extends BaseControl {
     this.state = false
     this.loaded = false
   }
+  toString () {
+    return 'Auth'
+  }
+
   getAccess () {
     return this.access
   }

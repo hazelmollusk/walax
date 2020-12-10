@@ -34,6 +34,8 @@ const d = (...m) =>
         ...m
       )
     : null
+    
+const a = (c, ...m) => w.assert(...m)
 
 const w = {
   _plugins: new Map(),
@@ -92,9 +94,9 @@ const w = {
       key,
       getter
     )
-    if (!w.isValidProp(key)) throw new TypeError(`invalid key: ${key}`)
-    if (Object.keys(obj).includes(key))
-      throw new TypeError(`key exists: ${key}`)
+    a(w.isValidProp(key), `invalid key: ${key}`)
+    a(!Object.keys(obj).includes(key), `key exists: ${key}`)
+    a(typeof getter == 'function', 'getter must be a function', getter)
     let desc = {
       //   enumerable: true,
       //   configurable: false,

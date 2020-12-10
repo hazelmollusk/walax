@@ -9,6 +9,12 @@ from .views import *
 
 router = routers.DefaultRouter()
 
+router.register('bands', BandViewSet)
+router.register('songs', SongViewSet)
+router.register('albums', AlbumViewSet)
+router.register('stores', StoreViewSet)
+
+
 urlpatterns = [
     path(r'api/', include(router.urls)),
     # path(r'api/', include(router.urls)),

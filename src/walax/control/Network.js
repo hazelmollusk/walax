@@ -5,6 +5,11 @@ export default class Network extends BaseControl {
   constructor () {
     super()
   }
+
+  toString () {
+    return 'Network'
+  }
+
   /**
    * public methods for each HTTP method
    *
@@ -44,7 +49,7 @@ export default class Network extends BaseControl {
    * @returns {Promise}
    */
   async _req (options) {
-    a(options, 'empty request options')
+    this.a(options, 'empty request options')
     options.headers ||=
       'Accept: application/vnd.oai.openapi+json, application/json'
     this.a(this._chkOpts(options), 'bad request options', options)

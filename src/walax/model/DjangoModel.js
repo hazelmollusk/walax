@@ -6,7 +6,7 @@ import Logger from '../control/Logger'
 
 /**
  * DjangoModel
- * @class 
+ * @class
  */
 export default class DjangoModel extends WalaxModel {
   static _primaryKey = 'xin'
@@ -53,7 +53,7 @@ export default class DjangoModel extends WalaxModel {
 
   save () {
     if (!this._dirty.size) {
-      d('save(): object unchanged, not saving')
+      this.d('save(): object unchanged, not saving')
       return this
     }
     a(!this._deleted, `saving deleted model: ${this._name}.save()`)
@@ -74,8 +74,7 @@ export default class DjangoModel extends WalaxModel {
   }
 
   delete () {
-    if (this._deleted)
-      throw new ReferenceError(`deleting deleted model: ${this._name}.delete()`)
+    this.a(!this._deleted, `deleting deleted model: ${this._name}.delete()`)
     w.net.delete(this.modelUri).then(ret => {
       this._deleted = true
       this._uri = false

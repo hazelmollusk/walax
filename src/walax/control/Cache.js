@@ -12,6 +12,10 @@ export default class WalaxCache extends BaseControl  {
     this._name = name
     this._storage = new Map()
   }
+  toString() {
+    return 'Cache'
+  }
+  
   cache (key) {
     if (!this._storage.has(key)) this._storage.set(key, new WalaxCache(key))
     return this._storage.get(key)

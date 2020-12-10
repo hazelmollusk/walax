@@ -10,8 +10,8 @@ export class DjangoSchema extends WalaxSchema {
   _defaultModel = DjangoModel
   _defaultManager = DjangoManager
 
-  constructor (url = false, models = false) {
-    super(url, models)
+  constructor (url = false, name = false, models = false) {
+    super(url, name, models)
   }
 
   getManager (model) {
@@ -27,6 +27,10 @@ export class DjangoSchema extends WalaxSchema {
   }
   // url in this case is expected to be a DRF API root URL
 
+  toString () {
+    return `django schema ${this._name}`
+  }
+
   loadUrl (url) {
     console.log('loadUrl ' + url)
     w.net.options(url).then(info => {
@@ -34,7 +38,8 @@ export class DjangoSchema extends WalaxSchema {
       this.title = info.name || 'Untitled'
       this.description = info.description || ''
       this.schema = info
-
+    })
+    w.net.get(url).then(data => {
       let schemaObject = this
       /* initial data will be model (plural) -> URL (we hope) */
       for (let modelName in data) {
@@ -48,8 +53,9 @@ export class DjangoSchema extends WalaxSchema {
           let fields = modelInfo.actions.POST
 
           // fields[this._primaryKey] = -1
-          d(`creating model class for ${modelName}:`, fields)
-          let BaseModel = models?.get?.(modelClassName) || this._defaultModel
+          this.d(`creating model class for ${modelName}:`, fields)
+          let BaseModel =
+            this.models?.get?.(modelClassName) || this._defaultModel
           let classes = {}
           classes[modelClassName] = class extends BaseModel {
             static _fields = fields
