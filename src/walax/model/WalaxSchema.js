@@ -13,7 +13,7 @@ export class WalaxSchema extends WalaxEntity {
   _name = false
   _uri = false
   _servers = false
-  _defaultModel = WalaxModel
+  _defaultModelBase = WalaxModel
   _defaultManager = WalaxManager
   managers = new Map()
   models = new Map()
@@ -24,7 +24,7 @@ export class WalaxSchema extends WalaxEntity {
     this.a(name || !url, `need a name for schema ${url}`)
     this._name = name
     this._models = models
-    this.d(`new Django schema ${name}: ${url}`)
+    this.d(` Django schema ${name} (${url}) loaded`)
     if (url) this.load(url, models)
   }
 
@@ -36,6 +36,38 @@ export class WalaxSchema extends WalaxEntity {
     this._uri = false
     this._servers = false
     this.models.clear()
+  }
+
+  createModel (name, fields, opts = undefined) {
+    let schemaObject = this
+    opts ||= {}
+    let BaseModel = this.models?.get?.(name) || this._defaultModelBase
+    this.d(`creating model class for ${name}`, fields, opts)
+    let classes = {}
+    this.d('base model', BaseModel)
+    classes[name] = class extends BaseModel {
+      static _fields = fields
+      static _name = name
+      static _modelUrl = opts.url
+      static _schema = schemaObject
+
+      _url = false
+      _new = true
+      _modelName = name
+      _schema = schemaObject
+
+      constructor (data = false) {
+        super(data)
+        this._schema = schemaObject
+        this._modelName = name
+      }
+
+      toString () {
+        return `${name} object`
+      }
+    }
+
+    this.addModel(name, classes[name])
   }
 
   checkModel (model) {
@@ -55,7 +87,7 @@ export class WalaxSchema extends WalaxEntity {
 
   addModel (name, model) {
     this.a(this.checkModel(model), `invalid model registered: ${name}`)
-    this.d(`adding model ${name}`)
+    this.d(`adding model ${name}`, model)
     w.augment(this, name, () => model)
     w.augment(w.obj, name, () => model)
     this.models.set(name, model)

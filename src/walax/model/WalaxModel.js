@@ -7,6 +7,7 @@ export default class WalaxModel extends WalaxEntity {
   static _url = false
   static _fields = new Map()
   static _primaryKey = false
+  static _modelClass = false
   static _managerClass = WalaxManager
   static _schema = false
 
@@ -15,9 +16,11 @@ export default class WalaxModel extends WalaxEntity {
   _new = true
   _deleted = false
   _init = false
+  _modelClass = false
+  _schema = false
 
-  constructor (w, data = false) {
-    super(w, data)
+  constructor (data = false) {
+    super()
     this.initFields(data)
   }
 
@@ -41,6 +44,10 @@ export default class WalaxModel extends WalaxEntity {
     return this.manager
   }
 
+  get model () {
+    return this.constructor._modelClass
+  }
+
   get fields () {
     return this.constructor.fields
   }
@@ -60,9 +67,17 @@ export default class WalaxModel extends WalaxEntity {
     }
     // if (this.primaryKey && !(this.primaryKey in this.fields))
     //   this.fields[this._primaryKey] = -1
-    this.d('initializing fields', this.fields, data)
-    if (Object.keys(this.fields).length)
-      Object.keys(this.fields).forEach(fn => {
+    this.d('initializing fields', this._fields, data)
+
+    let s = this._schema,
+      n = this._modelName
+    if (!s || !n) {
+      this.d('not ready to initialize this object yet')
+      return
+    }
+    this.d('RIGHT HERE', this, 'schema', s, 'name', n)
+    if (Object.keys(s.models.get(n)._fields).length)
+      Object.keys(s.models.get(n)._fields).forEach(fn => {
         w.augment(
           this,
           fn,

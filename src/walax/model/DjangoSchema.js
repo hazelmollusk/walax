@@ -31,7 +31,7 @@ export class DjangoSchema extends WalaxSchema {
   }
 
   loadUrl (url) {
-    console.log('loadUrl ' + url)
+    this.d(`loadUrl ${url}`)
     w.net.options(url).then(info => {
       this.d(`receiving data for ${url}`, info)
       this.title = info.name || 'Untitled'
@@ -39,44 +39,20 @@ export class DjangoSchema extends WalaxSchema {
       this.schema = info
     })
     w.net.get(url).then(data => {
-      let schemaObject = this
-      /* initial data will be model (plural) -> URL (we hope) */
       for (let modelName in data) {
         let modelRootUri = data[modelName]
         w.net.options(modelRootUri).then(modelInfo => {
-          // works if you have a very generic DRF setup... todo
+          this.d(`retrieved options for model ${modelName}`, data)
           let modelClassName = modelInfo.name
             .replace(' List', '')
             .replace(' ', '')
-
+          let opts = {
+            url: modelRootUri,
+            modelClassName
+          }
           let fields = modelInfo.actions.POST
 
-          // fields[this._primaryKey] = -1
-          this.d(`creating model class for ${modelName}:`, fields)
-          let BaseModel =
-            this.models?.get?.(modelClassName) || this._defaultModel
-          let classes = {}
-          classes[modelClassName] = class extends BaseModel {
-            static _fields = fields
-            static _name = modelClassName
-            static _modelUri = modelRootUri
-            static _schemaUri = url
-            static _schema = schemaObject
-            _uri = false
-            _new = true
-
-            constructor (data = false) {
-              super(data)
-            }
-
-            static get schema () {
-              return this._schemaObject
-            }
-          }
-
-          classes[modelClassName]._model = classes[modelClassName]
-
-          this.addModel(modelClassName, classes[modelClassName])
+          this.createModel(modelClassName, fields, opts)
         })
       }
     })

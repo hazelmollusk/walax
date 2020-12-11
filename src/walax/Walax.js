@@ -99,7 +99,7 @@ const w = {
     w.assert(typeof getter == 'function', 'getter must be a function', getter)
     let desc = {
       enumerable: true,
-      configurable: false,
+      configurable: true,
       get: getter
     }
     if (setter) desc.set = setter
