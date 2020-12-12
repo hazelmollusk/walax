@@ -13,13 +13,12 @@ export class WalaxSchema extends WalaxEntity {
   _name = false
   _uri = false
   _servers = false
-  _defaultModel = WalaxModel
   _defaultManager = WalaxManager
   managers = new Map()
   models = new Map()
 
   constructor (url = false, name = false, models = false) {
-    super()
+    super(url)
     this.a(name || !url, `need a name for schema ${url}`)
     this._name = name
     this._models = models
@@ -41,7 +40,7 @@ export class WalaxSchema extends WalaxEntity {
     let schemaObject = this
     opts ||= {}
     let BaseModel = this.models?.get?.(name) || this._defaultModel
-    this.d(`creating model class for ${name}`, fields, opts)
+    this.d(`creating model class for ${name}`, BaseModel, fields, opts)
     let classes = {}
     this.d('base model', BaseModel)
     classes[name] = class extends BaseModel {
@@ -52,29 +51,38 @@ export class WalaxSchema extends WalaxEntity {
 
       _url = false
       _new = true
-      _modelName = name
+      _modelCls = false
+      _fields = fields
+      _name = name
       _schema = schemaObject
       _values = new Map()
 
       constructor (data = false) {
         super(data)
-        this._schema = schemaObject
-        this._modelName = name
       }
-
+      get model () {
+        this._modelCls ||= w.obj.models.get(this._modelName)
+        return this._modelCls
+      }
+      set model (val) {
+        this._modelCls ||= w.obj.models.get(this._modelName)
+        this._modelCls ||= val
+        this.d(val, this._modelName, name)
+        this.a(this._modelCls.checkModel(val, 'bad model class'))
+        return this._modelCls
+      }
+      get modelName () {
+        return this.model.name
+      }
       toString () {
         return `${name} object`
       }
     }
-    classes[name]._model = classes[name]
-    classes[name]._fields = fields
-    classes[name]._schema = schemaObject
+    // classes[name]._modelCls = classes[name]
+    // classes[name]._fields = fields
+    // classes[name]._schema = schemaObject
     this.d(`adding model ${name}`, classes[name]._schema)
     this.addModel(name, classes[name])
-  }
-
-  _init () {
-    console.log('INITNINTINTINIT')
   }
 
   checkModel (model) {

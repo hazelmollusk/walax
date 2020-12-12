@@ -30,7 +30,9 @@ export class DjangoSchema extends WalaxSchema {
     return `django schema ${this._name}`
   }
 
-  init () {}
+  init(data) {
+    
+  }
 
   loadUrl (url) {
     this.d(`loadUrl ${url}`)

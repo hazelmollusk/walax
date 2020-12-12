@@ -11,40 +11,50 @@ export default class WalaxModel extends WalaxEntity {
   static _manager = false
   static _primaryKey = false
 
+  _modelCls = false
   _values = new Map()
   _dirty = new Set()
   _new = true
   _deleted = false
   _init = false
-  _model = false
 
   constructor (data = false) {
     super()
     this.initFields(data)
   }
 
+  get _model () {
+    this.d('model class access', this._modelCls)
+    return this._modelCls.schema.models.get(this._name)
+  }
+
+  get model () {
+    return this._model
+  }
+
   get schema () {
-    return this._model._schema
+    return this._schema
   }
 
   get fields () {
-    return this._model._fields
+    return this.model.fields
   }
 
   get manager () {
-    return this._model._manager
+    return this.model.manager
   }
 
   get objects () {
     return this.manager
   }
 
-  get model () {
-    return this.constructor._modelClass
+  get fields () {
+    return this._fields
   }
 
-  get fields () {
-    return this.constructor.fields
+  set fields (val) {
+    this._fields = val
+    return val
   }
 
   get pk () {

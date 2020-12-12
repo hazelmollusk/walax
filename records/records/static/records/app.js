@@ -6,3 +6,5 @@ w.log.info(`loading api from ${url} into ${name}`)
 w.obj.load(url, name)
 
 let a = new w.obj.records.Song()
+a.name = 'asdf'
+a.save()
