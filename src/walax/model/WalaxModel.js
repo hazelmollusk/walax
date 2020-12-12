@@ -7,40 +7,35 @@ export default class WalaxModel extends WalaxEntity {
   static _url = false
   static _fields = new Map()
   static _primaryKey = false
-  static _modelClass = false
-  static _managerClass = WalaxManager
   static _schema = false
+  static _manager = false
+  static _primaryKey = false
 
   _values = new Map()
   _dirty = new Set()
   _new = true
   _deleted = false
   _init = false
-  _modelClass = false
-  _schema = false
+  _model = false
 
   constructor (data = false) {
     super()
     this.initFields(data)
   }
 
-  static get schema () {
-    return this._schema
+  get schema () {
+    return this._model._schema
   }
 
-  static get fields () {
-    return this._fields
+  get fields () {
+    return this._model._fields
   }
 
-  static get manager () {
-    return w.obj.getManager(this, this.managerClass)
+  get manager () {
+    return this._model._manager
   }
 
-  static get managerClass () {
-    return this._managerClass
-  }
-
-  static get objects () {
+  get objects () {
     return this.manager
   }
 
@@ -57,20 +52,23 @@ export default class WalaxModel extends WalaxEntity {
   }
 
   get primaryKey () {
-    return this._primaryKey
+    return this._primaryKey || 'walaxID'
   }
 
-  initFields (data = false, deleted = false) {
+  initFields (values = false, deleted = false) {
     if (this._init) {
       this.d('re-init, exiting')
       return
     }
-    // if (this.primaryKey && !(this.primaryKey in this.fields))
-    //   this.fields[this._primaryKey] = -1
-    this.d('initializing fields', this._fields, data)
+
+    this.d('HELLO', this.primaryKey, this.fields)
+
+    if (!this.primaryKey) this.fields[this.primaryKey] = {}
+
+    this.d('initializing fields', this._fields)
 
     let s = this._schema,
-      n = this._modelName
+      n = this._name
     if (!s || !n) {
       this.d('not ready to initialize this object yet')
       return
@@ -102,7 +100,7 @@ export default class WalaxModel extends WalaxEntity {
   }
 
   //todo insert validation hooks
-  _setField (field) {
+  _setField (field, val) {
     return val => {
       this.d('set', this, field, val)
       let newVal = val

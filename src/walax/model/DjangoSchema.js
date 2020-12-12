@@ -30,6 +30,8 @@ export class DjangoSchema extends WalaxSchema {
     return `django schema ${this._name}`
   }
 
+  init () {}
+
   loadUrl (url) {
     this.d(`loadUrl ${url}`)
     w.net.options(url).then(info => {
@@ -52,7 +54,8 @@ export class DjangoSchema extends WalaxSchema {
           }
           let fields = modelInfo.actions.POST
 
-          this.createModel(modelClassName, fields, opts)
+          let m = this.createModel(modelClassName, fields, opts)
+          this.d(`created model class ${modelClassName}`, m)
         })
       }
     })

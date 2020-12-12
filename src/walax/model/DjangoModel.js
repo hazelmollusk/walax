@@ -11,6 +11,7 @@ import Logger from '../control/Logger'
 export default class DjangoModel extends WalaxModel {
   static _primaryKey = 'xin'
   static _managerClass = DjangoManager
+  
 
   /**
    * builds a new DjangoModel
@@ -29,12 +30,6 @@ export default class DjangoModel extends WalaxModel {
 
   initFields (data = false, deleted = false) {
     super.initFields(data, deleted)
-
-    this._hyper = this.fields.has('url')
-  }
-
-  get hyper () {
-    return this.constructor.hyper
   }
 
   get modelUrl () {

@@ -61,6 +61,7 @@ const w = {
 
       w.log.register(consoleLog)
       w.log.info('setup complete')
+      w.init()
       w._init = 1
       d('setup complete')
     }

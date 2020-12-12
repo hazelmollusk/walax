@@ -66,7 +66,7 @@ export default class Auth extends BaseControl {
     s.refresh = this.refresh
   }
   initialize () {
-    d('auth init called')
+    this.d('auth init called')
     if (typeof Storage === 'undefined') {
       throw 'no storage available'
     }

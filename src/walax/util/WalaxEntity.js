@@ -2,7 +2,12 @@ import WalaxMain from '../Walax'
 
 export default class WalaxEntity {
   static _miss = 0
+  _init = false
   constructor (w) {}
+  init (...data) {
+    if (!this._init) this._init = this.initialize(...data)
+  }
+  initialize () {}
   logSetup () {}
   toString () {
     return 'Walax Entity'
