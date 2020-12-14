@@ -11,7 +11,6 @@ import Logger from '../control/Logger'
 export default class DjangoModel extends WalaxModel {
   static _primaryKey = 'xin'
   static _managerClass = DjangoManager
-  
 
   /**
    * builds a new DjangoModel
@@ -21,7 +20,7 @@ export default class DjangoModel extends WalaxModel {
    */
   constructor (data) {
     super(data)
-    this.initFields(data)
+    //this.initFields(data)
   }
 
   static get primaryKey () {

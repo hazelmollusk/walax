@@ -10,6 +10,9 @@ import BaseControl from './control/BaseControl'
 
 const { observable } = require('mobx')
 
+// need our own debug/asserts bc log plugin
+// won't be there during instantiation of the
+// walax object
 const DEBUG = true
 const d = (...m) =>
   DEBUG
@@ -42,7 +45,7 @@ const w = {
   _config: new Map(),
   _init: 0,
 
-  setup: (force = false) => {
+  setup: (config = false, force = false) => {
     //todo if force clear out maps, etc
     if (force) {
       w._init = false
@@ -50,19 +53,32 @@ const w = {
       w._plugins.clear()
     }
     if (!w._init) {
+      // configure
+      if (config) for (name in config) this._config.set(name, config[name])
+
+      // register plugins
+      const plug = {
+        log: Logger,
+        cache: Cache,
+        net: Network,
+        obj: Objects,
+        auth: Auth,
+        view: View
+      }
       d('WalaxMain initializing')
-      w.register(Logger, 'log')
-      w.register(Cache, 'cache')
-      w.register(Network, 'net')
-      w.register(Objects, 'obj')
-      w.register(Auth, 'auth')
-      w.register(View, 'view')
+      for (name in plug) {
+        w.register(plug[name], name)
+      }
+      a(w._plugins.size == Object.keys(plug).size, 'plugin count wrong')
       d('plugins registered')
 
+      // should have normal logging by now
       w.log.register(consoleLog)
       w.log.info('setup complete')
+
+      // initialize plugins
       w.init()
-      w._init = 1
+      w._init = true
       d('setup complete')
     }
   },
@@ -87,26 +103,32 @@ const w = {
   },
 
   augment: (obj, key, getter, setter = undefined) => {
-    d('augmenting', name, obj, key, getter, setter)
-    w.assert(
+    d('augmenting', { obj }, { key }, { getter }, { setter })
+    a(
       obj && key && getter,
       'augment called improperly',
-      obj,
-      key,
-      getter
+      { obj },
+      { key },
+      { getter }
     )
     a(w.isValidProp(key), `invalid key: ${key}`)
     a(!Object.keys(obj).includes(key), `key exists: ${key}`)
-    w.assert(typeof getter == 'function', 'getter must be a function', getter)
+    a(
+      typeof getter == 'function',
+      'getter must be a function',
+      { obj },
+      { key },
+      { getter }
+    )
     let desc = {
       enumerable: true,
-      configurable: true,
+      configurable: true, // really should be false FIXME
       get: getter
     }
     if (setter) desc.set = setter
     Object.defineProperty(obj, key, desc)
-    w.assert(Object.getOwnPropertyNames(obj), 'augmentation failed')
-    d('augmented', obj, obj[key])
+    a(Object.getOwnPropertyNames(obj), 'augmentation failed')
+    d('augmented', { obj, key, obj: obj[key] })
   },
 
   checkClass: (req, cls) => {
@@ -129,17 +151,13 @@ const w = {
 
   register: (cmp, key = false, ...args) => {
     d(`registering plugin ${key}`, cmp)
-    w.assert(
-      !w._plugins.has(key),
-      `attempted control re-registration of ${key}`,
-      cmp
-    )
-    w.assert(
+    a(!w._plugins.has(key), `attempted control re-registration of ${key}`, cmp)
+    a(
       w.checkClass(BaseControl, cmp),
       `control ${key} must inherit from BaseControl`,
       cmp
     )
-    w.assert(w.isValidProp(key), `invalid control key ${key}`, cmp)
+    a(w.isValidProp(key), `invalid control key ${key}`, cmp)
 
     d(`validated plugin ${key}`, cmp)
     let newCmp = new cmp(w, ...args)

@@ -3,41 +3,11 @@ import WalaxEntity from '../util/WalaxEntity'
 import w from '../Walax'
 
 export default class WalaxModel extends WalaxEntity {
-  static _name = false
-  static _url = false
-  static _fields = new Map()
   static _primaryKey = false
-  static _schema = false
-  static _manager = false
-  static _primaryKey = false
-
-  _modelCls = false
-  _values = new Map()
-  _dirty = new Set()
-  _new = true
-  _deleted = false
-  _init = false
 
   constructor (data = false) {
     super()
-    this.initFields(data)
-  }
-
-  get _model () {
-    this.d('model class access', this._modelCls)
-    return this._modelCls.schema.models.get(this._name)
-  }
-
-  get model () {
-    return this._model
-  }
-
-  get schema () {
-    return this._schema
-  }
-
-  get fields () {
-    return this.model.fields
+    //this.initFields(data)
   }
 
   get manager () {
@@ -46,15 +16,6 @@ export default class WalaxModel extends WalaxEntity {
 
   get objects () {
     return this.manager
-  }
-
-  get fields () {
-    return this._fields
-  }
-
-  set fields (val) {
-    this._fields = val
-    return val
   }
 
   get pk () {
@@ -73,12 +34,12 @@ export default class WalaxModel extends WalaxEntity {
 
     this.d('HELLO', this.primaryKey, this.fields)
 
-    if (!this.primaryKey) this.fields[this.primaryKey] = {}
+    //if (!this.primaryKey) this.fields[this.primaryKey] = {}
 
-    this.d('initializing fields', this._fields)
+    //this.d('initializing fields', this._fields)
 
-    let s = this._schema,
-      n = this._name
+    let s = this.schema,
+      n = this.name
     if (!s || !n) {
       this.d('not ready to initialize this object yet')
       return
@@ -105,22 +66,7 @@ export default class WalaxModel extends WalaxEntity {
     w.augment(this, field, this._getField(field), this._setField(field))
   }
 
-  _getField (field) {
-    return () => this._values.get(field)
-  }
-
-  //todo insert validation hooks
-  _setField (field, val) {
-    return val => {
-      this.d('set', this, field, val)
-      let newVal = val
-      this._dirty.add(field)
-      this._values.set(field, val)
-      return newVal
-    }
-  }
-
-  getUri () {
+  getUrl () {
     throw new TypeError('model class must implement getUri()')
   }
 

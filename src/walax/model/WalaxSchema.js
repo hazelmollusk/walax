@@ -10,10 +10,10 @@ export class WalaxSchema extends WalaxEntity {
   title = false
   description = false
   version = false
-  _name = false
-  _uri = false
-  _servers = false
-  _defaultManager = WalaxManager
+  name = false
+  uri = false
+  servers = false
+  defaultManager = WalaxManager
   managers = new Map()
   models = new Map()
 
@@ -26,63 +26,91 @@ export class WalaxSchema extends WalaxEntity {
     if (url) this.load(url, models)
   }
 
-  init () {
+  initialize () {
     this.schema = false
     this.title = false
     this.description = false
     this.version = false
-    this._uri = false
-    this._servers = false
+    this.url = false
+    this.servers = false
     this.models.clear()
   }
 
   createModel (name, fields, opts = undefined) {
-    let schemaObject = this
+    const schemaObject = this
     opts ||= {}
-    let BaseModel = this.models?.get?.(name) || this._defaultModel
-    this.d(`creating model class for ${name}`, BaseModel, fields, opts)
-    let classes = {}
-    this.d('base model', BaseModel)
-    classes[name] = class extends BaseModel {
+    const BaseModel = this.models?.get?.(name) || this._defaultModel
+    this.d(
+      `creating model class for ${name}`,
+      { BaseModel },
+      { fields },
+      { opts }
+    )
+
+    const modelBase = class extends BaseModel {
       static _fields = fields
       static _name = name
       static _modelUrl = opts?.url
       static _schema = schemaObject
 
-      _url = false
-      _new = true
-      _modelCls = false
-      _fields = fields
-      _name = name
-      _schema = schemaObject
-      _values = new Map()
-
+      get _schema () {
+        return this.w.schema
+      }
+      get _fields () {
+        return this.w.model.fields
+      }
+      get _modelCls () {
+        return this.w.schema.models.get(name)
+      }
+      get _name () {
+        return this.w.name
+      }
       constructor (data = false) {
         super(data)
+        this.initialize()
+      }
+      initialize (data) {
+        this.d('initializing')
+        this.w = {
+          dirty: new Map(),
+          values: new Map(),
+          url: false,
+          new: true,
+          model: this,
+          schema: schemaObject,
+          values: new Map()
+        }
+      }
+      get schema () {
+        return this.w.schema
       }
       get model () {
-        this._modelCls ||= w.obj.models.get(this._modelName)
-        return this._modelCls
-      }
-      set model (val) {
-        this._modelCls ||= w.obj.models.get(this._modelName)
-        this._modelCls ||= val
-        this.d(val, this._modelName, name)
-        this.a(this._modelCls.checkModel(val, 'bad model class'))
-        return this._modelCls
+        return modelCls
       }
       get modelName () {
         return this.model.name
+      }
+      _getField (field) {
+        return () => this.w.values.get(field)
+      }
+
+      //todo insert validation hooks
+      _setField (field, val) {
+        return val => {
+          let newVal = val
+          this.w.dirty.add(field)
+          this.w.values.set(field, val)
+          return newVal
+        }
       }
       toString () {
         return `${name} object`
       }
     }
-    // classes[name]._modelCls = classes[name]
     // classes[name]._fields = fields
-    // classes[name]._schema = schemaObject
-    this.d(`adding model ${name}`, classes[name]._schema)
-    this.addModel(name, classes[name])
+    //classes[name]._schema = schemaObject
+    this.d(`adding model ${name}`, modelBase._schema)
+    this.addModel(name, modelBase)
   }
 
   checkModel (model) {
@@ -91,33 +119,29 @@ export class WalaxSchema extends WalaxEntity {
   }
 
   get url () {
-    return this._uri
+    return this._url
   }
 
   set url (url) {
-    this.load(url).then(() => {
-      this._uri = url
-    })
+    this._url = url
   }
 
   addModel (name, model) {
     this.a(this.checkModel(model), `invalid model registered: ${name}`)
-    this.d(`adding model ${name}`, model)
+    this.d(`adding model ${name}`, { schema: this, model })
     w.augment(this, name, () => model)
     w.augment(w.obj, name, () => model)
-    this.d('NO HERE', model._schema)
     this.models.set(name, model)
   }
 
   load (url, models = false, servers = false) {
     //let url = new URL(url) // this will throw a TypeError if invalid
-    this._uri = url
-    models ||= this._models
-    this._models ||= models
+    this.initialize()
+    models ||= this.models
+    this.models ||= models
     models?.forEach?.((v, k) => this.addModel(k, v))
-    this._servers = servers
-    console.log('going in')
-    this.d('DJ')
+    this.url = url
+    this.servers = servers
     return this.loadUrl(url)
   }
 

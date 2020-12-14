@@ -20,8 +20,8 @@ export default class WalaxEntity {
     //   w.log.debug(name || this._daeiGetName(), dbg)
     w.log.error(this._daeiGetName(), ...msg)
   }
-  a (cond, errmsg, ...dbg) {
-    w.log.assert(cond, errmsg, this._daeiGetName(), ...dbg)
+  a (cond, msg, ...dbg) {
+    w.log.assert(cond, msg, this._daeiGetName(), ...dbg)
   }
   i (...msg) {
     w.log.info(this._daeiGetName(), ...msg)
