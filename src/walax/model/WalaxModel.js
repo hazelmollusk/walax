@@ -22,6 +22,10 @@ export default class WalaxModel extends WalaxEntity {
     return this._values.get(this.primaryKey)
   }
 
+  get fields () {
+    return this._fields
+  }
+
   get primaryKey () {
     return this._primaryKey || 'walaxID'
   }
@@ -38,32 +42,15 @@ export default class WalaxModel extends WalaxEntity {
 
     //this.d('initializing fields', this._fields)
 
-    let s = this.schema,
-      n = this.name
+
     if (!s || !n) {
       this.d('not ready to initialize this object yet')
       return
     }
     this.d('RIGHT HERE', this, 'schema', s, 'name', n)
-    if (Object.keys(s.models.get(n)._fields).length)
-      Object.keys(s.models.get(n)._fields).forEach(fn => {
-        w.augment(
-          this,
-          fn,
-          () => this._getField(fn),
-          v => this._setField(fn, v)
-        )
-        this._defineField(fn, deleted)
-      })
-    if (data) Object.assign(this, data)
+
     this.d('finished initializing', this)
     this._init = true
-  }
-
-  _defineField (field, deleted = false) {
-    if (!field || field === 'undefined') return // FIXME why the string?
-
-    w.augment(this, field, this._getField(field), this._setField(field))
   }
 
   getUrl () {

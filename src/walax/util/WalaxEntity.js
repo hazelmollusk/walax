@@ -1,5 +1,7 @@
 import WalaxMain from '../Walax'
 
+// could be split into Logger, Signaller.. but why?
+
 export default class WalaxEntity {
   static _miss = 0
   _init = false
@@ -8,7 +10,6 @@ export default class WalaxEntity {
     if (!this._init) this._init = this.initialize(...data)
   }
   initialize () {}
-  logSetup () {}
   toString () {
     return 'Walax Entity'
   }
@@ -27,13 +28,24 @@ export default class WalaxEntity {
     w.log.info(this._daeiGetName(), ...msg)
   }
 
-  toString () {
+  _daeiGetName () {
+    if (this.daeiName) return this.daeiName
+    if (this.toString) return this.toString()
     return 'Walax Entity'
   }
 
-  _daeiGetName () {
-    if (this._daeiName) return this._daeiName
-    if (this.toString) return this.toString()
-    return 'Undefined Entity'
+  _signal = new Set()
+  // we get signal
+  addSignal (s) {
+    this._signal.add(s)
+  }
+  // make your time
+  removeSignal (s) {
+    this._signal.delete(s)
+  }
+  // children should override to recv signals
+  // if it adds its own signals, should call super
+  signal (sig) {
+    this._signal.forEach(x => (x.signal ? x.signal(sig) : false))
   }
 }

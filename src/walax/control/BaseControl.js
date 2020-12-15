@@ -6,4 +6,7 @@ export default class BaseControl extends WalaxEntity {
   constructor () {
     super()
   }
+  signal (sig) {
+    this.d('unhandled signal', sig)
+  }
 }
