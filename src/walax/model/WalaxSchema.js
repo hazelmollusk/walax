@@ -116,11 +116,11 @@ export class WalaxSchema extends WalaxEntity {
         this.d('initModel')
         if (Object.keys(this._w.fields).length) {
           this.d(`adding fields to ${n}`)
-          Object.keys(this._w.fields).forEach(fname => {
-            this.d(`field ${fname}`)
-            w.augment(this, fname, this._getField(fname), this._setField(fname))
+          Object.keys(this._w.fields).forEach(fn => {
+            this.d(`field ${fn}`)
+            w.augment(this, fn, this._getField(fn), this._setField(fn))
             //FIXME at the very least per-type
-            w[fname] = false
+            w[fn] = false
           })
           // if (data) Object.assign(this, data)
         }
