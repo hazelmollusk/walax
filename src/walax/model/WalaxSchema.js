@@ -72,6 +72,14 @@ export class WalaxSchema extends WalaxEntity {
     const schemaObject = this
     const BaseModel = this.models?.get?.(name) || this._defaultModel
 
+    this.d(
+      'createModel',
+      { name },
+      { fields },
+      { opts },
+      { schemaObject },
+      { BaseModel }
+    )
     opts ||= {}
     this.d(
       `creating model class for ${name}`,
@@ -81,59 +89,54 @@ export class WalaxSchema extends WalaxEntity {
     )
 
     const classes = {}
-    const walaxifiedModel = class extends BaseModel {
+    class walaxifiedModel extends BaseModel {
       constructor (data = false) {
         super(data)
-        this.initialize()
+        this.initModel(data)
       }
 
+      get _walaxModel () {
+        return schemaObject.models.get(name)
+      }
       initModel (data) {
         let s = schemaObject,
           n = name
 
         // so as to not muddy the model's namespace too much
-        this.w = {
-          dirty: new Map(),
+        this._w = {
+          dirty: new Set(),
           values: new Map(),
           url: false,
           new: true,
-          model: this,
           fields: fields,
           schema: s,
-          name: name,
+          name: n,
           values: new Map()
         }
-
-        if (this.w.fields.length) {
-          Object.keys(s.models.get(n)._fields).forEach(fn => {
-            w.augment(
-              this,
-              fn,
-              () => this._getField(fn),
-              v => this._setField(fn, v)
-            )
-            this._defineField(fn, deleted)
+        this.d('initModel')
+        if (Object.keys(this._w.fields).length) {
+          this.d(`adding fields to ${n}`)
+          Object.keys(this._w.fields).forEach(fname => {
+            this.d(`field ${fname}`)
+            w.augment(this, fname, this._getField(fname), this._setField(fname))
+            //FIXME at the very least per-type
+            w[fname] = false
           })
+          // if (data) Object.assign(this, data)
         }
       }
 
       _getField (field) {
-        return () => this.w.values.get(field)
+        return () => this._w.values.get(field)
       }
 
       _setField (field) {
         return val => {
           let newVal = val
-          this.w.dirty.add(field)
-          this.w.values.set(field, newVal)
+          this._w.dirty.add(field)
+          this._w.values.set(field, newVal)
           return newVal
         }
-      }
-
-      _defineField (field, deleted = false) {
-        if (!field || field === 'undefined') return // FIXME why the string?
-
-        w.augment(this, field, this._getField(field), this._setField(field))
       }
 
       toString () {

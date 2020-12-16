@@ -18,7 +18,7 @@ const DEBUG = true
 const d = (...m) =>
   DEBUG
     ? console.log(
-        `%cthis.x %c ${m.shift()} `,
+        `%c  walax  %c ${m.shift()} `,
         'background-color: green; padding: 2px; \
           color:this.ite; border: 3px solidthis.ite; \
           border-radius: 6px; font-variant: small-caps; \
@@ -139,13 +139,13 @@ export class Walax extends WalaxEntity {
     )
     let desc = {
       enumerable: true,
-      configurable: true, // really should be false FIXME
+      configurable: false, // really should be false FIXME
       get: getter
     }
     if (setter) desc.set = setter
     Object.defineProperty(obj, key, desc)
     a(Object.getOwnPropertyNames(obj), 'augmentation failed')
-    d('augmented', { obj, key, obj: obj[key] })
+    d('augmented', { obj }, { key }, { desc })
   }
 
   checkClass (req, cls) {

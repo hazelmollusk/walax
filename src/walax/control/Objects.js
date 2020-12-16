@@ -99,7 +99,6 @@ export default class Objects extends BaseControl {
     schemaCls ||= this.defaultSchemaClass
     this.checkSchema(schemaCls)
     let schema = new schemaCls(url, name, models)
-    schema.initModels()
     this.d('zzzaug')
     w.augment(this, name, () => this.schemas.get(name))
     this.d('zzzset')

@@ -3,12 +3,9 @@ import WalaxEntity from '../util/WalaxEntity'
 import w from '../Walax'
 
 export default class WalaxModel extends WalaxEntity {
+  static _fields = {}
   constructor (data = false) {
     super()
-  }
-
-  get _fields () {
-    return this._model.schema.get(this._name)
   }
 
   initModel (data) {
