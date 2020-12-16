@@ -3,11 +3,16 @@ import WalaxEntity from '../util/WalaxEntity'
 import w from '../Walax'
 
 export default class WalaxModel extends WalaxEntity {
-  static _primaryKey = false
-
   constructor (data = false) {
     super()
-    //this.initFields(data)
+  }
+
+  get _fields () {
+    return this._model.schema.get(this._name)
+  }
+
+  initModel (data) {
+    this.a(false, 'initModel not implemented')
   }
 
   get manager () {
@@ -22,14 +27,6 @@ export default class WalaxModel extends WalaxEntity {
     return this._values.get(this.primaryKey)
   }
 
-  get fields () {
-    return this._fields
-  }
-
-  get primaryKey () {
-    return this._primaryKey || 'walaxID'
-  }
-
   initFields (values = false, deleted = false) {
     if (this._init) {
       this.d('re-init, exiting')
@@ -41,7 +38,6 @@ export default class WalaxModel extends WalaxEntity {
     //if (!this.primaryKey) this.fields[this.primaryKey] = {}
 
     //this.d('initializing fields', this._fields)
-
 
     if (!s || !n) {
       this.d('not ready to initialize this object yet')

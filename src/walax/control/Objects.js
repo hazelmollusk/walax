@@ -6,9 +6,9 @@ import Logger from './Logger'
 import BaseControl from './BaseControl'
 
 export default class Objects extends BaseControl {
-  schemas = observable.map()
-  models = observable.map()
-  managers = observable.map()
+  schemas = new Map()
+  models = new Map()
+  managers = new Map()
   constructor () {
     super()
   }
@@ -99,15 +99,16 @@ export default class Objects extends BaseControl {
     schemaCls ||= this.defaultSchemaClass
     this.checkSchema(schemaCls)
     let schema = new schemaCls(url, name, models)
-    schema.initModel()
+    schema.initModels()
+    this.d('zzzaug')
     w.augment(this, name, () => this.schemas.get(name))
+    this.d('zzzset')
     this.schemas.set(name, schema)
     w.signal('post-load')
   }
 
   signal (sig) {
     if (sig.name == 'post-load') {
-      
     }
   }
   schema (name) {

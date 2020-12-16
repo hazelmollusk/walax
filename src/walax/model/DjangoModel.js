@@ -27,6 +27,8 @@ export default class DjangoModel extends WalaxModel {
     return this.hyper ? 'url' : 'xin'
   }
 
+  initModel (data = false) {}
+
   initFields (data = false, deleted = false) {
     super.initFields(data, deleted)
   }

@@ -14,6 +14,8 @@ export class DjangoSchema extends WalaxSchema {
     super(url, name, models)
   }
 
+  initSchema (data) {}
+
   getManager (model) {
     // allows instances/names to be passed in
     if (typeof model == 'string') model = this.models.get(model)
@@ -30,9 +32,7 @@ export class DjangoSchema extends WalaxSchema {
     return `django schema ${this._name}`
   }
 
-  init(data) {
-    
-  }
+  init (data) {}
 
   loadUrl (url) {
     this.d(`loadUrl ${url}`)

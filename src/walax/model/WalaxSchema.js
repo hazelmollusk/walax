@@ -64,6 +64,10 @@ export class WalaxSchema extends WalaxEntity {
     return true
   }
 
+  initSchema (data) {
+    this.a(false, 'initSchema not implemented')
+  }
+
   createModel (name, fields, opts = undefined) {
     const schemaObject = this
     const BaseModel = this.models?.get?.(name) || this._defaultModel
@@ -77,7 +81,7 @@ export class WalaxSchema extends WalaxEntity {
     )
 
     const classes = {}
-    classes[name] = class extends BaseModel {
+    const walaxifiedModel = class extends BaseModel {
       constructor (data = false) {
         super(data)
         this.initialize()
@@ -117,7 +121,7 @@ export class WalaxSchema extends WalaxEntity {
         return () => this.w.values.get(field)
       }
 
-      _setField (field, val) {
+      _setField (field) {
         return val => {
           let newVal = val
           this.w.dirty.add(field)
@@ -136,8 +140,8 @@ export class WalaxSchema extends WalaxEntity {
         return `${name} object`
       }
     }
-    this.d(`adding model ${name}`, classes[name]._schema)
-    this.addModel(name, classes[name])
+    this.d(`adding model ${name}`, walaxifiedModel._schema)
+    this.addModel(name, walaxifiedModel)
   }
 
   get url () {
