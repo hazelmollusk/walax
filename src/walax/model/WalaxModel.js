@@ -8,6 +8,10 @@ export default class WalaxModel extends WalaxEntity {
     super()
   }
 
+  initialize (data) {
+    this.initModel(data)
+  }
+
   initModel (data) {
     this.a(false, 'initModel not implemented')
   }
@@ -46,15 +50,11 @@ export default class WalaxModel extends WalaxEntity {
     this._init = true
   }
 
-  getUrl () {
-    throw new TypeError('model class must implement getUri()')
-  }
-
   save () {
-    throw new TypeError('model class must implement save()')
+    this.a(false, 'model class must implement save()')
   }
 
   delete () {
-    throw new TypeError('model class must implement delete()')
+    this.a(false, 'model class must implement delete()')
   }
 }

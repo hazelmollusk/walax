@@ -93,10 +93,17 @@ export class WalaxSchema extends WalaxEntity {
       constructor (data = false) {
         super(data)
         this.initModel(data)
+        this.d('built an object', { obj: this }, { data })
       }
 
       get _walaxModel () {
         return schemaObject.models.get(name)
+      }
+      get _walaxUrlNew () {
+        return this._w.urlNew
+      }
+      get _walaxUrl () {
+        return this._w.url
       }
       initModel (data) {
         let s = schemaObject,
@@ -106,6 +113,7 @@ export class WalaxSchema extends WalaxEntity {
         this._w = {
           dirty: new Set(),
           values: new Map(),
+          urlNew: false,
           url: false,
           new: true,
           fields: fields,
@@ -113,6 +121,7 @@ export class WalaxSchema extends WalaxEntity {
           name: n,
           values: new Map()
         }
+        if (opts != undefined) Object.assign(this._w, opts)
         this.d('initModel')
         if (Object.keys(this._w.fields).length) {
           this.d(`adding fields to ${n}`)
@@ -122,7 +131,7 @@ export class WalaxSchema extends WalaxEntity {
             //FIXME at the very least per-type
             w[fn] = false
           })
-          // if (data) Object.assign(this, data)
+          if (data) Object.assign(this, data)
         }
       }
 
@@ -146,21 +155,4 @@ export class WalaxSchema extends WalaxEntity {
     this.d(`adding model ${name}`, walaxifiedModel._schema)
     this.addModel(name, walaxifiedModel)
   }
-
-  get url () {
-    return this._url
-  }
-
-  set url (url) {
-    this._url = url
-  }
-
-  // getModelClass (name) {
-  //   return this.models.get(name) || this._defaultModel
-  // }
-
-  // getModelManager (name) {
-  //   cls = this.getModelClass(name)
-  //   return w.cache.get(m => new cls.managerClass(cls), 'managers', cls)
-  // }
 }

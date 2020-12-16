@@ -32,7 +32,9 @@ export class DjangoSchema extends WalaxSchema {
     return `django schema ${this._name}`
   }
 
-  init (data) {}
+  init (data) {
+    super.init(data)
+  }
 
   loadUrl (url) {
     this.d(`loadUrl ${url}`)
@@ -51,8 +53,8 @@ export class DjangoSchema extends WalaxSchema {
             .replace(' List', '')
             .replace(' ', '')
           let opts = {
-            url: modelRootUri,
-            modelClassName
+            urlNew: modelRootUri,
+            name: modelClassName
           }
           let fields = modelInfo.actions.POST
 

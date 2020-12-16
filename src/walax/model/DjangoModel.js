@@ -23,8 +23,11 @@ export default class DjangoModel extends WalaxModel {
     //this.initFields(data)
   }
 
-  static get primaryKey () {
-    return this.hyper ? 'url' : 'xin'
+  get url () {
+    return this._w.url
+  }
+  set url (v) {
+    this._w.url = v
   }
 
   initModel (data = false) {}
@@ -33,27 +36,28 @@ export default class DjangoModel extends WalaxModel {
     super.initFields(data, deleted)
   }
 
-  get modelUrl () {
-    return this.constructor.url
+  updateFields (data) {
+    this.d('updateFields', data)
+    Object.assign(this, data)
   }
 
   save () {
-    if (!this._dirty.size) {
+    if (!this._w.dirty.size) {
       this.d('save(): object unchanged, not saving')
       return this
     }
-    a(!this._deleted, `saving deleted model: ${this._name}.save()`)
-    let saveFields = Object.fromEntries(this._values.entries())
-    if (this._new) {
-      w.net.post(this.modelUri, {}, saveFields, {}).then(ret => {
-        this._new = false
-        this._uri = this.hyper ? ret.url : '/'.join(this.modelUri, this.pk)
-        this.updateProperties(this, ret)
+    this.a(!this._w.deleted, `saving deleted model: ${this.toString()}.save()`)
+    let saveFields = Object.fromEntries(this._w.values.entries())
+    if (this._w.new) {
+      w.net.post(this._walaxUrlNew, {}, saveFields, {}).then(ret => {
+        this._w.new = false
+        this._w.url = ret.url || '/'.join(this._w._urlNew, this.pk)
+        this.updateFields(ret)
       })
     } else {
       // ERROR CHECKING FOOL
       w.net
-        .put(this.url, {}, saveFields, {})
+        .put(this._walaxUrl, {}, saveFields, {})
         .then(ret => this.updateProperties(ret))
     }
     return this
