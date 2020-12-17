@@ -49,16 +49,18 @@ export class DjangoSchema extends WalaxSchema {
         let modelRootUri = data[modelName]
         w.net.options(modelRootUri).then(modelInfo => {
           this.d(`retrieved options for model ${modelName}`, data)
+          let fields = modelInfo.actions.POST
           let modelClassName = modelInfo.name
             .replace(' List', '')
             .replace(' ', '')
           let opts = {
             urlNew: modelRootUri,
+            fieldsNew: fields,
+            fields: fields,
             name: modelClassName
           }
-          let fields = modelInfo.actions.POST
 
-          let m = this.createModel(modelClassName, fields, opts)
+          let m = this.createModel(modelClassName, opts)
           this.d(`created model class ${modelClassName}`, m)
         })
       }
