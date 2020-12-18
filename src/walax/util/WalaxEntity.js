@@ -67,8 +67,17 @@ export default class WalaxEntity {
     this._signal.delete(s)
   }
   // children should override to recv signals
-  // if it adds its own signals, should call super
-  signal (sig) {
-    this._signal.forEach(x => (x.signal ? x.signal(sig) : false))
+  // if it adds its own signals
+  _recvSignalThis (src, ...sig) {
+    this.d('we get signal', { src }, { sig })
+  }
+  recvSignal (src, ...sig) {
+    this._recvSignalThis(src, ...sig)
+    this._signal.forEach(x =>
+      x.recvSignal ? x.recvSignal(src, ...sig) : false
+    )
+  }
+  signal (...sig) {
+    this.recvSignal(this, ...sig)
   }
 }

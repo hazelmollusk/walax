@@ -24,10 +24,15 @@ For now, here are some examples of the walax API:
 ## Examples
 
     import w from Walax
+    
+    // or
+    
+    import Walax from Walax
+    w = new Walax()
 
 ### Making remote requests
 
-    w.net.get('/records/openapi/?format=openapi-json')
+    w.net.get('/records/api/?format=openapi-json')
 
     w.net.delete('/api/endpoint/', {id: 23})
 
@@ -50,12 +55,12 @@ For now, here are some examples of the walax API:
     
     let beatles = new Band()
     beatles.name = 'Beatles'
-    // actually sets an integer from a Django `choices`
+    // actually sets an integer from a Django `choices` field
     beatles.genre = 'Rock' 
     beatles.save()
 
     for (let band in Band.objects.all()) {
-
+        // ...
     }
 
 ### Miscellaneous batteries

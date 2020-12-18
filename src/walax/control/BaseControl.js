@@ -5,8 +5,6 @@ const { observable } = require('mobx')
 export default class BaseControl extends WalaxEntity {
   constructor () {
     super()
-  }
-  signal (sig) {
-    this.d('unhandled signal', sig)
+    w.addSignal(this)
   }
 }
