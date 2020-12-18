@@ -59,6 +59,7 @@ export class DjangoSchema extends WalaxSchema {
             fields: fields,
             name: modelClassName
           }
+          
 
           let m = this.createModel(modelClassName, opts)
           this.d(`created model class ${modelClassName}`, m)

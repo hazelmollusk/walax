@@ -2,12 +2,12 @@ import WalaxManager from './WalaxManager'
 import DjangoQuery from './DjangoQuery'
 
 export default class DjangoManager extends WalaxManager {
-  constructor (w, model) {
-    super(w, model)
+  constructor (model) {
+    super(model)
   }
 
   all () {
-    return new DjangoQuery(this.w, this)
+    return new DjangoQuery(this)
   }
 
   filter (args) {
@@ -21,8 +21,6 @@ export default class DjangoManager extends WalaxManager {
   none () {
     return this.all().none()
   }
-
-  getPk (pk) {}
 
   get serialized () {
     return `{${this._model._name}}`

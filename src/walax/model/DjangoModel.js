@@ -18,8 +18,9 @@ export default class DjangoModel extends WalaxModel {
    */
   constructor (data) {
     super(data)
-    //this.initFields(data)
   }
+
+  static _walaxDefaultManager = DjangoManager
 
   initialize (data = false) {
     super.initializel(data)

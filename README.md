@@ -6,7 +6,7 @@
 
 Walax is a Javascript framework for interacting with objects remotely via Django.  The goal is to provide a 'batteries-included' library for easily creating front-end applications, which automatically consumes and instantiates its interface from CoreAPI-compatible remote.  
 
-While other implementations should be possible, walax was designed and tested using  Django and DRF (see the `example` Django project for a simple working configuration).
+While other implementations should be possible, walax was designed and tested using  Django and DRF (see the example `records` Django project for a simple working configuration).
 
 ### 🏠 [Homepage](https://github.com/hazelmollusk/walax)
 
