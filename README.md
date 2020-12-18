@@ -44,18 +44,35 @@ For now, here are some examples of the walax API:
 
 ### Objects (remote API)
 
-    w.obj.loadUri('/records/openapi/?format=openapi-json', 'records')
-    w.obj.loadUri('/somethingelse/api/', 'cool')
+    w.obj.load('/records/api/?format=openapi-json', 'records')
+
+    let Band = w.obj.records.Band
     
-    let aStore = new w.obj.records.Store()
-    aStore.name = 'new name'
-    aStore.save()
+    let beatles = new Band()
+    beatles.name = 'Beatles'
+    // actually sets an integer from a Django `choices`
+    beatles.genre = 'Rock' 
+    beatles.save()
+
+    for (let band in Band.objects.all()) {
+
+    }
 
 ### Miscellaneous batteries
 
-class a {}
+class a extends WalaxEntity {}
 class b extends a {}
 class c extends b {}
+let d = new c()
+if (w.checkClass(d, a)) { /*...*/ }
+
+w.augment(d, 'prop', () => 1)
+d.prop // returns 1
+
+d.d('debugging info', data)
+d.e('error message')  // throws a TypeError
+d.a(false, 'assertion failed')
+d.i('this is just information')
 
 ## Author
 

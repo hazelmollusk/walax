@@ -82,7 +82,7 @@ export class WalaxSchema extends WalaxEntity {
     class walaxifiedModel extends BaseModel {
       constructor (data = false) {
         super(data)
-        this.initModel(data)
+        this._initModel(data)
         this.d('built an object', { obj: this }, { data })
       }
 
@@ -99,7 +99,7 @@ export class WalaxSchema extends WalaxEntity {
         return this._w.new ? this._w.fieldsNew : this._w.fields
       }
 
-      initModel (data) {
+      _initModel (data) {
         let s = schemaObject,
           n = name
 

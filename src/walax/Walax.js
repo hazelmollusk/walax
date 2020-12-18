@@ -20,7 +20,7 @@ const d = (...m) =>
     ? console.log(
         `%c  walax  %c ${m.shift()} `,
         'background-color: green; padding: 2px; \
-          color:this.ite; border: 3px solidthis.ite; \
+          color: white; border: 3px solid #bbb; \
           border-radius: 6px; font-variant: small-caps; \
           font-weight: bold; font-family: serif; \
           font-size: 16px; border-right: none; \
@@ -28,7 +28,7 @@ const d = (...m) =>
           border-bottom-right-radius: 0px; \
           ',
         'color:green; background-color: lightgrey; padding: 2px; \
-        border: 3px solidthis.ite; border-radius: 8px; \
+        border: 3px solid #bababa; border-radius: 8px; \
         font-weight: bold; font-family: serif; \
         font-variant: small-caps; font-size: 16px; \
         border-left: none; \

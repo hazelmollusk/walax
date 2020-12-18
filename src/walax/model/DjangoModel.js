@@ -10,9 +10,6 @@ import { thisTypeAnnotation } from '@babel/types'
  * @class
  */
 export default class DjangoModel extends WalaxModel {
-  static _primaryKey = 'xin'
-  static _managerClass = DjangoManager
-
   /**
    * builds a new DjangoModel
    * @class
@@ -22,6 +19,10 @@ export default class DjangoModel extends WalaxModel {
   constructor (data) {
     super(data)
     //this.initFields(data)
+  }
+
+  initialize (data = false) {
+    super.initializel(data)
   }
 
   // fixme this is hacky
@@ -83,14 +84,6 @@ export default class DjangoModel extends WalaxModel {
 
   _validateFields () {
     return true
-  }
-
-  initModel (data = false) {
-    super.initModel(data)
-  }
-
-  initFields (data = false) {
-    super.initFields(data)
   }
 
   updateFields (data, wasNew = false) {
