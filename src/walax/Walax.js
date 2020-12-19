@@ -172,4 +172,5 @@ export class Walax extends WalaxEntity {
 export const w = new Walax()
 // export const w = observable.box(w)
 window.w = w
+
 export default w

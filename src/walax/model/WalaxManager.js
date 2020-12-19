@@ -1,5 +1,5 @@
 import WalaxEntity from '../util/WalaxEntity'
-import w from '../Walax'
+import { w } from '../Walax'
 var m = require('mithril')
 var { observable } = require('mobx')
 

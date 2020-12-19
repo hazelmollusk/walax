@@ -1,4 +1,4 @@
-import w from '../Walax'
+import { w } from '../Walax'
 
 import Logger from '../control/Logger'
 import WalaxEntity from '../util/WalaxEntity'

@@ -15,10 +15,10 @@ module.exports = {
   //   filename: '[name].js'
   // },
   entry: {
-    walax: path.resolve(`${__dirname}/src/walax/index.js`)
+    walax: path.resolve(`${__dirname}/src/walax/Walax.js`)
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist', 'walax'),
     filename: 'walax.js',
     library: 'walax',
     libraryTarget: 'this'

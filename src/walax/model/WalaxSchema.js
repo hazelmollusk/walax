@@ -1,7 +1,7 @@
 import { observable } from 'mobx'
 import WalaxModel from './WalaxModel'
 import WalaxManager from './WalaxManager'
-import w from '../Walax'
+import { w } from '../Walax'
 import WalaxEntity from '../util/WalaxEntity'
 
 //todo schema versioning/collision detection/etc

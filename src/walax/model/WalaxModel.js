@@ -1,6 +1,6 @@
 import WalaxManager from './WalaxManager'
 import WalaxEntity from '../util/WalaxEntity'
-import w from '../Walax'
+import { w } from '../Walax'
 
 export default class WalaxModel extends WalaxEntity {
   constructor () {
