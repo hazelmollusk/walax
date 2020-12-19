@@ -15,7 +15,7 @@ module.exports = {
   //   filename: '[name].js'
   // },
   entry: {
-    walax: path.resolve(`${__dirname}/src/walax/Walax.js`)
+    walax: path.resolve(__dirname, 'src/walax/Walax.js')
   },
   output: {
     path: path.resolve(__dirname, 'dist', 'walax'),

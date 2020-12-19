@@ -48,7 +48,7 @@ export class Walax extends WalaxEntity {
     super()
   }
   toString () {
-    return 'WALAX ROOT'
+    return 'WALAX'
   }
   _config = new Map()
   _plugins = new Map()
