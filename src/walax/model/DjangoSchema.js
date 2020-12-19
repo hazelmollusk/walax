@@ -3,7 +3,7 @@ import { observable } from 'mobx'
 import { WalaxSchema } from './WalaxSchema'
 import DjangoModel from './DjangoModel'
 import DjangoManager from './DjangoManager'
-import { w } from '../Walax'
+import w from '../Walax'
 import Logger from '../control/Logger'
 
 export class DjangoSchema extends WalaxSchema {

@@ -1,6 +1,6 @@
 // WARN do not use 'w' in anything that gets called
 // on instantiation.
-import { w } from '../Walax'
+import w from '../Walax'
 /*
   this base class supplies methods for:
     * initialization (post-instantiation)

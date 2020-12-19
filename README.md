@@ -23,7 +23,7 @@ For now, here are some examples of the walax API:
 
 ## Examples
 
-    import { w } from Walax
+    import w from Walax
     
     // or
     
