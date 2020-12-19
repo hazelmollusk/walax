@@ -33,6 +33,7 @@ export default class DjangoModel extends WalaxModel {
   set url (v) {
     if ('url' in this._w.fields) this._w.values = v
     this._w.url = v
+    // maybe call setfield iff...
   }
 
   _getField (fn) {

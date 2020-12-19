@@ -79,13 +79,13 @@ class DjangoQuery {
   }
 
   fetch () {
-    d(this, 'fetch')
+    this.d(this, 'fetch')
     let res = new Set()
     return w.net.get(this._model._modelUri).then(data => {
-      d('qqqqq', data)
+      this.d('qqqqq', data)
       if (data.length)
         data.forEach(o => res.add(w.obj.recieveObject(this._model, o)))
-      d('res', this._model, res)
+      this.d('res', this._model, res)
       this.cached = res
     })
   }

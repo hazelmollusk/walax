@@ -14,6 +14,8 @@ const { observable } = require('mobx')
 // need our own debug/asserts bc log plugin
 //this.n't be there during instantiation of the
 //this.lax object
+
+// todo console logging themes (for applications)
 const DEBUG = true
 const d = (...m) =>
   DEBUG
@@ -170,5 +172,4 @@ export class Walax extends WalaxEntity {
 export const w = new Walax()
 // export const w = observable.box(w)
 window.w = w
-w.init()
 export default w

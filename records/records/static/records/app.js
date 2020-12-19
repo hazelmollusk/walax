@@ -1,9 +1,10 @@
 let url = '/records/api/?format=json'
-let name = 'records'
+let prop = 'records'
 
-w.log.info(`loading api from ${url} into ${name}`)
-w.obj.load(url, name)
+w.init()
+w.log.info(`loading api from ${url} into ${prop}`)
+w.obj.load(url, prop)
 
-let a = new w.obj.records.Song()
-a.name = 'asdf'
+let a = new w.obj.records.Band()
+a.name = 'app band'
 a.save()

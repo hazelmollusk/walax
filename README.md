@@ -65,19 +65,19 @@ For now, here are some examples of the walax API:
 
 ### Miscellaneous batteries
 
-class a extends WalaxEntity {}
-class b extends a {}
-class c extends b {}
-let d = new c()
-if (w.checkClass(d, a)) { /*...*/ }
+    class a extends WalaxEntity {}
+    class b extends a {}
+    class c extends b {}
+    let d = new c()
+    if (w.checkClass(d, a)) { /*...*/ }
 
-w.augment(d, 'prop', () => 1)
-d.prop // returns 1
+    w.augment(d, 'prop', () => 1, x => console.log('set'))
+    d.prop // returns 1
 
-d.d('debugging info', data)
-d.e('error message')  // throws a TypeError
-d.a(false, 'assertion failed')
-d.i('this is just information')
+    d.d('debugging info', data)
+    d.e('error message')  // throws a TypeError
+    d.a(false, 'assertion failed')
+    d.i('this is just information')
 
 ## Author
 

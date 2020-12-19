@@ -1,4 +1,4 @@
 import 'regenerator-runtime/runtime'
-import Walax from './Walax.js'
+import { Walax, w } from './Walax'
 
-export default Walax
+export default { w, Walax }

@@ -3,13 +3,25 @@
 const path = require('path')
 
 module.exports = {
+  name: 'name',
+  mode: 'development', // "production" | "development" | "none"
+  target: 'web', // node
+  // entry: {
+  //   walax: path.resolve(__dirname, 'walax/Walax.js'),
+  //   test_app: path.resolve(__dirname, 'test-app.js')
+  // },
+  // output: {
+  //   path: path.resolve(`${__dirname}/../dist/`),
+  //   filename: '[name].js'
+  // },
   entry: {
-    walax: path.resolve(__dirname, 'walax/Walax.js'),
-    test_app: path.resolve(__dirname, 'test-app.js')
+    walax: path.resolve(`${__dirname}/src/walax/index.js`)
   },
   output: {
-    path: path.resolve(`${__dirname}/../dist/`),
-    filename: '[name].js'
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'walax.js',
+    library: 'walax',
+    libraryTarget: 'this'
   },
   module: {
     rules: [
