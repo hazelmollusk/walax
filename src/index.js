@@ -1,4 +1,4 @@
 import 'regenerator-runtime/runtime'
-import { Walax, w } from './Walax'
+import { Walax, w } from './walax/Walax'
 
 export default w
