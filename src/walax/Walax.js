@@ -12,8 +12,8 @@ import BaseControl from './control/BaseControl'
 const { observable } = require('mobx')
 
 // need our own debug/asserts bc log plugin
-//this.n't be there during instantiation of the
-//this.lax object
+// might not be there during instantiation of the
+// walax object
 
 // todo console logging themes (for applications)
 const DEBUG = true
@@ -170,8 +170,8 @@ export class Walax extends WalaxEntity {
 }
 
 export const w = new Walax()
-// export const w = observable.box(w)
-window.w = w
+// export const w = observable.box(w)0
+if (window) window.w = w
 
 // export default w
 export default w
