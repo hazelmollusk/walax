@@ -61,7 +61,7 @@ export class Walax extends WalaxEntity {
 
   initialize (config = false, force = false) {
     super.initialize()
-    if (force) {
+    if (force) { 
       this.config.clear()
       this.plugins.clear()
     }

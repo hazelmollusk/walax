@@ -46,7 +46,6 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.5",
     "http": "0.0.1-security",
     "mithril": "^2.0.4",
     "mobx": "^5.15.7",
