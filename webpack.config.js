@@ -6,22 +6,22 @@ module.exports = {
   name: 'name',
   mode: 'development', // "production" | "development" | "none"
   target: 'web', // node
-  // entry: {
-  //   walax: path.resolve(__dirname, 'walax/Walax.js'),
-  //   test_app: path.resolve(__dirname, 'test-app.js')
-  // },
-  // output: {
-  //   path: path.resolve(`${__dirname}/../dist/`),
-  //   filename: '[name].js'
-  // },
   entry: {
     walax: path.resolve(__dirname, 'src/index.js')
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'walax.js',
-    library: 'walax',
-    libraryTarget: 'this'
+    library: 'walax'
+    // libraryTarget: 'this'
+  },
+  externals: {
+    // lodash: {
+    //   commonjs: 'lodash',
+    //   commonjs2: 'lodash',
+    //   amd: 'lodash',
+    //   root: '_'
+    // }
   },
   module: {
     rules: [
@@ -47,16 +47,16 @@ module.exports = {
         ]
       }
     ]
-  },
-  optimization: {
-    minimize: true,
-    namedModules: true,
-    namedChunks: true,
-    removeAvailableModules: true,
-    flagIncludedChunks: true,
-    occurrenceOrder: false,
-    usedExports: true,
-    concatenateModules: true,
-    sideEffects: false // <----- in prod defaults to true if left blank
   }
+  // optimization: {
+  //   minimize: true,
+  //   namedModules: true,
+  //   namedChunks: true,
+  //   removeAvailableModules: true,
+  //   flagIncludedChunks: true,
+  //   occurrenceOrder: false,
+  //   usedExports: true,
+  //   concatenateModules: true,
+  //   sideEffects: false // <----- in prod defaults to true if left blank
+  // }
 }
