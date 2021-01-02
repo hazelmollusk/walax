@@ -61,7 +61,7 @@ export class Walax extends WalaxEntity {
 
   initialize (config = false, force = false) {
     super.initialize()
-    if (force) { 
+    if (force) {
       this.config.clear()
       this.plugins.clear()
     }
@@ -169,9 +169,8 @@ export class Walax extends WalaxEntity {
   }
 }
 
-export const w = new Walax()
-// export const w = observable.box(w)0
-if (window) window.w = w
+// export const w = new Walax()
+export const w = observable.box(w).get()
 
 // export default w
 export default w

@@ -13,7 +13,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'walax.js',
     library: 'walax'
-    // libraryTarget: 'this'
+    // libraryTarget: 'window'
   },
   externals: {
     // lodash: {
@@ -21,7 +21,7 @@ module.exports = {
     //   commonjs2: 'lodash',
     //   amd: 'lodash',
     //   root: '_'
-    // }
+    // } fff
   },
   module: {
     rules: [
@@ -47,16 +47,17 @@ module.exports = {
         ]
       }
     ]
+  },
+  optimization: {
+    //   minimize: false,
+    namedModules: true,
+    namedChunks: true
+    //   removeAvailableModules: false,
+    //   flagIncludedChunks: true,
+    //   occurrenceOrder: false,
+    //   usedExports: false,
+    //   providedExports: false,
+    //   concatenateModules: false,
+    //   sideEffects: false // <----- in prod defaults to true if left blank
   }
-  // optimization: {
-  //   minimize: true,
-  //   namedModules: true,
-  //   namedChunks: true,
-  //   removeAvailableModules: true,
-  //   flagIncludedChunks: true,
-  //   occurrenceOrder: false,
-  //   usedExports: true,
-  //   concatenateModules: true,
-  //   sideEffects: false // <----- in prod defaults to true if left blank
-  // }
 }
