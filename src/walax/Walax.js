@@ -6,6 +6,7 @@ import Network from './control/Network'
 import Auth from './control/Auth'
 import Cache from './control/Cache'
 import View from './control/View'
+import Test from './control/Test'
 
 import BaseControl from './control/BaseControl'
 
@@ -46,21 +47,16 @@ const a = (c, ...m) => w.assert(...m)
 export class Walax extends WalaxEntity {
   constructor (...args) {
     super()
+    this.augmentObj(this, 'config', new Map())
+    this.augmentObj(this, 'plugins', new Map())
+    this.augmentObj(this, 'classes', new Map())
   }
+
   toString () {
     return 'WALAX'
   }
-  _config = new Map()
-  _plugins = new Map()
-  get config () {
-    return this._config
-  }
-  get plugins () {
-    return this._plugins
-  }
 
   initialize (config = false, force = false) {
-    super.initialize()
     if (force) {
       this.config.clear()
       this.plugins.clear()
@@ -74,13 +70,12 @@ export class Walax extends WalaxEntity {
       net: Network,
       obj: Objects,
       auth: Auth,
-      view: View
+      view: View,
+      test: Test
     }
     d('Walax initializing...')
-    for (let name in plug) {
-      this.addPlugin(plug[name], name)
-      this.addInit(plug[name])
-    }
+    for (let name in plug) this.addPlugin(plug[name], name)
+
     a(this._plugins.size == Object.keys(plug).size, 'plugin count wrong')
 
     // should have normal logging by now
@@ -89,26 +84,19 @@ export class Walax extends WalaxEntity {
 
     // initialize plugins
     d('setup complete')
+    super.initialize()
   }
 
   addPlugin (cmp, key = false, ...args) {
-    d(`registering plugin ${key}`, cmp)
-    a(
-      !this._plugins.has(key),
-      `attempted control re-registration of ${key}`,
-      cmp
-    )
-    a(
-      this.checkClass(BaseControl, cmp),
-      `control ${key} must inherit from BaseControl`,
-      cmp
-    )
+    d(`registering control ${key}`, cmp)
+    a(!this._plugins.has(key), `control ${key} exists`, cmp)
+    a(this.checkClass(BaseControl, cmp), `${key} is not BaseControl`, cmp)
     a(this.isValidProp(key), `invalid control key ${key}`, cmp)
-
     d(`validated plugin ${key}`, cmp)
-    let newCmp = new cmp(w, ...args)
 
+    let newCmp = new cmp(w, ...args)
     this._plugins.set(key, newCmp)
+    this.addSignal(newCmp)
     this.augment(this, key, () => this._plugins.get(key))
 
     return cmp
@@ -121,6 +109,11 @@ export class Walax extends WalaxEntity {
     return true
   }
 
+  augmentObj (obj, key, prop) {
+    obj._walaxAugmentations ||= new Map()
+    obj._walaxAugmentations.set(key, prop)
+    this.augment(obj, key, () => obj._walaxAugmentations.get(key))
+  }
   augment (obj, key, getter, setter = undefined) {
     d('augmenting', { obj }, { key }, { getter }, { setter })
     a(

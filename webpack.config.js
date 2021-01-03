@@ -12,8 +12,9 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'walax.js',
-    library: 'walax'
-    // libraryTarget: 'window'
+    library: 'walax',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
   externals: {
     // lodash: {
@@ -51,13 +52,13 @@ module.exports = {
   optimization: {
     //   minimize: false,
     namedModules: true,
-    namedChunks: true
-    //   removeAvailableModules: false,
-    //   flagIncludedChunks: true,
-    //   occurrenceOrder: false,
-    //   usedExports: false,
-    //   providedExports: false,
-    //   concatenateModules: false,
-    //   sideEffects: false // <----- in prod defaults to true if left blank
+    namedChunks: true,
+    removeAvailableModules: false,
+    flagIncludedChunks: true,
+    occurrenceOrder: false,
+    usedExports: true,
+    providedExports: true,
+    concatenateModules: false,
+    sideEffects: false // <----- in prod defaults to true if left blank
   }
 }

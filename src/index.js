@@ -5,4 +5,4 @@ import { Walax, w } from './walax/Walax'
 import '../webpack.config'
 
 window.w = w
-module.exports = w
+export default w

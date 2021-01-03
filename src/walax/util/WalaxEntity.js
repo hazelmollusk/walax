@@ -15,19 +15,9 @@ export default class WalaxEntity {
     return 'Walax Entity'
   }
 
-  // initialization
-  _init = false
-  _initChildren = new Set()
-  init (...data) {
-    if (!this._init) this._init = this.initialize(...data)
-  }
-  addInit (i) {
-    this._initChildren.add(i)
-  }
-  // mostly override this, call super if/when
   initialize (...data) {
-    for (let i of this._initChildren) i.init(...data)
-    return true
+    this.sendSignal('init')
+    this.sendSignal('go')
   }
 
   /*
@@ -56,7 +46,9 @@ export default class WalaxEntity {
     w.log.info(this._daeiGetName(), ...msg)
   }
 
-  // we get signal
+  /* 
+    we get signal
+  */
   _signal = new Set()
   // main screen turn on
   addSignal (s) {
@@ -68,16 +60,25 @@ export default class WalaxEntity {
   }
   // children should override to recv signals
   // if it adds its own signals
-  _recvSignalThis (src, ...sig) {
+  handleSignal (src, ...sig) {}
+  receiveSignal (src, ...sig) {
     this.d('we get signal', { src }, { sig })
+    return sig[0] in this && this[sig[0]] instanceof Function
+      ? this[sig.shift()](src, ...sig)
+      : this.handleSignal(src, ...sig)
   }
-  recvSignal (src, ...sig) {
-    this._recvSignalThis(src, ...sig)
+  // children may override to remove hierarchy
+  sendSignal (src, ...sig) {
+    this.receiveSignal(src, ...sig)
     this._signal.forEach(x =>
-      x.recvSignal ? x.recvSignal(src, ...sig) : false
+      x.receiveSignal instanceof Function
+        ? x.sendSignal(src, ...sig)
+        : x instanceof Function
+        ? x(src, ...sig)
+        : undefined
     )
   }
   signal (...sig) {
-    this.recvSignal(this, ...sig)
+    this.sendSignal(this, ...sig)
   }
 }
