@@ -46,7 +46,7 @@
     "http": "0.0.1-security",
     "mithril": "^2.0.4",
     "mobx": "^5.15.7",
-    "np": "^7.1.0",
+    "np": "^7.2.0",
     "webpack-dev-server": "^3.11.1"
   }
 }

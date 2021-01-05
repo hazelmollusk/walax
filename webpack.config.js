@@ -12,9 +12,9 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'walax.js',
-    library: 'walax',
-    libraryTarget: 'umd',
-    umdNamedDefine: true
+    // library: 'walax',
+    // libraryTarget: 'umd',
+    // umdNamedDefine: true
   },
   externals: {
     // lodash: {

@@ -18,10 +18,10 @@ const { observable } = require('mobx')
 
 // todo console logging themes (for applications)
 const DEBUG = true
-const d = (...m) =>
-  DEBUG
-    ? console.log(
-        `%c  walax  %c ${m.shift()} `,
+const d = DEBUG
+  ? (t, ...m) =>
+      console.log(
+        `%c  walax  %c ${t} `,
         'background-color: green; padding: 2px; \
           color: white; border: 3px solid #bbb; \
           border-radius: 6px; font-variant: small-caps; \
@@ -40,7 +40,7 @@ const d = (...m) =>
         ',
         ...m
       )
-    : null
+  : () => undefined
 
 const a = (c, ...m) => w.assert(...m)
 
@@ -163,7 +163,7 @@ export class Walax extends WalaxEntity {
 }
 
 // export const w = new Walax()
-export const w = observable.box(w).get()
+export const w = observable.box(new Walax()).get()
 
 // export default w
 export default w

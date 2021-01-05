@@ -1,5 +1,4 @@
 // import w from 'walax'
-const w = require('./walax')
 let url = '/records/api/?format=json'
 let prop = 'records'
 
