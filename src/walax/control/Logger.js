@@ -1,7 +1,7 @@
 import { logicalExpression } from '@babel/types'
 import { observable } from 'mobx'
 import Walax from '../Walax'
-import BaseControl from './BaseControl'
+import Control from './Control'
 
 const stackinfo = require('stackinfo')
 
@@ -83,7 +83,7 @@ consoleLog.multiple = true
 export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
 recordLogs.logs = new Set()
 
-export class Logger extends BaseControl {
+export class Logger extends Control {
   all = new Set()
   level = DEBUG
   stack = false

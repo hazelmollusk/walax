@@ -63,7 +63,7 @@ export default class WalaxEntity {
   handleSignal (src, ...sig) {}
   receiveSignal (src, ...sig) {
     this.d('we get signal', { src }, { sig })
-    return sig[0] in this && this[sig[0]] instanceof Function
+    return w.callable(this, sig[0])
       ? this[sig.shift()](src, ...sig)
       : this.handleSignal(src, ...sig)
   }

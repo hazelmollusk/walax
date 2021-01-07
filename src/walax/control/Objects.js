@@ -3,9 +3,9 @@ import { WalaxSchema } from '../model/WalaxSchema'
 import { DjangoSchema } from '../model/DjangoSchema'
 
 import Logger from './Logger'
-import BaseControl from './BaseControl'
+import Control from './Control'
 
-export default class Objects extends BaseControl {
+export default class Objects extends Control {
   schemas = new Map()
   models = new Map()
   managers = new Map()

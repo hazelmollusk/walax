@@ -1,14 +1,13 @@
 import 'regenerator-runtime/runtime' // i guess
 import { Logger, consoleLog } from './control/Logger'
 import WalaxEntity from './util/WalaxEntity'
+import Control from './control/Control'
 import Objects from './control/Objects'
 import Network from './control/Network'
 import Auth from './control/Auth'
 import Cache from './control/Cache'
 import View from './control/View'
 import Test from './control/Test'
-
-import BaseControl from './control/BaseControl'
 
 const { observable } = require('mobx')
 
@@ -18,31 +17,55 @@ const { observable } = require('mobx')
 
 // todo console logging themes (for applications)
 const DEBUG = true
-const d = DEBUG
-  ? (t, ...m) =>
-      console.log(
-        `%c  walax  %c ${t} `,
-        'background-color: green; padding: 2px; \
+const WLXBG1 =
+  'background-color: green; padding: 2px; \
           color: white; border: 3px solid #bbb; \
           border-radius: 6px; font-variant: small-caps; \
           font-weight: bold; font-family: serif; \
           font-size: 16px; border-right: none; \
           border-top-right-radius: 0px; \
           border-bottom-right-radius: 0px; \
-          ',
-        'color:green; background-color: lightgrey; padding: 2px; \
+          '
+const WLX1 =
+  'color:green; background-color: lightgrey; padding: 2px; \
         border: 3px solid #bababa; border-radius: 8px; \
         font-weight: bold; font-family: serif; \
         font-variant: small-caps; font-size: 16px; \
         border-left: none; \
         border-top-left-radius: 0px; \
         border-bottom-left-radius: 0px; \
-        ',
-        ...m
-      )
+        '
+const d = DEBUG
+  ? (t, ...m) => console.log(`%c  walax  %c ${t} `, WLXBG1, WLX1, ...m)
+  : () => undefined
+const WLXBG2 =
+  'background-color: red; padding: 2px; \
+          color: white; border: 3px solid #bbb; \
+          border-radius: 6px; font-variant: small-caps; \
+          font-weight: bold; font-family: serif; \
+          font-size: 16px; border-right: none; \
+          border-top-right-radius: 0px; \
+          border-bottom-right-radius: 0px; \
+          '
+const WLX2 =
+  'color:green; background-color: lightgrey; padding: 2px; \
+        border: 3px solid #bababa; border-radius: 8px; \
+        font-weight: bold; font-family: serif; \
+        font-variant: small-caps; font-size: 16px; \
+        border-left: none; \
+        border-top-left-radius: 0px; \
+        border-bottom-left-radius: 0px; \
+        '
+const _d_a = DEBUG
+  ? (...m) => console.log(`%c  walax  %c ASSERT FAILED `, WLXBG2, WLX2, ...m)
   : () => undefined
 
-const a = (c, ...m) => w.assert(...m)
+const a = (c, ...m) => {
+  if (!c) {
+    _d_a(...m)
+    throw new TypeError(m[0])
+  }
+}
 
 export class Walax extends WalaxEntity {
   constructor (...args) {
@@ -73,10 +96,11 @@ export class Walax extends WalaxEntity {
       view: View,
       test: Test
     }
-    d('Walax initializing...')
+    d('initializing...')
     for (let name in plug) this.addPlugin(plug[name], name)
 
-    a(this._plugins.size == Object.keys(plug).size, 'plugin count wrong')
+    d('plugins', { attempted: plug }, { current: this._plugins })
+    // a(this._plugins.size == Object.keys(plug).size, 'plugin count wrong')
 
     // should have normal logging by now
     this.log.register(consoleLog)
@@ -88,9 +112,12 @@ export class Walax extends WalaxEntity {
   }
 
   addPlugin (cmp, key = false, ...args) {
+    this._plugins ||= new Map()
+    key ||= cmp.name
+
     d(`registering control ${key}`, cmp)
     a(!this._plugins.has(key), `control ${key} exists`, cmp)
-    a(this.checkClass(BaseControl, cmp), `${key} is not BaseControl`, cmp)
+    a(this.checkClass(Control, cmp), `${key} is not BaseControl`, cmp)
     a(this.isValidProp(key), `invalid control key ${key}`, cmp)
     d(`validated plugin ${key}`, cmp)
 
@@ -109,11 +136,17 @@ export class Walax extends WalaxEntity {
     return true
   }
 
+  callable (...args) {
+    let f = args.length == 2 && args[1] in args[0] ? args[0][args[1]] : args[0]
+    return f instanceof Function
+  }
+
   augmentObj (obj, key, prop) {
     obj._walaxAugmentations ||= new Map()
     obj._walaxAugmentations.set(key, prop)
     this.augment(obj, key, () => obj._walaxAugmentations.get(key))
   }
+
   augment (obj, key, getter, setter = undefined) {
     d('augmenting', { obj }, { key }, { getter }, { setter })
     a(
@@ -123,7 +156,7 @@ export class Walax extends WalaxEntity {
       { key },
       { getter }
     )
-    a(w.isValidProp(key), `invalid key: ${key}`)
+    a(this.isValidProp(key), `invalid key: ${key}`)
     a(!Object.keys(obj).includes(key), `key exists: ${key}`)
     a(
       typeof getter == 'function',
@@ -139,7 +172,7 @@ export class Walax extends WalaxEntity {
     }
     if (setter) desc.set = setter
     Object.defineProperty(obj, key, desc)
-    a(Object.getOwnPropertyNames(obj), 'augmentation failed')
+    a(Object.getOwnPropertyNames(obj).includes(key), 'augmentation failed')
     d('augmented', { obj }, { key }, { desc })
   }
 
@@ -152,14 +185,6 @@ export class Walax extends WalaxEntity {
   }
 
   findProperty (cls, prop) {}
-
-  assert (val, msg, ...dbg) {
-    if (!val) {
-      d(msg, ...dbg)
-      console.trace()
-      throw new TypeError([`assertion failed: ${msg}`, dbg])
-    }
-  }
 }
 
 // export const w = new Walax()

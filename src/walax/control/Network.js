@@ -1,7 +1,7 @@
-import BaseControl from './BaseControl'
+import Control from './Control'
 const m = require('mithril')
 
-export default class Network extends BaseControl {
+export default class Network extends Control {
   constructor () {
     super()
   }

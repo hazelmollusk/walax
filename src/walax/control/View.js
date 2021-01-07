@@ -1,6 +1,6 @@
-import BaseControl from './BaseControl'
+import Control from './Control'
 
-export default class View extends BaseControl {
+export default class View extends Control {
   constructor(){ super()
   }
   toString() {

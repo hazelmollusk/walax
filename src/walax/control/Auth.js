@@ -1,9 +1,9 @@
 import m from 'mithril'
 import walax from '../Walax'
 import { observable, action } from 'mobx'
-import BaseControl from './BaseControl'
+import Control from './Control'
 
-export default class Auth extends BaseControl {
+export default class Auth extends Control {
   constructor (wlx) {
     super()
     this.access = 'no'

@@ -1,10 +1,10 @@
 import { observable } from 'mobx'
 import Logger from './Logger'
-import BaseControl from './BaseControl'
+import Control from './Control'
 
 const f = 'Cache'
 
-export default class WalaxCache extends BaseControl  {
+export default class WalaxCache extends Control  {
   _name = false
   _storage = false
   constructor (name = 'root') {
