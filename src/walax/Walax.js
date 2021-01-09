@@ -79,7 +79,11 @@ export class Walax extends WalaxEntity {
     return 'WALAX'
   }
 
-  initialize (config = false, force = false) {
+  initialize (...sig) {
+    this.signal('iuit', ...sig)
+    this.signal('go')
+  }
+  setup (config, force) {
     if (force) {
       this.config.clear()
       this.plugins.clear()

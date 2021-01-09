@@ -15,11 +15,6 @@ export default class WalaxEntity {
     return 'Walax Entity'
   }
 
-  initialize (...data) {
-    this.sendSignal('init')
-    this.sendSignal('go')
-  }
-
   /*
     sets up logging shortcuts that automatically tag
     logs with this objects ident 
@@ -60,13 +55,22 @@ export default class WalaxEntity {
   }
   // children should override to recv signals
   // if it adds its own signals
-  handleSignal (src, ...sig) {}
+  // should return boolean
+  handleSignal (src, ...sig) {
+    return true
+  }
   receiveSignal (src, ...sig) {
     this.d('we get signal', { src }, { sig })
     return w.callable(this, sig[0])
       ? this[sig.shift()](src, ...sig)
       : this.handleSignal(src, ...sig)
   }
+  init (...sig) {
+    this._w ||= {}
+    this._w.setup ||= this.handleSignal('setup')
+  }
+  // override for run-once initialization
+  setup (...sig) {}
   // children may override to remove hierarchy
   sendSignal (src, ...sig) {
     this.receiveSignal(src, ...sig)
