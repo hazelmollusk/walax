@@ -5,6 +5,5 @@ const { observable } = require('mobx')
 export default class Control extends WalaxEntity {
   constructor () {
     super()
-    w.addSignal(this)
   }
 }

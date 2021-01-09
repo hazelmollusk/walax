@@ -22,23 +22,38 @@ export default class WalaxEntity {
   _daeiName = false
   // override to set a dynamic log name that isn't toString()
   _daeiGetName () {
-    if (this._daeiName) return this._daeiName
-    if (this.toString) return this.toString()
-    return 'Walax Entity'
+    return this._daeiName
+      ? this._daeiName
+      : this.toString
+      ? this.toString()
+      : 'Walax Entity'
   }
   d (...msg) {
-    w.log.debug(this._daeiGetName(), ...msg)
+    ;(w.log ? w.log.debug : (...a) => console.log(...a))(
+      this._daeiGetName(),
+      ...msg
+    )
   }
   e (...msg) {
     // if (w.DEBUG)
     //   w.log.debug(name || this._daeiGetName(), dbg)
-    w.log.error(this._daeiGetName(), ...msg)
+    ;(w.log ? w.log.error : (...a) => console.log(...a))(
+      this._daeiGetName(),
+      ...msg
+    )
+    throw new TypeError(msg[0])
   }
   a (cond, msg, ...dbg) {
-    w.log.assert(cond, msg, this._daeiGetName(), ...dbg)
+    ;(w.log ? w.log.assert : (...a) => console.log(...a))(
+      this._daeiGetName(),
+      ...dbg
+    )
   }
   i (...msg) {
-    w.log.info(this._daeiGetName(), ...msg)
+    ;(w.log ? w.log.info : (...a) => console.log(...a))(
+      this._daeiGetName(),
+      ...msg
+    )
   }
 
   /* 
@@ -60,7 +75,7 @@ export default class WalaxEntity {
     return true
   }
   receiveSignal (src, ...sig) {
-    this.d('we get signal', { src }, { sig })
+    this?.d('we get signal', { src }, { sig })
     return w.callable(this, sig[0])
       ? this[sig.shift()](src, ...sig)
       : this.handleSignal(src, ...sig)
