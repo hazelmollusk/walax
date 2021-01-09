@@ -1,12 +1,8 @@
-import WalaxModel from './WalaxModel'
-import { observable } from 'mobx'
-import { WalaxSchema } from './WalaxSchema'
+import Schema from '../Schema'
 import DjangoModel from './DjangoModel'
-import DjangoManager from './DjangoManager'
-import w from '../Walax'
-import Logger from '../control/Logger'
+import w from '../../Walax'
 
-export class DjangoSchema extends WalaxSchema {
+export class DjangoSchema extends Schema {
   _defaultModel = DjangoModel
   _defaultManager = DjangoManager
 

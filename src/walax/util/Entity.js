@@ -8,7 +8,7 @@ import w from '../Walax'
     * signalling
 */
 
-export default class WalaxEntity {
+export default class Entity {
   constructor () {}
 
   toString () {
@@ -75,17 +75,18 @@ export default class WalaxEntity {
     return true
   }
   receiveSignal (src, ...sig) {
-    this?.d('we get signal', { src }, { sig })
-    return w.callable(this, sig[0])
-      ? this[sig.shift()](src, ...sig)
-      : this.handleSignal(src, ...sig)
+    this?.d(`signal "${sig[0]}" => ${w.callable(this, sig[0]) ? 'method' : 'handleSignal'}`, 
+      { src }, { sig })
+    return (w.callable(this, sig[0]))?     
+      this[sig.shift()](src, ...sig):
+      this.handleSignal(src, ...sig)
   }
-  init (...sig) {
+  init (src, ...sig) {
     this._w ||= {}
-    this._w.setup ||= this.handleSignal('setup')
+    this._w.setup ||= this.signal('setup')
   }
   // override for run-once initialization
-  setup (...sig) {}
+  setup (src, ...sig) {}
   // children may override to remove hierarchy
   sendSignal (src, ...sig) {
     this.receiveSignal(src, ...sig)

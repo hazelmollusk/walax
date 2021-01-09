@@ -1,8 +1,8 @@
-import WalaxManager from './WalaxManager'
-import WalaxEntity from '../util/WalaxEntity'
+import Manager from './Manager'
+import Entity from '../util/Entity'
 import w from '../Walax'
 
-export default class WalaxModel extends WalaxEntity {
+export default class Model extends Entity {
   constructor () {
     super()
   }
@@ -20,7 +20,7 @@ export default class WalaxModel extends WalaxEntity {
   }
 
   static _walaxManager = false
-  static _walaxDefaultManager = WalaxManager
+  static _walaxDefaultManager = Manager
   static _getManager (obj) {
     this._walaxManager ||= this._walaxDefaultManager.getForModel(obj)
     return this._walaxManager

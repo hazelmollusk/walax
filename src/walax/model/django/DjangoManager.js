@@ -1,7 +1,7 @@
-import WalaxManager from './WalaxManager'
+import Manager from '../Manager'
 import DjangoQuery from './DjangoQuery'
 
-export default class DjangoManager extends WalaxManager {
+export default class DjangoManager extends Manager {
   constructor (model) {
     super(model)
   }

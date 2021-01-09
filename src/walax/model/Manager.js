@@ -1,9 +1,9 @@
-import WalaxEntity from '../util/WalaxEntity'
+import Entity from '../util/Entity'
 import w from '../Walax'
 var m = require('mithril')
 var { observable } = require('mobx')
 
-class WalaxManager extends WalaxEntity {
+class Manager extends Entity {
   _model = false
 
   static _managers = new Map()
@@ -24,4 +24,4 @@ class WalaxManager extends WalaxEntity {
   one (arg) {}
 }
 
-export default WalaxManager
+export default Manager

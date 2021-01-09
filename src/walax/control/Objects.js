@@ -1,6 +1,6 @@
 import { observable, computed } from 'mobx'
-import { WalaxSchema } from '../model/WalaxSchema'
-import { DjangoSchema } from '../model/DjangoSchema'
+import { WalaxSchema } from '../model/Schema'
+import { DjangoSchema } from '../model/django/DjangoSchema'
 
 import Logger from './Logger'
 import Control from './Control'

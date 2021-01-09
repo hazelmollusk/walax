@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime' // i guess
 import { Logger, consoleLog } from './control/Logger'
-import WalaxEntity from './util/WalaxEntity'
+import Entity from './util/Entity'
 import Control from './control/Control'
 import Objects from './control/Objects'
 import Network from './control/Network'
@@ -67,12 +67,11 @@ const a = (c, ...m) => {
   }
 }
 
-export class Walax extends WalaxEntity {
+export class Walax extends Entity {
   constructor (...args) {
     super()
     this.augmentObj(this, 'config', new Map())
     this.augmentObj(this, 'plugins', new Map())
-    this.augmentObj(this, 'classes', new Map())
   }
 
   toString () {
@@ -80,13 +79,18 @@ export class Walax extends WalaxEntity {
   }
 
   initialize (...sig) {
-    this.signal('iuit', ...sig)
+    this.signal('init', ...sig)
+    d('GO')
     this.signal('go')
   }
-  setup (config, force) {
+
+  setup (src, config, force) {
+    this._config ||= new Map()
+    this._plugins ||= new Map()
     if (force) {
-      this.config.clear()
-      this.plugins.clear()
+      d('forcing setup...')
+      this._config.clear()
+      this._plugins.clear()
     }
     if (config) for (let name in config) this._config.set(name, config[name])
 
@@ -112,16 +116,15 @@ export class Walax extends WalaxEntity {
 
     // initialize plugins
     d('setup complete')
-    super.initialize()
   }
 
   addPlugin (cmp, key = false, ...args) {
-    this._plugins ||= new Map()
+    
     key ||= cmp.name
 
     d(`registering control ${key}`, cmp)
     a(!this._plugins.has(key), `control ${key} exists`, cmp)
-    a(this.checkClass(Control, cmp), `${key} is not BaseControl`, cmp)
+    a(this.checkClass(Control, cmp), `${key} is not extended from Control`, cmp)
     a(this.isValidProp(key), `invalid control key ${key}`, cmp)
     d(`validated plugin ${key}`, cmp)
 

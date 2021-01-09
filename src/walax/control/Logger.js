@@ -43,6 +43,8 @@ COLOR[ERROR] = {
 export const consoleLog = (msg, lvl, stack) =>
   console.log(
     // tpdp any need to check for chrome here?
+
+    
     // todo make "walax" configurable via proxy logging class
     `%c⋞%c༺⟅༼₩₳₤Ⱥ᙭༽⟆༻%c≽%c⟹%c≣ ${msg.shift()}`,
     'color: #66bb34; font-size: medium;',
@@ -83,7 +85,7 @@ consoleLog.multiple = true
 export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
 recordLogs.logs = new Set()
 
-export class Logger extends Control {
+export  class Logger extends Control {
   all = new Set()
   level = DEBUG
   stack = false
@@ -107,22 +109,26 @@ export class Logger extends Control {
    *
    * @param {*} s
    */
-  async fatal (...s) {
+
+  _shouldLog (level) {
+    return this.level >= level
+  }
+  /* async */  fatal (...s) {
     return this._shouldLog(FATAL) && this._log(s, FATAL)
   }
-  async info (...s) {
+  /* async */  info (...s) {
     return this._shouldLog(INFO) && this._log(s, INFO)
   }
-  async warn (...s) {
+  /* async */  warn (...s) {
     return this._shouldLog(WARN) && this._log(s, WARN)
   }
-  async error (...s) {
+  /* async */  error (...s) {
     return this._shouldLog(ERROR) && this._log(s, ERROR)
   }
-  async debug (...s) {
+  /* async */  debug (...s) {
     return this._shouldLog(DEBUG) && this._log(s, DEBUG)
   }
-  async trace (...s) {
+  /* async */  trace (...s) {
     return this._shouldLog(TRACE) && this._log(s, TRACE)
   }
   assert (val, msg, name = false, dbginfo = false) {
@@ -132,11 +138,8 @@ export class Logger extends Control {
       // crash and reload?  what now?
     }
   }
-  _shouldLog (level) {
-    return this.level >= level
-  }
 
-  async _log (s, level = INFO, obj = null) {
+  /* async */  _log (s, level = INFO, obj = null) {
     let promises = []
     let stack = this.stack && this._shouldLog(DEBUG) ? stackinfo() : false
     this.all.forEach((v, k, z) => {
@@ -149,7 +152,7 @@ export class Logger extends Control {
     return promises
   }
 
-  async _processLog (cb, msg, level, stack = null) {
+  /* async */  _processLog (cb, msg, level, stack = null) {
     return cb(msg, level, stack)
   }
   toString () {

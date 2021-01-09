@@ -1,11 +1,11 @@
 import { observable } from 'mobx'
-import WalaxModel from './WalaxModel'
-import WalaxManager from './WalaxManager'
+import Model from './Model'
+import Manager from './Manager'
 import w from '../Walax'
-import WalaxEntity from '../util/WalaxEntity'
+import Entity from '../util/Entity'
 
 //todo schema versioning/collision detection/etc
-export class WalaxSchema extends WalaxEntity {
+export default class Schema extends Entity {
   schema = false
   title = false
   description = false
@@ -13,7 +13,7 @@ export class WalaxSchema extends WalaxEntity {
   name = false
   uri = false
   servers = false
-  defaultManager = WalaxManager
+  defaultManager = Manager
   managers = new Map()
   models = new Map()
 
@@ -61,7 +61,7 @@ export class WalaxSchema extends WalaxEntity {
   }
 
   checkModel (model) {
-    if (!w.checkClass(WalaxModel, model)) return false
+    if (!w.checkClass(Model, model)) return false
     return true
   }
 

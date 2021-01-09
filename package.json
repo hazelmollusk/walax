@@ -5,6 +5,7 @@
   "main": "dist/walax.js",
   "scripts": {
     "watch": "webpack -d --watch",
+    "live": "p=0;q=0;endit() { kill -9 $p; kill -9 $q; }; trap endit INT; records/manage.py runserver 8357 & p=$!; npm run watch & wait; q=$!; wait $p; wait $q; endit",
     "build": "webpack",
     "docs": "documentation build src/** -f html -o docs/"
   },

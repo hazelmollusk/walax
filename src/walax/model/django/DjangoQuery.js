@@ -1,9 +1,7 @@
-import w from '../Walax'
+import w from '../../Walax'
+import Entity from '../../util/Entity'
 
-import Logger from '../control/Logger'
-import WalaxEntity from '../util/WalaxEntity'
-
-class DjangoQueryProxy extends WalaxEntity {
+class DjangoQueryProxy extends Entity {
   query = false
   keys = false
 

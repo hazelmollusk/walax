@@ -1,15 +1,12 @@
-import WalaxModel from './WalaxModel'
-import w, { Walax } from '../Walax'
+import Model from '../Model'
 import DjangoManager from './DjangoManager'
-
-import Logger from '../control/Logger'
-import { thisTypeAnnotation } from '@babel/types'
+import w from '../../Walax'
 
 /**
  * DjangoModel
  * @class
  */
-export default class DjangoModel extends WalaxModel {
+export default class DjangoModel extends Model {
   /**
    * builds a new DjangoModel
    * @class
