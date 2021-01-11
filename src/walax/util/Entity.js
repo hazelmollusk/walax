@@ -29,28 +29,26 @@ export default class Entity {
       : 'Walax Entity'
   }
   d (...msg) {
-    ;(w.log ? w.log.debug : (...a) => console.log(...a))(
+    (w.log ? w.log.debug : console.log)(
       this._daeiGetName(),
       ...msg
     )
   }
   e (...msg) {
-    // if (w.DEBUG)
-    //   w.log.debug(name || this._daeiGetName(), dbg)
-    ;(w.log ? w.log.error : (...a) => console.log(...a))(
+    (w.log ? w.log.error : console.error)(
       this._daeiGetName(),
       ...msg
     )
     throw new TypeError(msg[0])
   }
   a (cond, msg, ...dbg) {
-    ;(w.log ? w.log.assert : (...a) => console.log(...a))(
+    (w.log ? w.log.assert : w.assert)(
       this._daeiGetName(),
-      ...dbg
+      ...msg
     )
   }
   i (...msg) {
-    ;(w.log ? w.log.info : (...a) => console.log(...a))(
+    (w.log ? w.log.info : console.log)(
       this._daeiGetName(),
       ...msg
     )

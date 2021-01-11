@@ -159,17 +159,6 @@ export  class Logger extends Control {
     return 'Logger'
   }
 
-  daei (obj, name = undefined) {
-    if (name) this._daeiName = name
-    return Object.entries({
-      d: this.debugger(name),
-      a: this.asserter(name),
-      e: this.errorer(name),
-      i: this.informer(name)
-    }).forEach(v => {
-      Walax.augment(obj, v[0], v[1])
-    })
-  }
 }
 
 export default { Logger, consoleLog, recordLogs }
