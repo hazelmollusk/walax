@@ -3,8 +3,14 @@ import Logger from './Logger'
 import Control from './Control'
 
 const f = 'Cache'
-
-export default class WalaxCache extends Control  {
+/**
+ * Generic cache interface
+ *
+ * @export
+ * @class Cache
+ * @extends {Control}
+ */
+export default class Cache extends Control  {
   _name = false
   _storage = false
   constructor (name = 'root') {
@@ -17,7 +23,7 @@ export default class WalaxCache extends Control  {
   }
   
   cache (key) {
-    if (!this._storage.has(key)) this._storage.set(key, new WalaxCache(key))
+    if (!this._storage.has(key)) this._storage.set(key, new Cache(key))
     return this._storage.get(key)
   }
   find (key, func, ...args) {

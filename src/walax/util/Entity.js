@@ -84,9 +84,12 @@ export default class Entity {
   init (src, ...sig) {
     this._w ||= {}
     this._w.setup ||= this.signal('setup')
+
   }
   // override for run-once initialization
-  setup (src, ...sig) {}
+  setup (src, ...sig) {
+    w.log.daei(this)
+  }
   // children may override to remove hierarchy
   sendSignal (src, ...sig) {
     this.receiveSignal(src, ...sig)

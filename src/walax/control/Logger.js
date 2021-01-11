@@ -1,6 +1,6 @@
 import { logicalExpression } from '@babel/types'
 import { observable } from 'mobx'
-import Walax from '../Walax'
+import w from '../Walax'
 import Control from './Control'
 
 const stackinfo = require('stackinfo')
@@ -39,19 +39,24 @@ COLOR[ERROR] = {
   bg: 'red',
   border: 'white'
 }
-
+/**
+ * a simple, colorful console logging plugin
+ *
+ * @export
+ * @param {*} msg
+ * @param {*} lvl
+ * @param {*} stack
+ */
 export const consoleLog = (msg, lvl, stack) =>
   console.log(
-    // tpdp any need to check for chrome here?
-
-    
     // todo make "walax" configurable via proxy logging class
-    `%c⋞%c༺⟅༼₩₳₤Ⱥ᙭༽⟆༻%c≽%c⟹%c≣ ${msg.shift()}`,
+    // `%c⋞%c༺⟅༼₩₳₤Ⱥ᙭༽⟆༻%c≽%c⟹%c≣ ${msg.shift()}`,
+    `%c⋞%c༺⟅༼Walax༽⟆༻%c≽%c⟹%c≣ ${msg.shift()}`,
     'color: #66bb34; font-size: medium;',
     'color: #55aa23; \
      background-color: #090c09; \
      font-family: "Helvetica", "Verdana", "Arial", sans-serif; \
-     font-weight: bold; \
+     font-weight: bold; font-variant: small-caps; \
      font-size: x-small; \
      border: 2px solid #66bb34; \
      padding: 1px; \
@@ -72,7 +77,7 @@ export const consoleLog = (msg, lvl, stack) =>
       border-style: ridge; \
       border-bottom-left-radius: 15px; \
       border-top-right-radius: 15px; \
-      padding: 2px; \
+      padding: 4px; \
       padding-top: 0px; \
       color: ${COLOR[lvl]?.fg || 'white'}; \
       background-color: ${COLOR[lvl]?.bg || 'black'}; \
@@ -81,11 +86,25 @@ export const consoleLog = (msg, lvl, stack) =>
   )
 
 consoleLog.multiple = true
-
+/**
+ * a simple logging plugin that records logs (can be @observed)
+ *
+ * @export
+ * @param {*} msg
+ * @param {*} lvl
+ * @param {*} stack
+ */
 export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)
 recordLogs.logs = new Set()
 
-export  class Logger extends Control {
+/**
+ * Generic logging interface
+ *
+ * @export
+ * @class Logger
+ * @extends {Control}
+ */
+export class Logger extends Control {
   all = new Set()
   level = DEBUG
   stack = false
@@ -95,7 +114,8 @@ export  class Logger extends Control {
   }
 
   /**
-   * registers a callback: (msg, level) => { ..logging.. }
+   * registers a callback (plugin):
+   * (msg, level) => { <logging code> }
    *
    * @param {*} cb
    */
@@ -113,36 +133,36 @@ export  class Logger extends Control {
   _shouldLog (level) {
     return this.level >= level
   }
-  /* async */  fatal (...s) {
+  /* async */   fatal (...s) {
     return this._shouldLog(FATAL) && this._log(s, FATAL)
   }
-  /* async */  info (...s) {
+  /* async */   info (...s) {
     return this._shouldLog(INFO) && this._log(s, INFO)
   }
-  /* async */  warn (...s) {
+  /* async */   warn (...s) {
     return this._shouldLog(WARN) && this._log(s, WARN)
   }
-  /* async */  error (...s) {
+  /* async */   error (...s) {
     return this._shouldLog(ERROR) && this._log(s, ERROR)
   }
-  /* async */  debug (...s) {
+  /* async */   debug (...s) {
     return this._shouldLog(DEBUG) && this._log(s, DEBUG)
   }
-  /* async */  trace (...s) {
+  /* async */   trace (...s) {
     return this._shouldLog(TRACE) && this._log(s, TRACE)
   }
-  assert (val, msg, name = false, dbginfo = false) {
+  assert (val, msg, ...args) {
     if (!val) {
-      this.error(name || '<assert>', msg, dbginfo)
+      this.error(msg, ...args)
       throw new TypeError(msg)
       // crash and reload?  what now?
     }
   }
-
-  /* async */  _log (s, level = INFO, obj = null) {
+  
+  /* async */   _log (s, level = INFO, obj = null) {
     let promises = []
     let stack = this.stack && this._shouldLog(DEBUG) ? stackinfo() : false
-    this.all.forEach((v, k, z) => {
+    this.all.forEach((v, _k, z) => {
       if (v.multiple) promises.push(this._processLog(v, s, level, stack))
       else
         s.forEach(msg => promises.push(this._processLog(v, msg, level, stack)))
@@ -152,13 +172,29 @@ export  class Logger extends Control {
     return promises
   }
 
-  /* async */  _processLog (cb, msg, level, stack = null) {
+  /* async */   _processLog (cb, msg, level, stack = null) {
     return cb(msg, level, stack)
   }
   toString () {
     return 'Logger'
   }
-
+  debugger (name) {
+    // return (...msg) =>
+    return (...msg) => this.debug(name, ...msg)
+  }
+  errorer (name) {
+    return (msg, dbg) => {
+      this.error(name, msg)
+      if (dbg) this.debug(name, dbg)
+      /* throw new TypeError(msg) ?? */
+    }
+  }
+  asserter (name) {
+    return (cond, msg, d) => this.assert(cond, msg, name, d)
+  }
+  informer (name) {
+    return (...msg) => this.info(name, ...msg)
+  }
   daei (obj, name = undefined) {
     if (name) this._daeiName = name
     return Object.entries({
@@ -167,7 +203,7 @@ export  class Logger extends Control {
       e: this.errorer(name),
       i: this.informer(name)
     }).forEach(v => {
-      Walax.augment(obj, v[0], v[1])
+      w.augment(obj, v[0], v[1])
     })
   }
 }
