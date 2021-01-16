@@ -1,5 +1,6 @@
 import Schema from '../Schema'
 import DjangoModel from './DjangoModel'
+import DjangoManager from './DjangoManager'
 import w from '../../Walax'
 
 export class DjangoSchema extends Schema {
