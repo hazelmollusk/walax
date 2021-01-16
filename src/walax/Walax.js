@@ -119,21 +119,10 @@ export class Walax extends Entity {
     }
 
     addPlugin(cmp, key = false, ...args) {
-
-        key ||= cmp.name
-
-        d(`registering control ${key}`, cmp)
         a(!this._plugins.has(key), `control ${key} exists`, cmp)
         a(this.checkClass(Control, cmp), `${key} is not extended from Control`, cmp)
         a(this.isValidProp(key), `invalid control key ${key}`, cmp)
-        d(`validated plugin ${key}`, cmp)
-
-        let newCmp = new cmp(w, ...args)
-        this._plugins.set(key, newCmp)
-        this.addSignal(newCmp)
-        this.augment(this, key, () => this._plugins.get(key))
-
-        return cmp
+        this.addComponent(cmp, key, ...args)
     }
 
     isValidProp(name) {
