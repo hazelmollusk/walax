@@ -4,24 +4,24 @@ var m = require('mithril')
 var { observable } = require('mobx')
 
 class Manager extends Entity {
-  _model = false
+    _model = false
 
-  static _managers = new Map()
-  static getForModel (model) {
-    if (!this._managers.has(model)) {
-      let mgr = new this(model)
-      this._managers.set(model, mgr)
+    static _managers = new Map()
+    static getForModel(model) {
+        if (!this._managers.has(model)) {
+            let mgr = new this(model)
+            this._managers.set(model, mgr)
+        }
+        return this._managers.get(model)
     }
-    return this._managers.get(model)
-  }
 
-  constructor () {
-    super()
-  }
+    constructor() {
+        super()
+    }
 
-  all () {}
-  filter (...args) {}
-  one (arg) {}
+    all() { }
+    filter(...args) { }
+    one(arg) { }
 }
 
 export default Manager

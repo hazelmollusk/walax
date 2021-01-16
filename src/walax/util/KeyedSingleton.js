@@ -1,10 +1,10 @@
-import {observable} from 'mobx'
+import { observable } from 'mobx'
 
 export default class KeyedSingleton {
-  static _instances = observable.map()
-  static _klass = KeyedSingleton
+    static _instances = observable.map()
+    static _klass = KeyedSingleton
 
-  static getInstance(name) {
-    
-  }
+    static getInstance(name) {
+
+    }
 }

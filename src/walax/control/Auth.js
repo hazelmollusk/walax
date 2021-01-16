@@ -4,74 +4,74 @@ import { observable, action } from 'mobx'
 import Control from './Control'
 
 export default class Auth extends Control {
-  constructor (wlx) {
-    super()
-    this.access = 'no'
-    this.refresh = 'no'
-    this.state = false
-    this.loaded = false
-  }
-  toString () {
-    return 'Auth'
-  }
+    constructor(wlx) {
+        super()
+        this.access = 'no'
+        this.refresh = 'no'
+        this.state = false
+        this.loaded = false
+    }
+    toString() {
+        return 'Auth'
+    }
 
-  getAccess () {
-    return this.access
-  }
-  authenticate (alias, passcode) {
-    if (!this.loaded) {
-      this.initialize()
+    getAccess() {
+        return this.access
     }
-    if (this.access && this.refresh) {
-      d('already logged in')
-      this.state = true
-      return
-    }
-    w.net
-      .post(
-        // fixme: dunno
-        '/api/token/',
-        {
-          username: alias,
-          password: passcode
-        },
-        {
-          username: alias,
-          password: passcode
+    authenticate(alias, passcode) {
+        if (!this.loaded) {
+            this.initialize()
         }
-      )
-      .then(function (result) {
-        this.access = result.access
-        this.refresh = result.refresh
-        this.state = true
-      })
-      .catch(function (err) {
-        e(err)
-      })
-  }
-  refreshToken () {} //TODO
-  loadStorage () {
-    var s = window.localStorage
-    var access = s.getItem('access')
-    var refresh = s.getItem('refresh')
-    if (access && refresh) {
-      this.access = access
-      this.refresh = refresh
-      this.state = true
+        if (this.access && this.refresh) {
+            d('already logged in')
+            this.state = true
+            return
+        }
+        w.net
+            .post(
+                // fixme: dunno
+                '/api/token/',
+                {
+                    username: alias,
+                    password: passcode
+                },
+                {
+                    username: alias,
+                    password: passcode
+                }
+            )
+            .then(function (result) {
+                this.access = result.access
+                this.refresh = result.refresh
+                this.state = true
+            })
+            .catch(function (err) {
+                e(err)
+            })
     }
-  }
-  saveStorage () {
-    var s = window.localStorage
-    s.access = this.access
-    s.refresh = this.refresh
-  }
-  initialize () {
-    this.d('auth init called')
-    if (typeof Storage === 'undefined') {
-      throw 'no storage available'
+    refreshToken() { } //TODO
+    loadStorage() {
+        var s = window.localStorage
+        var access = s.getItem('access')
+        var refresh = s.getItem('refresh')
+        if (access && refresh) {
+            this.access = access
+            this.refresh = refresh
+            this.state = true
+        }
     }
+    saveStorage() {
+        var s = window.localStorage
+        s.access = this.access
+        s.refresh = this.refresh
+    }
+    initialize() {
+        this.d('auth init called')
+        if (typeof Storage === 'undefined') {
+            throw 'no storage available'
+        }
 
-    this.loadStorage()
-    this.loaded = true
-  }
+        this.loadStorage()
+        this.loaded = true
+    }
 }
