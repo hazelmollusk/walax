@@ -1,6 +1,6 @@
 {
   "name": "walax",
-  "version": "1.0.8",
+  "version": "1.1.0-0",
   "description": "walax is a Javascript framework for interacting with objects remotely via Django.",
   "main": "dist/walax.js",
   "scripts": {
