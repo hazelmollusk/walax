@@ -143,8 +143,9 @@ export class Walax extends Entity {
         return true
     }
 
+    // callable(obj, methodname) or callable(funcobj)
     callable(...args) {
-        let f = args.length == 2 && args[1] in args[0] ? args[0][args[1]] : args[0]
+        let f = (args.length == 2 && args[1] in args[0]) ? args[0][args[1]] : (args.length == 1) ? args[0] : undefined
         return f instanceof Function
     }
 
@@ -189,8 +190,6 @@ export class Walax extends Entity {
         if (cls == req) return true
         return this.checkClass(req, cls.__proto__)
     }
-
-    findProperty(cls, prop) { }
 }
 
 // export const w = new Walax()
