@@ -155,7 +155,6 @@ export class Walax extends Entity {
     }
 
     augment(obj, key, getter, setter = undefined) {
-        d('augmenting', { obj }, { key }, { getter }, { setter })
         a(
             obj && key && getter,
             'augment called improperly',
@@ -174,10 +173,10 @@ export class Walax extends Entity {
         )
         let desc = {
             enumerable: true,
-            configurable: false, // really should be false FIXME
-            get: getter
+            configurable: false,
+            get: getter.bind(obj)
         }
-        if (setter) desc.set = setter
+        if (setter) desc.set = setter.bind(obj)
         Object.defineProperty(obj, key, desc)
         a(Object.getOwnPropertyNames(obj).includes(key), 'augmentation failed')
         d('augmented', { obj }, { key }, { desc })
