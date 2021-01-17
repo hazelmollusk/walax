@@ -79,8 +79,7 @@ export class Walax extends Entity {
     }
 
     initialize(...sig) {
-        this.signal('init', ...sig)
-        d('GO')
+        this.signal('init',  ...sig)
         this.signal('go')
     }
 

@@ -5,7 +5,7 @@ export default class Test extends Control {
         super()
     }
     toString() {
-        return 'View'
+        return 'Test'
     }
     toggle(elm) {
         if (typeof elm == 'string') elm = document.getElementById(elm)
