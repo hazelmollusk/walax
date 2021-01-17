@@ -7,7 +7,7 @@ import Manager from './walax/model/Manager'
 import Control from './walax/control/Control'
 
 // this will force a reload on reconfig
-import '../webpack.config'
+import '../../webpack.config'
 
 w.augmentObj(w, 'classes', {
     Entity,
