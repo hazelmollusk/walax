@@ -17,7 +17,9 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url=jspkg["repository"],
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(
+        include=['walax.*']
+    ),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",

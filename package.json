@@ -7,6 +7,7 @@
     "watch": "webpack -d --watch",
     "live": "records/manage.py runserver 8357 & npm run watch & wait",
     "build": "webpack",
+    "buildpy": "python -m pep517.build .",
     "docs": "documentation build js/ src/** -f html -o docs/js/"
   },
   "files": [

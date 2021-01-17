@@ -5,15 +5,12 @@ from django.shortcuts import redirect
 from django.templatetags.static import static
 from rest_framework.schemas import get_schema_view
 from rest_framework import routers, serializers, viewsets
+
+from walax.routers import WalaxRouter
 from .views import *
 
-router = routers.DefaultRouter()
-
-router.register('bands', BandViewSet)
-router.register('songs', SongViewSet)
-router.register('albums', AlbumViewSet)
-router.register('stores', StoreViewSet)
-
+router = routers.WalaxRouter()
+router.register_models(Band, Song, Album, Store)
 
 urlpatterns = [
     path(r'api/', include(router.urls)),
