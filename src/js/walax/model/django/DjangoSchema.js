@@ -39,14 +39,20 @@ export class DjangoSchema extends Schema {
     }
 
     loadUrl(url) {
-        this.d(`loadUrl ${url}`)
-        w.net.options(url).then(info => {
+        // FIXME hack
+        let urlParts = url.split('?', 1)
+        let modelsUrl = urlParts.shift() + 'models/' + urlParts.join('')
+        this.d(`loadUrl ${url}`, { modelsUrl })
+        w.net.options(modelsUrl).then(info => {
             this.d(`receiving data for ${url}`, info)
+            this.url = url
+            this.modelsUrl = modelsUrl
             this.title = info.name || 'Untitled'
             this.description = info.description || ''
             this.schema = info
         })
-        w.net.get(url).then(data => {
+        w.net.get(modelsUrl).then(data => {
+            this.d('retrieved schema data', data)
             for (let modelName in data) {
                 let modelRootUri = data[modelName]
                 w.net.options(modelRootUri).then(modelInfo => {

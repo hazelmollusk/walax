@@ -19,8 +19,8 @@ class WalaxRouter(routers.DefaultRouter):
         self.register(model._meta.verbose_name, view)
 
     @property
-    def url(self):
+    def urls(self):
         urlpatterns = [
             path('models/', include(super().urls))
         ]
-        return
+        return urlpatterns
