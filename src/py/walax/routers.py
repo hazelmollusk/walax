@@ -1,21 +1,26 @@
-
+from django.urls import include, path
 from rest_framework.schemas import get_schema_view
 from rest_framework import routers, serializers, viewsets
 
-from py.walax.views import WalaxModelViewSet
+from .views import WalaxModelViewSet
 
 
 class WalaxRouter(routers.DefaultRouter):
-    def __init__(self):
-        self.models = []
 
-    def register_model(self, model, view=False):
+    def __init__(self):
+        super().__init__()
+        self.models = []
+        self.registry = []
+
+    def register_model(self, model=False, view=False):
         self.models.append(model)
         if not view:
             view = WalaxModelViewSet.for_model(model)
-        self.register(view)
+        self.register(model._meta.verbose_name, view)
 
-    def register_models(self, **models):
-        for model in models:
-            self.register_model(model)
- 
+    @property
+    def url(self):
+        urlpatterns = [
+            path('models/', include(super().urls))
+        ]
+        return

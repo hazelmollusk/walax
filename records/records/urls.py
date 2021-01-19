@@ -7,10 +7,11 @@ from rest_framework.schemas import get_schema_view
 from rest_framework import routers, serializers, viewsets
 
 from walax.routers import WalaxRouter
-from .views import *
+from .models import *
 
-router = routers.WalaxRouter()
-router.register_models(Band, Song, Album, Store)
+router = WalaxRouter()
+for model in [Band, Song, Album, Store]:
+    router.register_model(model)
 
 urlpatterns = [
     path(r'api/', include(router.urls)),

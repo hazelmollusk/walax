@@ -126,7 +126,6 @@ export class Logger extends Control {
         return this._shouldLog(ERROR) && this._log(s, ERROR)
     }
   /* async */  debug(...s) {
-        console.log(s)
         return this._shouldLog(DEBUG) && this._log(s, DEBUG)
     }
   /* async */  trace(...s) {

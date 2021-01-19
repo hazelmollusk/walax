@@ -1,3 +1,4 @@
+# /usr/bin/env python3
 import setuptools
 import json
 
@@ -18,6 +19,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url=jspkg["repository"],
     packages=setuptools.find_packages(
+        where="src/py",
         include=['walax.*']
     ),
     classifiers=[
