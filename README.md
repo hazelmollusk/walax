@@ -10,7 +10,7 @@ While other implementations should be possible, walax was designed and tested us
 
 ### 🏠 [Homepage](https://github.com/hazelmollusk/walax)
 
-Walax is meant to provide all the scaffolding for a fully-featured client-side application with API backing; as such, it encompasses an array of common functionality, and attempts to present them in an integrated fashion.
+Walax is meant to provide all the scaffolding for a fully-featured client-side application with API backing; as such, it encompasses an array of common functionality, and attempts to present them in an integrated fashion.  It includes a Django API for simple server configuration.
 
 Walax has two main dependencies:
 
@@ -22,13 +22,20 @@ Both libraries are small, fast, and provide (in the author's opinion ;) powerful
 For now, here are some examples of the walax API:
 
 ## Examples
-
+    // Javascript 
     import w from Walax
-    
-    // or
-    
-    import Walax from Walax
-    w = new Walax()
+    w.initialize()
+    w.load('/api')
+
+    # Python
+    from django.urls import path, include
+    from walax.routers import WalaxRouter
+    from .models import MODELS
+    router = WalaxRouter()
+    for model in MODELS:
+        router.register_model(model)
+    ...
+    urlpatterns += path('api/', include(router.urls))
 
 ### Making remote requests
 
@@ -46,10 +53,15 @@ For now, here are some examples of the walax API:
 
     w.log.fatal('i give up')  // terminates 
 
+    w.log.assert(1>2, 'math stopped working')  // asserts
+
+    let a = new Band()
+    a.name = 'Beatles'
+    a.d('band-specific debug message')
+    // logs: "Band: Beatles", 'band-specific debug message')
+
 
 ### Objects (remote API)
-
-    w.obj.load('/records/api/?format=openapi-json', 'records')
 
     let Band = w.obj.records.Band
     
