@@ -12,8 +12,8 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'walax.js',
-        // library: 'walax',
-        // libraryTarget: 'umd',
+        library: 'walax',
+        libraryTarget: 'commonjs',
         // umdNamedDefine: true
     },
     externals: {
