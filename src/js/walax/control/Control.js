@@ -6,4 +6,5 @@ export default class Control extends Entity {
     constructor() {
         super()
     }
+    toString() { return 'Control' }
 }

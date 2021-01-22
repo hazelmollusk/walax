@@ -93,7 +93,7 @@ export class Logger extends Control {
     constructor() {
         super()
     }
-
+    toString() { return 'Log' }
     /**
      * registers a callback: (msg, level) => { ..logging.. }
      *

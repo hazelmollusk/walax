@@ -57,9 +57,17 @@ export default class Entity {
     /* components */
     addComponent(cmp, key = undefined, ...args) {
         let newCmp = new cmp(...args)
+        this._walaxComponents = new Map()
         key ||= cmp.name
-        this.addSignal(newCmp)
-        if (w.isValidProp(key)) this.augment(this, key, () => newCmp)
+
+        if (w.isValidProp(key)) {
+            this.addSignal(newCmp)
+            this._walaxComponents.set(key, newCmp)
+            this.augment(this, key, () => this._walaxComponents.get(key))
+            console.log('component added', this, { key }, { newCmp })
+        } else {
+            throw new TypeError('invalid component')
+        }
 
         return cmp
     }

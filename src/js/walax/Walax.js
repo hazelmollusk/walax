@@ -73,8 +73,6 @@ const a = (c, ...m) => {
 class Walax extends Entity {
     constructor(...args) {
         super()
-        this.augmentObj(this, 'config', new Map())
-        this.augmentObj(this, 'plugins', new Map())
     }
 
     toString() {
@@ -87,6 +85,7 @@ class Walax extends Entity {
     }
 
     setup(src, config, force) {
+        this.augmentObj(this, 'config', new Map())
         if (config) for (let name in config) this.config.set(name, config[name])
 
         // register plugins
@@ -102,7 +101,6 @@ class Walax extends Entity {
         d('initializing...')
         for (let name in plug) this.addPlugin(plug[name], name)
 
-        d('plugins', { attempted: plug }, { current: this._plugins })
         // a(this._plugins.size == Object.keys(plug).size, 'plugin count wrong')
 
         // should have normal logging by now
@@ -114,16 +112,14 @@ class Walax extends Entity {
     }
 
     addPlugin(cmp, key = false, ...args) {
-        a(!this._plugins.has(key), `control ${key} exists`, cmp)
         a(this.checkClass(Control, cmp), `${key} is not extended from Control`, cmp)
-        a(this.isValidProp(key), `invalid control key ${key}`, cmp)
         this.addComponent(cmp, key, ...args)
     }
 
     isValidProp(name) {
         if (!name) return false
         if (typeof name != 'string') return false
-        if (name.search(/[^\w]/) != -1) return false
+        //if (name.search(/[^\w]/) != -1) return false
         return true
     }
 
@@ -159,9 +155,9 @@ class Walax extends Entity {
         let desc = {
             enumerable: true,
             configurable: false,
-            get: getter.bind(obj)
+            get: getter
         }
-        if (setter) desc.set = setter.bind(obj)
+        if (setter) desc.set = setter
         Object.defineProperty(obj, key, desc)
         a(Object.getOwnPropertyNames(obj).includes(key), 'augmentation failed')
         d('augmented', { obj }, { key }, { desc })

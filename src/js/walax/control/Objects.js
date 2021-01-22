@@ -13,6 +13,7 @@ export default class Objects extends Control {
         super()
     }
 
+    toString() { return 'Objects'}
     get defaultSchemaClass() {
         // limit the sin :)
         return DjangoSchema
