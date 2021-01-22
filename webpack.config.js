@@ -12,8 +12,8 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'walax.js',
-        library: 'walax',
-        libraryTarget: 'commonjs',
+        library: '$',
+        libraryTarget: 'umd',
         // umdNamedDefine: true
     },
     externals: {
@@ -48,17 +48,18 @@ module.exports = {
                 ]
             }
         ]
-    },
-    optimization: {
-        //   minimize: false,
-        namedModules: true,
-        namedChunks: true,
-        removeAvailableModules: false,
-        flagIncludedChunks: true,
-        occurrenceOrder: false,
-        usedExports: true,
-        providedExports: true,
-        concatenateModules: false,
-        sideEffects: false // <----- in prod defaults to true if left blank
     }
+    // ,
+    // optimization: {
+    //     //   minimize: false,
+    //     namedModules: true,
+    //     namedChunks: true,
+    //     removeAvailableModules: false,
+    //     flagIncludedChunks: true,
+    //     occurrenceOrder: false,
+    //     usedExports: true,
+    //     providedExports: true,
+    //     concatenateModules: false,
+    //     sideEffects: false // <----- in prod defaults to true if left blank
+    // }
 }

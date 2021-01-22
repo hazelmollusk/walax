@@ -8,6 +8,9 @@ import Auth from './control/Auth'
 import Cache from './control/Cache'
 import View from './control/View'
 import Test from './control/Test'
+import Schema from './model/Schema'
+import Model from './model/Model'
+import Manager from './model/Manager'
 
 const { observable } = require('mobx')
 
@@ -67,7 +70,7 @@ const a = (c, ...m) => {
     }
 }
 
-export class Walax extends Entity {
+class Walax extends Entity {
     constructor(...args) {
         super()
         this.augmentObj(this, 'config', new Map())
@@ -79,19 +82,12 @@ export class Walax extends Entity {
     }
 
     initialize(...sig) {
-        this.signal('init',  ...sig)
+        this.signal('init', ...sig)
         this.signal('go')
     }
 
     setup(src, config, force) {
-        this._config ||= new Map()
-        this._plugins ||= new Map()
-        if (force) {
-            d('forcing setup...')
-            this._config.clear()
-            this._plugins.clear()
-        }
-        if (config) for (let name in config) this._config.set(name, config[name])
+        if (config) for (let name in config) this.config.set(name, config[name])
 
         // register plugins
         const plug = {
@@ -131,7 +127,7 @@ export class Walax extends Entity {
         return true
     }
 
-    // callable(obj, methodname) or callable(funcobj)
+    // callable(obj, methodname) or callable(funcObj)
     callable(...args) {
         let f = (args.length == 2 && args[1] in args[0]) ? args[0][args[1]] : (args.length == 1) ? args[0] : undefined
         return f instanceof Function
@@ -181,7 +177,15 @@ export class Walax extends Entity {
 }
 
 // export const w = new Walax()
-export const w = observable.box(new Walax()).get()
+const w = observable.box(new Walax()).get()
 
-// export default w
+w.augmentObj(w, 'classes', {
+    Entity,
+    Schema,
+    Model,
+    Manager,
+    Control
+})
+
+window.w = w
 export default w
