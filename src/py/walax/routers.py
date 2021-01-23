@@ -16,7 +16,10 @@ class WalaxRouter(routers.DefaultRouter):
         self.models.append(model)
         if not view:
             view = WalaxModelViewSet.for_model(model)
-        self.register(model._meta.verbose_name, view)
+        # fixme
+        modelSlug = model._meta.verbose_name.replace(' ', '_')
+
+        self.register(modelSlug, view)
 
     @property
     def urls(self):

@@ -3,9 +3,12 @@ import DjangoModel from './DjangoModel'
 import DjangoManager from './DjangoManager'
 import w from '../../Walax'
 
-const capitalize = (s) => {
-    if (typeof s !== 'string') return ''
-    return s.charAt(0).toUpperCase() + s.slice(1)
+const camelCase = (s) => {
+    if (!s || typeof s !== 'string') return ''
+    let parts = s.split('_')
+    for (let n in parts)
+        parts[n] = parts[n].charAt(0).toUpperCase() + parts[n].slice(1)
+    return parts.join('')
 }
 
 export class DjangoSchema extends Schema {
@@ -58,7 +61,7 @@ export class DjangoSchema extends Schema {
                 w.net.options(modelRootUri).then(modelInfo => {
                     this.d(`retrieved options for model ${modelName}`, data)
                     let fields = modelInfo.actions.POST
-                    let modelClassName = capitalize(modelName)
+                    let modelClassName = camelCase(modelName)
                     // let modelClassName = modelInfo.name
                     //     .replace(' List', '')
                     //     .replace(' ', '')
