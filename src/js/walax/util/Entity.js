@@ -57,7 +57,7 @@ export default class Entity {
     /* components */
     addComponent(cmp, key = undefined, ...args) {
         let newCmp = new cmp(...args)
-        this._walaxComponents = new Map()
+        this._walaxComponents ||= new Map()
         key ||= cmp.name
 
         if (w.isValidProp(key)) {
