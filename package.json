@@ -10,6 +10,7 @@
     "records": "records/manage.py runserver 8357",
     "buildpy": "python -m pep517.build .",
     "buildwheel": "python setup.py bdist_wheel",
+    "uploadpy": "twine upload --skip-existing dist/walax*.tar.gz dist/walax*.whl",
     "wheel": "while true; do npm run buildwheel; pip install `ls -t dist/*.whl|head -n 1`; echo Press Enter; read it; done",
     "docs": "documentation build js/ src/** -f html -o docs/js/"
   },

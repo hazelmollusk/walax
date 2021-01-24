@@ -31,7 +31,6 @@ export class DjangoSchema extends Schema {
             return new this._defaultManager(model)
         })
     }
-    // url in this case is expected to be a DRF API root URL
 
     toString() {
         return `django schema ${this._name}`
@@ -59,7 +58,7 @@ export class DjangoSchema extends Schema {
             for (let modelName in data) {
                 let modelRootUri = data[modelName]
                 w.net.options(modelRootUri).then(modelInfo => {
-                    this.d(`retrieved options for model ${modelName}`, data)
+                    this.d(`retrieved options for model ${modelName}`, modelInfo)
                     let fields = modelInfo.actions.POST
                     let modelClassName = camelCase(modelName)
                     // let modelClassName = modelInfo.name

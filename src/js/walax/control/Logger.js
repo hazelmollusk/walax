@@ -40,19 +40,21 @@ COLOR[ERROR] = {
     border: 'white'
 }
 
-export const consoleLog = (msg, lvl, stack) =>
+export const consoleLog = (msg, lvl, stack) => {
+    while (msg.length < 2) msg.unshift('-----')
     console.log(
         // tpdp any need to check for chrome here?
 
 
         // todo make "walax" configurable via proxy logging class
-        `%c⋞%c༺⟅༼₩₳₤Ⱥ᙭༽⟆༻%c≽%c⟹%c≣ ${msg.shift()}`,
+        `%c⋞%c༺⟅༼${msg.shift()}༽⟆༻%c≽%c⟹%c≣ ${msg.shift()}`,
         'color: #66bb34; font-size: medium;',
         'color: #55aa23; \
      background-color: #090c09; \
-     font-family: "Helvetica", "Verdana", "Arial", sans-serif; \
+     font-family: "Times New Roman", serif; \
      font-weight: bold; \
-     font-size: x-small; \
+     font-size: medium; \
+     font-variant: small-caps; \
      border: 2px solid #66bb34; \
      padding: 1px; \
      padding-top: 3px; \
@@ -63,23 +65,22 @@ export const consoleLog = (msg, lvl, stack) =>
         'color: #66bb34; font-size: medium;',
         'color: pink; font-size: medium;',
         `font-size: medium; \
-      font-variant: small-caps; \
-      font-family: "Times New Roman", serif; \
-      font-family: "Verdana", "Arial", sans-serif; \
+      font-family: "Courier New", serif; \
+      font-size: small;
       margin: 5px; \
       margin-left: 0px; \
       border-width: 4px;  \
       border-style: ridge; \
       border-bottom-left-radius: 15px; \
       border-top-right-radius: 15px; \
-      padding: 2px; \
+      padding: 3px; \
       padding-top: 0px; \
       color: ${COLOR[lvl]?.fg || 'white'}; \
       background-color: ${COLOR[lvl]?.bg || 'black'}; \
       border-color: ${COLOR[lvl]?.border || 'gray'};  `,
         ...msg
     )
-
+}
 consoleLog.multiple = true
 
 export const recordLogs = (msg, lvl, stack) => recordLogs.logs.add(msg)

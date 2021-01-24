@@ -10,6 +10,12 @@ export default class Auth extends Control {
         this.refresh = 'no'
         this.state = false
         this.loaded = false
+        if (typeof Storage === 'undefined') {
+            throw 'no storage available'
+        }
+
+        this.loadStorage()
+
     }
     toString() {
         return 'Auth'
@@ -19,9 +25,6 @@ export default class Auth extends Control {
         return this.access
     }
     authenticate(alias, passcode) {
-        if (!this.loaded) {
-            this.initialize()
-        }
         if (this.access && this.refresh) {
             d('already logged in')
             this.state = true
@@ -30,7 +33,7 @@ export default class Auth extends Control {
         w.net
             .post(
                 // fixme: dunno
-                '/api/token/',
+                w.url + '/auth/token/',
                 {
                     username: alias,
                     password: passcode
@@ -64,14 +67,5 @@ export default class Auth extends Control {
         var s = window.localStorage
         s.access = this.access
         s.refresh = this.refresh
-    }
-    initialize() {
-        this.d('auth init called')
-        if (typeof Storage === 'undefined') {
-            throw 'no storage available'
-        }
-
-        this.loadStorage()
-        this.loaded = true
     }
 }

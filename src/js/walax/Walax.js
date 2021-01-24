@@ -75,6 +75,15 @@ class Walax extends Entity {
         super()
     }
 
+    _url = ''
+    get url() { return this._url }
+
+    load(url, key) {
+        this.obj.load(url, key)
+        this._url = url
+        return this.url
+    }
+
     toString() {
         return 'WALAX'
     }
