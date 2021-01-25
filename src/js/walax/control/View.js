@@ -3,6 +3,7 @@ import Control from './Control'
 
 
 export default class View extends Control {
+    _pages = new Set()
     constructor() {
         super()
     }
@@ -31,12 +32,42 @@ export default class View extends Control {
                 m('input[type=password][autocomplete=current-password].login.loginPass#password'),
                 m('input[type=submit].loginSubmit', {
                     onclick: () => {
+                        console.log('clicked')
                         w.auth.authenticate(document.getElementById('username').value,
                             document.getElementById('password').value)
+                        if (w.auth.state) this.display()
+                        return false
                     }
                 })
             ]))
         }
+    }
+
+    display() {
+        let body = document.getElementsByTagName('body')[0]
+        m.render(body, m('.screen#screen', [m('.nav#nav'), m('.main#main')]))
+        let nav = document.getElementById('nav')
+        let main = document.getElementById('main')
+        if (w.auth.state) {
+            let pages = {}
+            let navs = []
+            let defPage = undefined
+            this._pages.forEach(v => {
+                defPage ||= v.url
+                pages[v.url] = v.page
+                navs.append = m('a.nav', { href: '#!' + v.url }, v.nav)
+            })
+            m.render(nav, m({ view: vnode => m('.navbar', navs) }))
+            this.d('building routes', { main }, { defPage }, { pages })
+            m.route(main, defPage, pages)
+        } else {
+            m.render(nav, m('.loginNav'))
+            m.mount(main, this.login)
+        }
+    }
+
+    addPage(page) {
+        this._pages.add(page)
     }
 
     addNav(cmp) {

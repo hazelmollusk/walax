@@ -53,7 +53,7 @@ export const consoleLog = (msg, lvl, stack) => {
      background-color: #090c09; \
      font-family: "Times New Roman", serif; \
      font-weight: bold; \
-     font-size: medium; \
+     font-size: large; \
      font-variant: small-caps; \
      border: 2px solid #66bb34; \
      padding: 1px; \
@@ -65,8 +65,9 @@ export const consoleLog = (msg, lvl, stack) => {
         'color: #66bb34; font-size: medium;',
         'color: pink; font-size: medium;',
         `font-size: medium; \
-      font-family: "Courier New", serif; \
+      font-family: "Times New Roman", serif; \
       font-size: small;
+      font-weight: bold; \
       margin: 5px; \
       margin-left: 0px; \
       border-width: 4px;  \
