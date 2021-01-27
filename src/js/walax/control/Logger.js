@@ -41,7 +41,8 @@ COLOR[ERROR] = {
 }
 
 export const consoleLog = (msg, lvl, stack) => {
-    while (msg.length < 2) msg.unshift('-----')
+    if (msg.length > 1 && typeof msg[1] != 'string')
+        msg.unshift(msg.shift(), '-----')
     console.log(
         // tpdp any need to check for chrome here?
 

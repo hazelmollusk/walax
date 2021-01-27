@@ -54,12 +54,19 @@ export default class View extends Control {
             let defPage = undefined
             this._pages.forEach(v => {
                 defPage ||= v.url
+                this.d('foo', v.url)
                 pages[v.url] = v.page
-                navs.append = m('a.nav', { href: '#!' + v.url }, v.nav)
+                this.d('var', pages)
+                navs.push(m('a.nav', { href: '#!' + v.url }, v.nav))
             })
-            m.render(nav, m({ view: vnode => m('.navbar', navs) }))
-            this.d('building routes', { main }, { defPage }, { pages })
-            m.route(main, defPage, pages)
+
+            this.d('building display routes', { main }, { defPage }, { pages }, { navs })
+            m.render(nav, m({ view: vnode => m('.navbar', {}, navs) }))
+            let p = pages['/home']
+            this.d(p)
+            m.route(main, defPage, {
+                '/home': p
+            })
         } else {
             m.render(nav, m('.loginNav'))
             m.mount(main, this.login)
@@ -68,16 +75,5 @@ export default class View extends Control {
 
     addPage(page) {
         this._pages.add(page)
-    }
-
-    addNav(cmp) {
-        this.tabCount ||= 0
-        this.tabCount += 1
-        let main = document.getElementById('main')
-        let newTab = m(`.tab#${tabId}`, m(cmp))
-
-        return {
-            view: () => m('nav#nav')
-        }
     }
 }
