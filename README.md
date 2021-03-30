@@ -91,6 +91,12 @@ For now, here are some examples of the walax API:
     d.a(false, 'assertion failed')
     d.i('this is just information')
 
+## Django setup
+
+    django-admin startproject example
+    pip3 install walax
+    # TODO
+
 ## Author
 
 👤 **Matt Barry <matt@hazelmollusk.org>**
