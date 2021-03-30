@@ -1,5 +1,6 @@
 import Control from './Control'
 const m = require('mithril')
+import w from '../Walax'
 
 export default class Network extends Control {
     constructor() {
@@ -9,7 +10,10 @@ export default class Network extends Control {
     toString() {
         return 'Network'
     }
-
+    load(url) {
+        this.d(url + 'huh')
+        this.baseUrl = url
+    }
     /**
      * public methods for each HTTP method
      *
@@ -82,6 +86,9 @@ export default class Network extends Control {
      * @returns {object}
      */
     _reqOpts(url, params, body, options, method = 'GET') {
+        if (!url.startsWith('http'))
+            url = this.baseUrl + url  //FIXME
+        this.d("transformed url" + url)
         const opts = { ...{ url, params, body, method }, ...(options || {}) }
         // todo defaults?
         return opts

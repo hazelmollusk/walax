@@ -50,9 +50,10 @@
     "webpack-dev-server": "^3.11.1"
   },
   "dependencies": {
-    "stackinfo": "^1.1.5",
+    "@babel/plugin-transform-react-jsx": "^7.12.17",
     "http": "0.0.1-security",
     "mithril": "^2.0.4",
-    "mobx": "^5.15.7"
+    "mobx": "^5.15.7",
+    "stackinfo": "^1.1.5"
   }
 }

@@ -4,21 +4,23 @@ import DjangoQuery from './DjangoQuery'
 export default class DjangoManager extends Manager {
     constructor(model) {
         super(model)
+        this.model = model
     }
 
-    all() {
-        return new DjangoQuery(this)
+    async all() {
+        this.query = new DjangoQuery(this)
+        return this.query.all()
     }
 
-    filter(args) {
+    async filter(args) {
         return this.all().filter(args)
     }
 
-    exclude(...args) {
+    async exclude(...args) {
         return this.all().exclude(args)
     }
 
-    none() {
+    async none() {
         return this.all().none()
     }
 

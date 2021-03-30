@@ -6,6 +6,7 @@ export default class View extends Control {
     _pages = new Set()
     constructor() {
         super()
+
     }
     toString() {
         return 'View'
@@ -27,7 +28,7 @@ export default class View extends Control {
     }
     get login() {
         return {
-            view: () => m('.login#login', m('form.login#loginForm', [
+            view: () => m('.login#login', m('form.login#loginForm', { method: 'post' }, [
                 m('input[type=text][autocomplete=username].login.loginName#username'),
                 m('input[type=password][autocomplete=current-password].login.loginPass#password'),
                 m('input[type=submit].loginSubmit', {
@@ -42,21 +43,46 @@ export default class View extends Control {
             ]))
         }
     }
-
-    display() {
-        let body = document.getElementsByTagName('body')[0]
-        m.render(body, m('.screen#screen', [m('.nav#nav'), m('.main#main')]))
-        let nav = document.getElementById('nav')
+    get page() {
+        let body = document.body
         let main = document.getElementById('main')
-        if (w.auth.state) {
+        let nav = document.getElementById('nav')
+        let screen = document.getElementById('screen')
+        if (!screen) {
+            body.innerHTML += '<div id="screen" />'
+            screen = document.getElementById('screen')
+        }
+        if (!nav) {
+            screen.innerHTML += '<div id="nav" />'
+            nav = document.getElementById('nav')
+        }
+        if (!main) {
+            screen.innerHTML += '<div id="main" />'
+            main = document.getElementById('main')
+        }
+
+        return { screen, main, nav }
+    }
+    get nav() {
+        return this.page.nav
+    }
+    get main() {
+        return this.page.main
+    }
+
+    setup() { }
+
+    display(login = true) {
+        let nav = this.nav
+        let main = this.main
+        if (w.auth.state || !login) {
             let pages = {}
             let navs = []
             let defPage = undefined
             this._pages.forEach(v => {
-                defPage ||= v.url
-                this.d('foo', v.url)
+                if (!defPage || v.default)
+                    defPage = v.url
                 pages[v.url] = v.page
-                this.d('var', pages)
                 navs.push(m('a.nav', { href: '#!' + v.url }, v.nav))
             })
 
@@ -64,9 +90,7 @@ export default class View extends Control {
             m.render(nav, m({ view: vnode => m('.navbar', {}, navs) }))
             let p = pages['/home']
             this.d(p)
-            m.route(main, defPage, {
-                '/home': p
-            })
+            m.route(main, defPage, pages)
         } else {
             m.render(nav, m('.loginNav'))
             m.mount(main, this.login)
@@ -75,5 +99,9 @@ export default class View extends Control {
 
     addPage(page) {
         this._pages.add(page)
+    }
+
+    addNavLogo(label, img = undefined) {
+        this.nav.innerHTML = '<div class="logo">' + label + '</div>' + this.nav.innerHTML
     }
 }
