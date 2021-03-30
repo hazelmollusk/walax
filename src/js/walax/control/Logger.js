@@ -48,38 +48,16 @@ export const consoleLog = (msg, lvl, stack) => {
 
 
         // todo make "walax" configurable via proxy logging class
-        `%c⋞%c༺⟅༼${msg.shift()}༽⟆༻%c≽%c⟹%c≣ ${msg.shift()}`,
-        'color: #66bb34; font-size: medium;',
-        'color: #55aa23; \
-     background-color: #090c09; \
+        `%c ${msg.shift()}%c≣%c ${msg.shift()}`,
+        'color: #557723; \
      font-family: "Times New Roman", serif; \
-     font-weight: bold; \
-     font-size: large; \
-     font-variant: small-caps; \
-     border: 2px solid #66bb34; \
-     padding: 1px; \
-     padding-top: 3px; \
-     border-radius: 11px; \
-     border-radius-top-left: 0px; \
-     border-radius-top-right: 0px; \
-    ',
-        'color: #66bb34; font-size: medium;',
-        'color: pink; font-size: medium;',
+     font-weight: bold; font-variant: small-caps; \
+     font-size: medium; padding: 3px; \
+    ', '',
         `font-size: medium; \
-      font-family: "Times New Roman", serif; \
-      font-size: small;
-      font-weight: bold; \
-      margin: 5px; \
-      margin-left: 0px; \
-      border-width: 4px;  \
-      border-style: ridge; \
-      border-bottom-left-radius: 15px; \
-      border-top-right-radius: 15px; \
-      padding: 3px; \
-      padding-top: 0px; \
-      color: ${COLOR[lvl]?.fg || 'white'}; \
-      background-color: ${COLOR[lvl]?.bg || 'black'}; \
-      border-color: ${COLOR[lvl]?.border || 'gray'};  `,
+      font-family: "Courier New", "Times New Roman", serif; \
+      font-size: small; font-variant: small-caps; \
+      padding: 3px; color: ${COLOR[lvl]?.fg || 'white'}; `,
         ...msg
     )
 }

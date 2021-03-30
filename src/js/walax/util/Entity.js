@@ -64,7 +64,6 @@ export default class Entity {
             this.addSignal(newCmp)
             this._walaxComponents.set(key, newCmp)
             this.augment(this, key, () => this._walaxComponents.get(key))
-            console.log('component added', this, { key }, { newCmp })
         } else {
             throw new TypeError('invalid component')
         }
@@ -91,8 +90,8 @@ export default class Entity {
         return true
     }
     receiveSignal(src, ...sig) {
-        this?.d(`signal "${sig[0]}" => ${w.callable(this, sig[0]) ? 'method' : 'handleSignal'}`,
-            { src }, { sig })
+        // this?.d(`signal "${sig[0]}" => ${w.callable(this, sig[0]) ? 'method' : 'handleSignal'}`,
+        //     { src }, { sig })
         return (w.callable(this, sig[0])) ?
             this[sig.shift()](src, ...sig) :
             this.handleSignal(src, ...sig)

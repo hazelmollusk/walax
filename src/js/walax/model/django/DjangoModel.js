@@ -20,7 +20,7 @@ export default class DjangoModel extends Model {
     static _walaxDefaultManager = DjangoManager
 
     initialize(data = false) {
-        super.initializel(data)
+        super.initialize(data)
     }
 
     // fixme this is hacky
@@ -38,8 +38,13 @@ export default class DjangoModel extends Model {
             let fv = this._w.values.get(fn),
                 fd = this._w.fields[fn]
 
-            // todo
-            if (fd.type == 'choice' && !this._w.choiceKeys) {
+            if (fd.type == 'choice') {
+                fd.choices.forEach(c => {
+                    if (f.value == val) {
+                        fv = f.display_name
+                        fv.choices = fd.choices
+                    }
+                })
             }
 
             return fv

@@ -5,30 +5,30 @@ class DjangoQueryProxy extends Entity {
     query = false
     keys = false
 
-    constructor(query) {
+    constructor(manager) {
         super()
-        this.query = query
+        this.manager = manager
     }
 
     [Symbol.iterator]() {
-        this.keys = this.query.cache
+        this.keys = this.manager.cache
         return this
     }
 
     next() {
         let cur = this.keys.next()
         if (cur.done) return cur
-        let obj = w.obj.getObject(this.query._model, cur.value)
+        let obj = w.obj.getObject(this.manager.model, cur.value)
         return { value: obj, done: false }
     }
 }
 
-class DjangoQuery {
-    _parent = false
-    _flip = false
-    _filter = false
-    _single = false
-    _cache = false
+class DjangoQuery extends Entity {
+    parent = false
+    flip = false
+    filter = false
+    single = false
+    cache = false
 
     /**
      * Creates an instance of DjangoQuery.
@@ -40,22 +40,23 @@ class DjangoQuery {
      */
     constructor(parent, filter = false, flip = false, single = false) {
         // todo: sanity check
-        this._parent = parent
-        this._flip = flip
-        this._filter = filter
-        this._single = single
+        super()
+        this.parent = parent
+        this.flip = flip
+        this.filter = filter
+        this.single = single
     }
 
-    get _model() {
-        return this._parent._model
+    get model() {
+        return this.parent.model
     }
 
     get serialized() {
         let rec = ''
-        for (let f in this._filter) rec += `(${f}=${this._filter[f]})`
-        if (this._single) rec = '#' + rec
-        if (this._flip) rec = '!' + rec
-        rec = `${this._parent.serialized}+[${rec}]`
+        for (let f in this.filter) rec += `(${f}=${this.filter[f]})`
+        if (this.single) rec = '#' + rec
+        if (this.flip) rec = '!' + rec
+        rec = `${this.parent.serialized}+[${rec}]`
         return rec
     }
 
@@ -64,43 +65,40 @@ class DjangoQuery {
     }
 
     get cached() {
-        return w.cache.find(false, 'queries', this.serialized)
+        return w.cache.find(false, 'querie s', this.serialized)
     }
 
     set cached(val) {
         return w.cache.store(val, 'queries', this.serialized)
     }
-
     get cache() {
         if (!this.cached) this.fetch()
         return this.cached
     }
 
-    fetch() {
-        this.d(this, 'fetch')
+    async fetch() {
         let res = new Set()
-        return w.net.get(this._model._modelUri).then(data => {
-            this.d('qqqqq', data)
+        w.net.get(this.model.modelUri).then(data => {
             if (data.length)
-                data.forEach(o => res.add(w.obj.recieveObject(this._model, o)))
-            this.d('res', this._model, res)
+                data.forEach(o => res.add(w.obj.recieveObject(this.model, o)))
             this.cached = res
+            return res
         })
     }
 
-    all() {
-        return new DjangoQuery(this)
+    async all() {
+        this.fetch().then(res)
     }
 
-    none() {
+    async none() {
         return new DjangoQuery(this, false, true)
     }
 
-    filter(args) {
+    async filter(args) {
         return new DjangoQuery(this, args)
     }
 
-    exclude(args) {
+    async exclude(args) {
         return new DjangoQuery(this, args, true)
     }
 }

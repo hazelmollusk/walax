@@ -42,8 +42,7 @@ export class DjangoSchema extends Schema {
 
     loadUrl(url) {
         // FIXME hack
-        let urlParts = url.split('?', 1)
-        let modelsUrl = urlParts.shift() + 'models/' + urlParts.join('')
+        let modelsUrl = 'models/'
         this.d(`loadUrl ${url}`, { modelsUrl })
         w.net.options(modelsUrl).then(info => {
             this.d(`receiving data for ${url}`, info)

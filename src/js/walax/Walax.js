@@ -69,30 +69,65 @@ const a = (c, ...m) => {
         throw new TypeError(m[0])
     }
 }
-
+/**
+ * the main interface to Walax
+ *
+ * @class Walax
+ * @extends {Entity}
+ */
 class Walax extends Entity {
     constructor(...args) {
         super()
     }
 
-    _url = ''
-    get url() { return this._url }
-
+    /**
+     * load a named API from url
+     *
+     * @param {*} url
+     * @param {*} key
+     * @return {*} 
+     * @memberof Walax
+     */
     load(url, key) {
+        this.net.load(url)
         this.obj.load(url, key)
-        this._url = url
-        return this.url
+        this.auth.load(url) // FIXME?
+        
+
+        d(`setting apiBase to ${this.apiBase}`)
+        return true
     }
 
     toString() {
         return 'WALAX'
     }
 
+    /**
+     * initialize Walax object for use
+     *
+     * @param {*} sig
+     * @memberof Walax
+     */
     initialize(...sig) {
         this.signal('init', ...sig)
-        this.signal('go')
     }
 
+    /**
+     * pause execution for time t (ms)
+     *
+     * @param {*} t
+     * @memberof Walax
+     */
+    sleep = t => new Promise(s => setTimeout(s, t))
+
+    /**
+     * signal handler for 'setup'
+     *
+     * @param {*} src
+     * @param {*} config
+     * @param {*} force
+     * @memberof Walax
+     */
     setup(src, config, force) {
         this.augmentObj(this, 'config', new Map())
         if (config) for (let name in config) this.config.set(name, config[name])
@@ -116,15 +151,28 @@ class Walax extends Entity {
         this.log.register(consoleLog)
         this.log.info('setup complete')
 
-        // initialize plugins
-        d('setup complete')
     }
 
+    /**
+     * load a component control plugin 
+     *
+     * @param {*} cmp
+     * @param {boolean} [key=false]
+     * @param {*} args
+     * @memberof Walax
+     */
     addPlugin(cmp, key = false, ...args) {
-        a(this.checkClass(Control, cmp), `${key} is not extended from Control`, cmp)
+        a(this.checkClass(Control, cmp), `${key} must extend walax.control.Control`, cmp)
         this.addComponent(cmp, key, ...args)
     }
 
+    /**
+     * check to see if name is a valid property string
+     *
+     * @param {*} name
+     * @return {*} 
+     * @memberof Walax
+     */
     isValidProp(name) {
         if (!name) return false
         if (typeof name != 'string') return false
@@ -132,18 +180,64 @@ class Walax extends Entity {
         return true
     }
 
-    // callable(obj, methodname) or callable(funcObj)
+    /**
+     * check to see if argument is a callable function
+     * 
+     * May pass a single (Function-like) object, or an object and a property name
+     *
+     * @param {*} args
+     * @return {*} 
+     * @memberof Walax
+     */
     callable(...args) {
         let f = (args.length == 2 && args[1] in args[0]) ? args[0][args[1]] : (args.length == 1) ? args[0] : undefined
         return f instanceof Function
     }
 
+    /**
+     * augment an object with a static value
+     *
+     * @param {*} obj
+     * @param {*} key
+     * @param {*} prop
+     * @memberof Walax
+     */
     augmentObj(obj, key, prop) {
         obj._walaxAugmentations ||= new Map()
         obj._walaxAugmentations.set(key, prop)
         this.augment(obj, key, () => obj._walaxAugmentations.get(key))
     }
 
+    // FIXME
+    augmentDynamic(...args) {
+        try {
+            let obj = args.shift()
+            let key = args.shift()
+            let getter, setter
+            if (args.length) {
+                setter = args.shift()
+                this.a(this.callable(getter), 'bad property getter')
+                if (args.length) {
+                    setter = args.shift()
+                    this.a(this.callable(setter), 'bad property setter')
+                }
+            }
+            this.augment(obj, key, () => { return obj._walaxAugmentations.get(key) })
+
+        } catch (e) {
+            this.e('augmentDynamic', e)
+        }
+    }
+
+    /**
+     * add a dynamic property to an object
+     *
+     * @param {*} obj
+     * @param {*} key
+     * @param {*} getter
+     * @param {*} [setter=undefined]
+     * @memberof Walax
+     */
     augment(obj, key, getter, setter = undefined) {
         a(
             obj && key && getter,
@@ -169,9 +263,17 @@ class Walax extends Entity {
         if (setter) desc.set = setter
         Object.defineProperty(obj, key, desc)
         a(Object.getOwnPropertyNames(obj).includes(key), 'augmentation failed')
-        d('augmented', { obj }, { key }, { desc })
+        // d('augmented', { obj }, { key }, { desc })
     }
 
+    /**
+     * check class inheritance
+     *
+     * @param {*} req
+     * @param {*} cls
+     * @return {*} 
+     * @memberof Walax
+     */
     checkClass(req, cls) {
         if (!req || !cls) return false // should prob log something heres
         if (req instanceof cls) return true

@@ -15,6 +15,7 @@ class WalaxRouter(routers.DefaultRouter):
         super().__init__()
         self.models = []
         self.registry = []
+        self.views = {}
 
     def register_model(self, model=False, view=False):
         self.models.append(model)
@@ -25,7 +26,10 @@ class WalaxRouter(routers.DefaultRouter):
 
         self.register(modelSlug, view)
 
-    @property
+    def register_view(self, url, view):
+        self.views[url] = view
+
+    @ property
     def urls(self):
         urlpatterns = [
             path('auth/token/', TokenObtainPairView.       as_view(),
@@ -36,4 +40,6 @@ class WalaxRouter(routers.DefaultRouter):
                  TokenVerifyView.    as_view(), name='token_verify'),
             path('models/', include(super().urls))
         ]
+        for url, view in self.views.items():
+            urlpatterns.append(path(url, view))
         return urlpatterns

@@ -2,7 +2,6 @@ import { observable, computed } from 'mobx'
 import { WalaxSchema } from '../model/Schema'
 import { DjangoSchema } from '../model/django/DjangoSchema'
 
-import Logger from './Logger'
 import Control from './Control'
 
 export default class Objects extends Control {

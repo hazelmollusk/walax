@@ -27,7 +27,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js$/, // include .js files
+                test: /\.(js|jsx)$/, // include .js files
                 exclude: /node_modules/, // exclu2234de any and all files in the `node_modules folder`
                 use: [
                     {
@@ -41,7 +41,11 @@ module.exports = {
                                 ['@babel/plugin-proposal-object-rest-spread'],
                                 ['@babel/plugin-proposal-logical-assignment-operators'],
                                 ['@babel/plugin-proposal-optional-chaining'],
-                                ['@babel/plugin-proposal-decorators', { legacy: true }]
+                                ['@babel/plugin-proposal-decorators', { legacy: true }],
+                                ['@babel/plugin-transform-react-jsx', {
+                                    "pragma": "m",
+                                    "pragmaFrag": "'['"
+                                }]
                             ]
                         }
                     }
