@@ -72,29 +72,24 @@ export default class View extends Control {
 
     setup() { }
 
-    display(login = true) {
+    display() {
         let nav = this.nav
         let main = this.main
-        if (w.auth.state || !login) {
-            let pages = {}
-            let navs = []
-            let defPage = undefined
-            this._pages.forEach(v => {
-                if (!defPage || v.default)
-                    defPage = v.url
-                pages[v.url] = v.page
-                navs.push(m('a.nav', { href: '#!' + v.url }, v.nav))
-            })
+        let pages = {}
+        let navs = []
+        let defPage = undefined
+        this._pages.forEach(v => {
+            if (!defPage || v.default)
+                defPage = v.url
+            pages[v.url] = v.page
+            navs.push(m('a.nav', { href: '#!' + v.url }, v.nav))
+        })
 
-            this.d('building display routes', { main }, { defPage }, { pages }, { navs })
-            m.render(nav, m({ view: vnode => m('.navbar', {}, navs) }))
-            let p = pages['/home']
-            this.d(p)
-            m.route(main, defPage, pages)
-        } else {
-            m.render(nav, m('.loginNav'))
-            m.mount(main, this.login)
-        }
+        this.d('building display routes', { main }, { defPage }, { pages }, { navs })
+        m.render(nav, m({ view: vnode => m('.navbar', {}, navs) }))
+        let p = pages['/home']
+        this.d(p)
+        m.route(main, defPage, pages)
     }
 
     addPage(page) {

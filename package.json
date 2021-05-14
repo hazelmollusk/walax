@@ -11,7 +11,7 @@
     "buildpy": "python -m pep517.build .",
     "buildwheel": "python setup.py bdist_wheel",
     "uploadpy": "twine upload --skip-existing dist/walax*.tar.gz dist/walax*.whl",
-    "wheel": "while true; do npm run buildwheel; pip install `ls -t dist/*.whl|head -n 1`; echo Press Enter; read it; done",
+    "wheel": "while true; do npm run buildawheel; pip install `ls -t dist/*.whl|head -n 1`; echo Press Enter; read it; done",
     "docs": "documentation build js/ src/** -f html -o docs/js/"
   },
   "files": [
@@ -44,9 +44,9 @@
     "chokidar": "^3.4.3",
     "clean-webpack-plugin": "^3.0.0",
     "core-js": "^3.8.1",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12",
     "np": "^7.2.0",
+    "webpack": "^5.31.2",
+    "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.1"
   },
   "dependencies": {

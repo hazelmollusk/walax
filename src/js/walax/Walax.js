@@ -281,18 +281,22 @@ class Walax extends Entity {
         if (cls == req) return true
         return this.checkClass(req, cls.__proto__)
     }
+
+    addClass(name, cls) {
+        Object.defineValue(this._walaxAugmentations.get('classes'), name, {value: cls})
+    }
 }
 
-// export const w = new Walax()
-const w = observable.box(new Walax()).get()
-
-w.augmentObj(w, 'classes', {
+export const ww = new Walax()
+ww.augmentObj(ww, 'classes', {
     Entity,
     Schema,
     Model,
     Manager,
     Control
 })
+
+const w = observable.box(ww).get()
 
 window.w = w
 export default w

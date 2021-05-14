@@ -3,7 +3,7 @@
 const path = require('path')
 
 module.exports = {
-    name: 'name',
+    name: 'walax',
     mode: 'development', // "production" | "development" | "none"
     target: 'web', // node
     entry: {
@@ -12,9 +12,13 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'walax.js',
-        library: '$',
-        libraryTarget: 'umd',
-        // umdNamedDefine: true
+        library: {
+            name:'w',
+            type:'commonjs2',
+            export:'w',
+            umdNamedDefine: true
+        },
+        
     },
     externals: {
         // lodash: {
