@@ -1,5 +1,5 @@
 # /usr/bin/env python3
-import setuptools
+from setuptools import setup, find_packages
 import json
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -9,7 +9,7 @@ with open("package.json", "r") as fh:
     jspkg = json.load(fh)
     author, email = jspkg["author"].rsplit(' ', 1)
 
-setuptools.setup(
+setup(
     name=jspkg["name"],
     version=jspkg["version"],
     author=author,
@@ -18,10 +18,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url=jspkg["repository"],
-    packages=setuptools.find_packages(
-#        where="src/py",
-        include=['walax']
-    ),
+    packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
