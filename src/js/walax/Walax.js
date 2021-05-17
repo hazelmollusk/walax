@@ -296,7 +296,6 @@ ww.augmentObj(ww, 'classes', {
     Control
 })
 
-const w = observable.box(ww).get()
-
-window.w = w
-export default w
+export const w = observable.box(ww).get()
+if (window) window.w = w
+export default { w }

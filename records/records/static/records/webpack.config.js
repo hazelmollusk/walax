@@ -1,19 +1,24 @@
 // const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-// const webpack = require('webpack')
+const webpack = require('webpack')
 const path = require('path')
 
 module.exports = {
-    name: 'walax',
+    name: 'go',
     mode: 'development', // "production" | "development" | "none"
     target: 'web', // node
     entry: {
-        walax: path.resolve(__dirname, 'src/js/index.js')
+        walax: path.resolve(__dirname, 'app.js')
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'walax.js',
-        library: 'umd',
+        filename: 'go.js',
+        library: 'umd'
     },
+    // resolve: {
+    //     alias: {
+    //         'process.env': 'process/browser'
+    //     }
+    // },
     module: {
         rules: [
             {
@@ -25,10 +30,8 @@ module.exports = {
                         options: {
                             presets: ['@babel/preset-env'],
                             plugins: [
-                                ['@babel/plugin-transform-runtime', {
-                                    // corejs: 3
-                                }],
-                                ["@babel/plugin-proposal-private-methods", { "loose": true }],
+                                ['@babel/plugin-transform-runtime'],
+                                ['@babel/plugin-syntax-dynamic-import'],
                                 ['@babel/plugin-proposal-class-properties', { loose: true }],
                                 ['@babel/plugin-proposal-object-rest-spread'],
                                 ['@babel/plugin-proposal-logical-assignment-operators'],

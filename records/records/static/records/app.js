@@ -1,11 +1,7 @@
 // import w from 'walax'
+import m from 'mithril'
+import {observable} from 'mobx'
 let url = '/records/api/?format=json'
 let prop = 'records'
 
-w.initialize()
-w.log.info(`loading api from ${url} into ${prop}`)
-w.obj.load(url, prop)
-
-let a = new w.obj.records.Band()
-a.name = 'app band'
-a.save()
+console.log(m)

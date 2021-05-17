@@ -27,34 +27,24 @@
   "author": "Matt Barry <matt@hazelmollusk.org>",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
-    "@babel/node": "^7.12.10",
-    "@babel/parser": "^7.12.11",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/plugin-proposal-decorators": "^7.12.12",
-    "@babel/plugin-proposal-logical-assignment-operators": "^7.12.1",
-    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
-    "@babel/plugin-proposal-optional-chaining": "^7.12.7",
-    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/types": "^7.12.12",
+    "@babel/core": "^7.14.2",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/plugin-proposal-decorators": "^7.14.2",
+    "@babel/plugin-proposal-logical-assignment-operators": "^7.14.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.14.2",
+    "@babel/plugin-proposal-optional-chaining": "^7.14.2",
+    "@babel/plugin-transform-react-jsx": "^7.13.12",
+    "@babel/plugin-transform-runtime": "^7.14.2",
+    "@babel/preset-env": "^7.14.2",
     "babel-loader": "^8.2.2",
-    "babel-plugin-dynamic-import-node": "^2.3.3",
-    "chokidar": "^3.4.3",
-    "clean-webpack-plugin": "^3.0.0",
-    "core-js": "^3.8.1",
-    "np": "^7.2.0",
-    "webpack": "^5.31.2",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.1"
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.7.0"
   },
   "dependencies": {
-    "@babel/plugin-transform-react-jsx": "^7.12.17",
-    "http": "0.0.1-security",
     "mithril": "^2.0.4",
     "mobx": "^5.15.7",
-    "stackinfo": "^1.1.5"
+    "process": "^0.11.10",
+    "stackinfo": "^1.1.5",
+    "walax": "^1.1.4"
   }
 }
