@@ -1,50 +1,24 @@
 {
   "name": "walax",
-  "version": "1.1.4",
-  "description": "walax is a Javascript framework for interacting with objects remotely via Django.",
-  "main": "dist/walax.js",
+  "version": "1.4.0",
+  "description": "[![Version](https://img.shields.io/npm/v/walax.svg)](https://www.npmjs.com/package/walax) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)",
+  "main": "dist/main.js",
+  "files": ["dist"],
   "scripts": {
-    "watch": "webpack -d --watch",
-    "live": "records/manage.py runserver 8357 & npm run watch & wait",
-    "build": "webpack",
-    "records": "records/manage.py runserver 8357",
-    "buildpy": "python -m pep517.build .",
-    "buildwheel": "python setup.py bdist_wheel",
-    "uploadpy": "twine upload --skip-existing dist/walax*.tar.gz dist/walax*.whl",
-    "wheel": "while true; do npm run buildawheel; pip install `ls -t dist/*.whl|head -n 1`; echo Press Enter; read it; done",
-    "docs": "documentation build js/ src/** -f html -o docs/js/",
-    "test": "echo test"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "files": [
-    "dist"
-  ],
-  "keywords": [
-    "walax",
-    "javascript",
-    "django"
-  ],
-  "repository": "https://github.com/hazelmollusk/walax",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/hazelmollusk/walax.git"
+  },
   "author": "Matt Barry <matt@hazelmollusk.org>",
-  "license": "MIT",
-  "devDependencies": {
-    "@babel/core": "^7.14.2",
-    "@babel/plugin-proposal-class-properties": "^7.13.0",
-    "@babel/plugin-proposal-decorators": "^7.14.2",
-    "@babel/plugin-proposal-logical-assignment-operators": "^7.14.2",
-    "@babel/plugin-proposal-object-rest-spread": "^7.14.2",
-    "@babel/plugin-proposal-optional-chaining": "^7.14.2",
-    "@babel/plugin-transform-react-jsx": "^7.13.12",
-    "@babel/plugin-transform-runtime": "^7.14.2",
-    "@babel/preset-env": "^7.14.2",
-    "babel-loader": "^8.2.2",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^4.7.0"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hazelmollusk/walax/issues"
   },
-  "dependencies": {
-    "mithril": "^2.0.4",
-    "mobx": "^5.15.7",
-    "process": "^0.11.10",
-    "stackinfo": "^1.1.5",
-    "walax": "^1.1.4"
+  "homepage": "https://github.com/hazelmollusk/walax#readme",
+  "devDependencies": {
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0"
   }
 }
