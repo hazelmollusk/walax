@@ -1,6 +1,6 @@
 {
   "name": "walax",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "[![Version](https://img.shields.io/npm/v/walax.svg)](https://www.npmjs.com/package/walax) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)",
   "main": "dist/walax.js",
   "module": "dist/walax.esm.js",
