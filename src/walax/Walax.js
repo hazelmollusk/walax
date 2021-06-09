@@ -234,8 +234,7 @@ export class Walax extends Entity {
      * @param {*} key
      * @param {*} getter
      * @param {*} [setter=undefined]
-     * @memberof Walax
-     */
+     * @memberof Walaxa
     augment(obj, key, getter, setter = undefined) {
         a(
             obj && key && getter,
@@ -290,7 +289,6 @@ export class Walax extends Entity {
 const ww = new Walax()
 let klasses = [ Entity, Schema, Model, Manager, Control ]
 for (let klass of klasses) {
-    d(klass)
     ww.addClass(klass)
 }
 
