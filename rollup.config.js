@@ -8,14 +8,19 @@ export default {
     input: 'src/index.js',
     output: [
         {
-            file: 'dist/walax.js',
+            file: 'dist/walax.cjs.js',
             format: 'cjs'
         },
         {
             file: 'dist/walax.min.js',
             format: 'iife',
-            name: 'version',
+            name: 'walax',
             plugins: [terser()]
+        },
+        {
+            file: 'dist/walax.umd.js',
+            format: 'umd',
+            name: 'walax'
         }
     ],
     plugins: [ 

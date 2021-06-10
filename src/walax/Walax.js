@@ -10,9 +10,9 @@ import Network from './control/Network'
 import Auth from './control/Auth'
 import Cache from './control/Cache'
 import Test from './control/Test'
-import Schema from './model/Schema'
-import Model from './model/Model'
-import Manager from './model/Manager'
+// import Schema from './model/Schema'
+// import Model from './model/Model'
+// import Manager from './model/Manager'
 
 // need our own debug/asserts bc log plugin
 // might not be there during instantiation of the
@@ -234,7 +234,8 @@ export class Walax extends Entity {
      * @param {*} key
      * @param {*} getter
      * @param {*} [setter=undefined]
-     * @memberof Walaxa
+     * @memberof Walax
+     */
     augment(obj, key, getter, setter = undefined) {
         a(
             obj && key && getter,
@@ -287,10 +288,10 @@ export class Walax extends Entity {
 }
 
 const ww = new Walax()
-let klasses = [ Entity, Schema, Model, Manager, Control ]
-for (let klass of klasses) {
-    ww.addClass(klass)
-}
+// let klasses = [ Entity, Schema, Model, Manager, Control ]
+// for (let klass of klasses) {
+//     ww.addClass(klass)
+// }
 
 export const w = observable.box(ww).get()
 if (window) window.w = w

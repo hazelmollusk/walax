@@ -1,1 +1,1 @@
-../../../../dist/walax.js
+/home/matt/hack/walax/dist/walax.umd.js
