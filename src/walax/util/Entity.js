@@ -10,7 +10,6 @@ import w from '../Walax'
 
 export default class Entity {
     constructor() { 
-        this._walaxAugmentations = new Map()
     }
 
     toString() {

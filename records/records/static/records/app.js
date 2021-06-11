@@ -5,3 +5,4 @@ let url = '/records/api/?format=json'
 let prop = 'records'
 
 console.log(w)
+w.obj.load('records','/records/api/')

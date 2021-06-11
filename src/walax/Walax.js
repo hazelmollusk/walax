@@ -297,12 +297,6 @@ export class Walax {
     }
 }
 
-const ww = new Walax()
-// let klasses = [ Entity, Schema, Model, Manager, Control ]
-// for (let klass of klasses) {
-//     ww.addClass(klass)
-// }
-
-export const w = observable.box(ww).get()
+export const w = observable.box(new Walax()).get()
 if (window) window.w = w
 export default w
