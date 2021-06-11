@@ -15,7 +15,7 @@ export class DjangoSchema extends Schema {
     _defaultModel = DjangoModel
     _defaultManager = DjangoManager
 
-    constructor(url = false, name = false, models = false) {
+    constructor(url, name = false, models = false) {
         super(url, name, models)
     }
 
@@ -42,7 +42,7 @@ export class DjangoSchema extends Schema {
 
     loadUrl(url) {
         // FIXME hack
-        let modelsUrl = 'models/'
+        let modelsUrl = url + 'models/'
         this.d(`loadUrl ${url}`, { modelsUrl })
         w.net.options(modelsUrl).then(info => {
             this.d(`receiving data for ${url}`, info)
@@ -71,7 +71,7 @@ export class DjangoSchema extends Schema {
                     }
 
                     let m = this.createModel(modelClassName, opts)
-                    this.d(`created model class ${modelClassName}`, m)
+                    this.d(`created model class ${modelClassName}`, {opts, m})
                 })
             }
         })

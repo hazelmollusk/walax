@@ -10,7 +10,6 @@ export default class Network extends Control {
         return 'Network'
     }
     load(url) {
-        this.d(url + 'huh')
         this.baseUrl = url
     }
     /**
@@ -85,9 +84,9 @@ export default class Network extends Control {
      * @returns {object}
      */
     _reqOpts(url, params, body, options, method = 'GET') {
-        if (!url.startsWith('http'))
-            url = this.baseUrl + url  //FIXME
-        this.d("transformed url" + url)
+        // if (!url.startsWith('http'))
+        //     url = this.baseUrl + url  //FIXME
+        // this.d("transformed url", url)
         const opts = { ...{ url, params, body, method }, ...(options || {}) }
         // todo defaults?
         return opts

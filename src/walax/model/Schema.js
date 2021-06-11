@@ -17,13 +17,13 @@ export default class Schema extends Entity {
     managers = new Map()
     models = new Map()
 
-    constructor(url = false, name = false, models = false) {
+    constructor(name, url, models = false) {
         super(url)
         this.a(name || !url, `need a name for schema ${url}`)
         this._name = name
         this._models = models
         this.d(` Django schema ${name} (${url}) loaded`)
-        if (url) this.load(url, models)
+        if (url) this.load(name, url, models)
     }
 
     initialize() {
@@ -40,9 +40,10 @@ export default class Schema extends Entity {
         this.e('schema class must implement loadUrl')
     }
 
-    load(url, models = false, servers = false) {
+    load(name, url, models = false, servers = false) {
         //let url = new URL(url) // this will throw a TypeError if invalid
         this.initialize()
+        this.d(`${name}: ${url}`)
         models ||= this.models
         this.models ||= models
         models?.forEach?.((v, k) => this.addModel(k, v))
@@ -170,5 +171,6 @@ export default class Schema extends Entity {
         }
         this.d(`adding model ${name}`, walaxifiedModel._schema)
         this.addModel(name, walaxifiedModel)
+        return walaxifiedModel
     }
 }
