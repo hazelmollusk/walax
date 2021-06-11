@@ -3,16 +3,12 @@ import regeneratorRuntime from "regenerator-runtime";
 import { observable } from 'mobx'
 
 import { Logger, consoleLog } from './control/Logger'
-import Entity from './util/Entity'
 import Control from './control/Control'
 import Objects from './control/Objects'
 import Network from './control/Network'
 import Auth from './control/Auth'
 import Cache from './control/Cache'
 import Test from './control/Test'
-// import Schema from './model/Schema'
-// import Model from './model/Model'
-// import Manager from './model/Manager'
 
 // need our own debug/asserts bc log plugin
 // might not be there during instantiation of the
@@ -73,11 +69,9 @@ const a = (c, ...m) => {
  * the main interface to Walax
  *
  * @class Walax
- * @extends {Entity}
  */
-export class Walax extends Entity {
+export class Walax {
     constructor(...args) {
-        super()
     }
 
     /**
@@ -109,7 +103,7 @@ export class Walax extends Entity {
      * @memberof Walax
      */
     initialize(...sig) {
-        this.signal('init', ...sig)
+        this.setup()  // fixme
     }
 
     /**
@@ -120,6 +114,8 @@ export class Walax extends Entity {
      */
     sleep = t => new Promise(s => setTimeout(s, t))
 
+
+    config = new Map()
     /**
      * signal handler for 'setup'
      *
@@ -129,7 +125,6 @@ export class Walax extends Entity {
      * @memberof Walax
      */
     setup(src, config, force) {
-        this.augmentObj(this, 'config', new Map())
         if (config) for (let name in config) this.config.set(name, config[name])
 
         // register plugins
@@ -152,6 +147,7 @@ export class Walax extends Entity {
 
     }
 
+
     /**
      * load a component control plugin
      *
@@ -160,9 +156,22 @@ export class Walax extends Entity {
      * @param {*} args
      * @memberof Walax
      */
-    addPlugin(cmp, key = false, ...args) {
+    addPlugin(cmp, key, ...args) {
         a(this.checkClass(Control, cmp), `${key} must extend walax.control.Control`, cmp)
-        this.addComponent(cmp, key, ...args)
+        d(`adding plugin ${key}`)
+        let newCmp = new cmp(...args)
+        this._plugins ||= new Map()
+        key ||= cmp.name
+
+        if (w.isValidProp(key)) {
+            this._plugins.set(key, newCmp)
+            this.augment(this, key, () => this._plugins.get(key))
+        } else {
+            throw new TypeError('invalid component')
+        }
+
+        return cmp
+
     }
 
     /**
@@ -205,6 +214,7 @@ export class Walax extends Entity {
         obj._walaxAugmentations.set(key, prop)
         this.augment(obj, key, () => obj._walaxAugmentations.get(key))
     }
+    
 
     // FIXME
     augmentDynamic(...args) {
@@ -235,7 +245,7 @@ export class Walax extends Entity {
      * @param {*} getter
      * @param {*} [setter=undefined]
      * @memberof Walax
-     */
+     * */
     augment(obj, key, getter, setter = undefined) {
         a(
             obj && key && getter,
@@ -287,12 +297,6 @@ export class Walax extends Entity {
     }
 }
 
-const ww = new Walax()
-// let klasses = [ Entity, Schema, Model, Manager, Control ]
-// for (let klass of klasses) {
-//     ww.addClass(klass)
-// }
-
-export const w = observable.box(ww).get()
+export const w = observable.box(new Walax()).get()
 if (window) window.w = w
 export default w

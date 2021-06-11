@@ -14,7 +14,6 @@ export default class Objects extends Control {
 
     toString() { return 'Objects'}
     get defaultSchemaClass() {
-        // limit the sin :)
         return DjangoSchema
     }
 
@@ -93,7 +92,7 @@ export default class Objects extends Control {
         return 'Objects'
     }
 
-    load(url, name, models = false, schemaCls = false) {
+    load(name, url, models = false, schemaCls = false) {
         this.checkName(name)
         this.checkModels(models)
         schemaCls ||= this.defaultSchemaClass
@@ -101,13 +100,8 @@ export default class Objects extends Control {
         let schema = new schemaCls(url, name, models)
         w.augment(this, name, () => this.schemas.get(name))
         this.schemas.set(name, schema)
-        w.signal('post-load')
     }
 
-    signal(sig) {
-        if (sig.name == 'post-load') {
-        }
-    }
     schema(name) {
         return this.schemas.get(name)
     }
