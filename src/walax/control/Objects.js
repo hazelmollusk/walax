@@ -43,21 +43,24 @@ export default class Objects extends Control {
 
     receiveObject(model, data) {
         this.d(
-            `receving object data: ${model._schema._name} :: ${model._name}`,
+            "receving object data",
             data
         )
-        this.checkModels([model])
+        //this.checkModels([model])
 
         let obj = new model(data)
 
-        Object.assign(obj, data)
-        obj._new = false
-        obj._dirty.clear()
+        //Object.assign(obj, data)
+        // for (let fname in data) {
+        //     obj[fname] = data[fname]
+        // }
+        obj._w.new = false
+        obj._w.dirty.clear()
 
-        this.d(`object created (${model._name})`, obj)
+        this.d(`object created`, {model, obj})
 
         // k, v, ...cache ident
-        w.cache.store(obj.pk, obj, 'objects', model._schema, model)
+        //w.cache.store(obj.pk, obj, 'objects', model._schema, model)
         return obj
     }
 

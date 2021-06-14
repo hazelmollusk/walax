@@ -21,30 +21,30 @@ export default class WalaxCache extends Control {
         return this._storage.get(key)
     }
     find(key, func, ...args) {
-        d(`${this._name}.${key}`, func, ...args)
+        this.d(`${this._name}.${key}`, func, ...args)
         let cachePath =
             args.length == 1 && args[0].has('.') ? args.shift().split('.') : args
         if (cachePath.length)
             return this.cache(cachePath.shift()).find(key, func, ...cachePath)
         if (!this._storage.has(key)) {
-            d('miss', `${this._name}.${key} (${typeof func})`)
+            this.d('miss', `${this._name}.${key} (${typeof func})`)
             if (typeof func == 'function') this._storage.set(key, func(key))
             else if (func === undefined) this._storage.delete(key)
             else this._storage.set(key, func)
-            d('store', `${this._name}.${key} == ${this._storage.get(key)}`)
+            this.d('store', `${this._name}.${key} == ${this._storage.get(key)}`)
         } else {
-            d('hit', `${this._name}.${key}`)
+            this.d('hit', `${this._name}.${key}`)
         }
         return this._storage.get(key)
     }
     remove(key, ...args) {
         let c = this
         while (args.length) c = c.cache(args.pop())
-        d(`delete: ${this._name}.${key}`)
+        this.d(`delete: ${this._name}.${key}`)
         return c._storage.delete(key)
     }
     store(key, func, ...args) {
-        d(`put: ${this._name}.${key}`)
+        this.d(`put: ${this._name}.${key}`)
         this.remove(key, ...args)
         return this.find(key, func, ...args)
     }

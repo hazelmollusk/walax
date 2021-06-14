@@ -78,16 +78,25 @@ class DjangoQuery extends Entity {
 
     async fetch() {
         let res = new Set()
-        w.net.get(this.model.modelUri).then(data => {
-            if (data.length)
-                data.forEach(o => res.add(w.obj.recieveObject(this.model, o)))
-            this.cached = res
+        return w.net.get(this.model.modelUrl).then(data => {
+            if (data.length) {
+                this.d('data returned',data)
+                data.forEach(o => {
+                    let newObj = w.obj.receiveObject(this.model, o)
+                    this.d('got object', newObj)
+                    res.add(newObj)
+                })
+            }
+            this.d('fetch returns', res)
             return res
         })
     }
 
     async all() {
-        this.fetch().then(res)
+        let a = this.fetch()
+        return a.then(res=>{
+            return res
+        })
     }
 
     async none() {

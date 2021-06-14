@@ -17,6 +17,7 @@ export class DjangoSchema extends Schema {
 
     constructor(url, name = false, models = false) {
         super(url, name, models)
+        this.fields = {}
     }
 
     initSchema(data) { }
@@ -64,13 +65,14 @@ export class DjangoSchema extends Schema {
                     //     .replace(' List', '')
                     //     .replace(' ', '')
                     let opts = {
-                        urlNew: modelRootUri,
-                        fieldsNew: fields,
+                        url: modelRootUri,
                         fields: fields,
                         name: modelClassName
                     }
 
                     let m = this.createModel(modelClassName, opts)
+                    this.fields[modelClassName] = fields
+                    m.modelUrl = modelRootUri
                     this.d(`created model class ${modelClassName}`, {opts, m})
                 })
             }

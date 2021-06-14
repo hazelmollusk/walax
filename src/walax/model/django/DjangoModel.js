@@ -17,22 +17,16 @@ export default class DjangoModel extends Model {
         super(data)
     }
 
-    static _walaxDefaultManager = DjangoManager
-
-    initialize(data = false) {
-        super.initialize(data)
+    static _w = {
+        defaultManager: DjangoManager
     }
 
-    // fixme this is hacky
     get url() {
         return this._w.url
     }
-    set url(v) {
-        if ('url' in this._w.fields) this._w.values = v
-        this._w.url = v
-        // maybe call setfield iff...
+    set url(val) {
+        this._w.url = val
     }
-
     _getField(fn) {
         return () => {
             let fv = this._w.values.get(fn),
@@ -53,23 +47,23 @@ export default class DjangoModel extends Model {
 
     _setField(fn) {
         return val => {
-            this.d(`setField(${fn})`, val)
-            let fd = this._w.fields[fn],
-                fv = val
-            this.assert(fd, `field ${fn} not found`)
-            this.assert(!fd.read_only, `field ${fn} is read-only`)
+            let fd = this._w.fields[fn]
+            this.d(`setField(${fn})`, val, fd)
+            fv = val
+            this.a(fd, `field ${fn} not found`)
+            this.a(!fd?.read_only, `field ${fn} is read-only`)
             switch (fd.type) {
                 case 'field':
                     break
                 case 'string':
-                    this.a(typeof fv == 'string', `field ${fn} is a string`, fv)
-                    if (fd.max_length) this.a(fv.length <= fd.max_length)
+                    // this.a(typeof fv == 'string', `field ${fn} is a string`, fv)
+                    // if (fd.max_length) this.a(fv.length <= fd.max_length)
                     break
                 case 'choice':
                     let fc = undefined
-                    fd.choices.forEach(c => {
+                    fd?.choices.forEach(c => {
                         if (
-                            [f.value, v.display_name].includes(val) ||
+                            [fv, v.display_name].includes(val) ||
                             fc.toLowerCase() == fv.toLowerCase()
                         )
                             fc = f.value
@@ -80,6 +74,7 @@ export default class DjangoModel extends Model {
             }
             this._w.dirty.add(fn)
             this._w.values.set(fn, fv)
+            this.d('field set', fn, fv)
             return val
         }
     }
@@ -109,7 +104,7 @@ export default class DjangoModel extends Model {
         this.a(this._validateFields(), 'fields failed to validate')
         let saveFields = Object.fromEntries(this._w.values.entries())
         if (this._w.new) {
-            w.net.post(this._walaxUrlNew, {}, saveFields, {}).then(ret => {
+            w.net.post(this._w.model.url, {}, saveFields, {}).then(ret => {
                 this.updateFields(ret)
             })
         } else {

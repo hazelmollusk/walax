@@ -269,6 +269,7 @@ export class Walax {
             get: getter
         }
         if (setter) desc.set = setter
+        d('augment', {obj, key, desc })
         Object.defineProperty(obj, key, desc)
         a(Object.getOwnPropertyNames(obj).includes(key), 'augmentation failed')
         // d('augmented', { obj }, { key }, { desc })

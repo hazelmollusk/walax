@@ -46,7 +46,7 @@ export default class Schema extends Entity {
         this.d(`${name}: ${url}`)
         models ||= this.models
         this.models ||= models
-        models?.forEach?.((v, k) => this.addModel(k, v))
+        models?.forEach?.((v) => this.addModel(v, models[v]))
         this.url = url
         this.servers = servers
         return this.loadUrl(url)
@@ -79,61 +79,52 @@ export default class Schema extends Entity {
         opts ||= {}
         this.d(`creating model class for ${name}`, { BaseModel }, { opts })
 
-        const classes = {}
         class walaxifiedModel extends BaseModel {
+
             constructor(data = false) {
                 super(data)
                 this._initModel(data)
                 this.d('built an object', { obj: this }, { data })
             }
 
-            get _walaxModel() {
-                return schemaObject.models.get(name)
-            }
-            get _walaxUrlNew() {
-                return this._w.urlNew
-            }
-            get _walaxUrl() {
-                return this._w.new ? this._w.urlNew : this._w.url
-            }
-            get _walaxFields() {
-                return this._w.new ? this._w.fieldsNew : this._w.fields
-            }
-
             _initModel(data) {
                 let s = schemaObject,
                     n = name
 
-                // so as to not muddy the model's namespace too much
                 this._w = {
                     dirty: new Set(),
                     values: new Map(),
-                    urlNew: false,
                     url: false,
                     new: true,
-                    fieldsNew: opts?.fieldsNew || opts?.fields,
-                    fields: opts?.fields,
                     schema: s,
-                    name: n,
-                    values: new Map()
+                    values: new Map(),
+                    model: this.__proto__,
+                    get fields() { return s.fields[n] }
                 }
-                if (opts != undefined) Object.assign(this._w, opts)
-                this.d('initModel')
+                this.d('initmodel', this)
                 if (Object.keys(this._w.fields).length) {
-                    this.d(`adding fields to ${n}`)
+                    this.d(`adding fields ${n}`)
                     Object.keys(this._w.fields).forEach(fn => {
                         this.d(`field ${fn}`)
                         w.augment(
                             this,
                             fn,
                             this._walaxGetField(fn),
-                            this._walaxGetField(fn)
+                            this._walaxSetField(fn)
                         )
                         //FIXME at the very least per-type
-                        w[fn] = undefined
+                        
                         this._setFieldDefault(fn)
                     })
-                    if (data) Object.assign(this, data)
+                    if (data) {
+                        this.d('assigning data', this, data)
+                        //Object.assign(this, data)
+                        // for (let fn in data) {
+                        //     this.d('field', fn, data[fn])
+                        //     this[fn] = data[fn]
+                        // }
+                        this.d('assigned', this)
+                    }
                 }
             }
 
@@ -142,6 +133,7 @@ export default class Schema extends Entity {
             }
 
             _setFieldDefault(field) {
+                if (field == 'url') return true
                 this._w.values[field] = undefined
 
                 let fd = this._w.fields[field]
@@ -155,9 +147,9 @@ export default class Schema extends Entity {
                 return () => this._w.values.get(field)
             }
 
-            _walaxGetField(field) {
+            _walaxSetField(field) {
+                // if (this._setField) return this._setField(field)
                 return val => {
-                    if (this._walaxSetField) return this._setField(field)
                     let newVal = val
                     this._w.dirty.add(field)
                     this._w.values.set(field, newVal)
@@ -169,7 +161,11 @@ export default class Schema extends Entity {
                 return `${name} object`
             }
         }
-        this.d(`adding model ${name}`, walaxifiedModel._schema)
+        walaxifiedModel.fields = opts.fields || {}
+        walaxifiedModel.url = opts.url || ''
+        
+        
+        this.d(`adding model ${name}`, walaxifiedModel.fields)
         this.addModel(name, walaxifiedModel)
         return walaxifiedModel
     }

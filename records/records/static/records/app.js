@@ -6,3 +6,5 @@ let prop = 'records'
 
 console.log(w)
 w.obj.load('records','/records/api/')
+
+w.obj.Band.objects.all().then(x => console.log(x))

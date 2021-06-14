@@ -87,6 +87,8 @@ export default class Network extends Control {
         // if (!url.startsWith('http'))
         //     url = this.baseUrl + url  //FIXME
         // this.d("transformed url", url)
+        this.a(url && params, 'incorrect request options')
+        this.d('request', { url, params, body, method, options})
         const opts = { ...{ url, params, body, method }, ...(options || {}) }
         // todo defaults?
         return opts

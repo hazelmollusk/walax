@@ -3,27 +3,26 @@ import Entity from '../util/Entity'
 import w from '../Walax'
 
 export default class Model extends Entity {
-    constructor() {
+    
+    constructor(data) {
         super()
+        this._w = {
+            model: this.__proto__,
+            values: new Map(),
+            dirty: new Set()
+        }
     }
 
-    // initialize (data) {
-    //   super.initialize(data)
-    // }
-
+    static _w = { 
+        defaultManager: Manager
+    }
     static get manager() {
-        return this._getManager(this)
+        return this.objects
     }
 
     static get objects() {
-        return this._getManager(this)
-    }
-
-    static _walaxManager = false
-    static _walaxDefaultManager = Manager
-    static _getManager(obj) {
-        this._walaxManager ||= this._walaxDefaultManager.getForModel(obj)
-        return this._walaxManager
+        this._w.manager ||= new this._w.defaultManager(this)
+        return this._w.manager
     }
 
     save() {
