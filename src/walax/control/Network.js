@@ -54,10 +54,10 @@ export default class Network extends Control {
         this.a(options, 'empty request options')
         options.headers ||=
             'Accept: application/vnd.oai.openapi+json, application/json'
+        this.a(this._chkOpts(options), 'bad request options', options)
         this.d(`Request: ${options.method.toUpperCase()} ${options.url}`, {
             options
         })
-        this.a(this._chkOpts(options), 'bad request options', options)
 
         return m.request(options)
     }

@@ -21,12 +21,6 @@ export default class DjangoModel extends Model {
         defaultManager: DjangoManager
     }
 
-    get url() {
-        return this._w.url
-    }
-    set url(val) {
-        this._w.url = val
-    }
     _getField(fn) {
         return () => {
             let fv = this._w.values.get(fn),
@@ -49,7 +43,7 @@ export default class DjangoModel extends Model {
         return val => {
             let fd = this._w.fields[fn]
             this.d(`setField(${fn})`, val, fd)
-            fv = val
+            let fv = val
             this.a(fd, `field ${fn} not found`)
             this.a(!fd?.read_only, `field ${fn} is read-only`)
             switch (fd.type) {

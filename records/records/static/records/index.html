@@ -20,6 +20,15 @@
 <body>
 
   <script src="dist/go.js"></script>
+    <input id="txt" value="name" />
+    <input onclick="
+      let a = new w.obj.Store();
+      a.name = document.getElementById('txt').value;
+      a.save(); 
+      return false;"
+      type="submit"
+      label="create a store"
+    "/>
 </body>
 
 </html>

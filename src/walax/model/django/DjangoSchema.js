@@ -12,8 +12,8 @@ const camelCase = (s) => {
 }
 
 export class DjangoSchema extends Schema {
-    _defaultModel = DjangoModel
-    _defaultManager = DjangoManager
+    defaultModel = DjangoModel
+    defaultManager = DjangoManager
 
     constructor(url, name = false, models = false) {
         super(url, name, models)
@@ -27,21 +27,21 @@ export class DjangoSchema extends Schema {
         if (typeof model == 'string') model = this.models.get(model)
         if (model?._model) model = model._model
         return w.cache.find('managers', model, m => {
-            let mgrClass = `${m._name}Manager`
+            let mgrClass = `${m._w.modelClassName}Manager`
             if (this.models.has(mgrClass)) return new mgrClass(m)
-            return new this._defaultManager(model)
+            return new this.defaultManager(model)
         })
     }
 
     toString() {
-        return `django schema ${this._name}`
+        return `django schema ${this.name}`
     }
 
     init(data) {
         super.init(data)
     }
 
-    loadUrl(url) {
+    async loadUrl(url) {
         // FIXME hack
         let modelsUrl = url + 'models/'
         this.d(`loadUrl ${url}`, { modelsUrl })
@@ -53,7 +53,7 @@ export class DjangoSchema extends Schema {
             this.description = info.description || ''
             this.schema = info
         })
-        w.net.get(modelsUrl).then(data => {
+        return w.net.get(modelsUrl).then(data => {
             this.d('retrieved schema data', data)
             for (let modelName in data) {
                 let modelRootUri = data[modelName]

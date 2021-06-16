@@ -96,15 +96,16 @@ export default class Objects extends Control {
         return 'Objects'
     }
 
-    load(name, url, models = false, schemaCls = false) {
+    async load(name, url, models = false, schemaCls = false) {
         this.d(`${name} | ${url}`)
         this.checkName(name)
         this.checkModels(models)
         schemaCls ||= this.defaultSchemaClass
         this.checkSchema(schemaCls)
-        let schema = new schemaCls(name, url, models)
+        let schema = new schemaCls(name, false, models)
         w.augment(this, name, () => this.schemas.get(name))
         this.schemas.set(name, schema)
+        return schema.loadUrl(url)
     }
 
     schema(name) {

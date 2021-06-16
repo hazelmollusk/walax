@@ -1,10 +1,11 @@
 import w from 'walax'
 import m from 'mithril'
 import {observable} from 'mobx'
-let url = '/records/api/?format=json'
+
+let url = '/records/api/'
 let prop = 'records'
 
+Promise.all(w.obj.load(prop, url))
 console.log(w)
-w.obj.load('records','/records/api/')
-
-w.obj.Band.objects.all().then(x => console.log(x))
+w.sleep(5000)
+console.log('hi')

@@ -21,6 +21,7 @@ export default class Model extends Entity {
     }
 
     static get objects() {
+        //fixme one manager per manager/model tuple
         this._w.manager ||= new this._w.defaultManager(this)
         return this._w.manager
     }
