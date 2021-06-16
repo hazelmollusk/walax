@@ -83,7 +83,7 @@ export default class DjangoModel extends Model {
         this.d('updateFields', data)
         Object.assign(this, data)
         if (this._w.new) {
-            this._w.url = data.url || '/'.join(this._w._urlNew, this.pk)
+            this._w.url = data.url || '/'.join(this._w.model.url, this.pk)
             this._w.new = false
             this._w.dirty.clear()
         }
@@ -104,7 +104,7 @@ export default class DjangoModel extends Model {
         } else {
             // ERROR CHECKING FOOL
             w.net
-                .put(this._walaxUrl, {}, saveFields, {})
+                .put(this._w.url, {}, saveFields, {})
                 .then(ret => this.updateFields(ret))
         }
         return this

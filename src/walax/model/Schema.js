@@ -96,7 +96,7 @@ export default class Schema extends Entity {
                 let s = schemaObject,
                     n = name
 
-                this._w = {
+                Object.assign(this._w, {
                     dirty: new Set(),
                     values: new Map(),
                     url: false,
@@ -104,9 +104,9 @@ export default class Schema extends Entity {
                     schema: s,
                     values: new Map(),
                     modelClassName: n,
-                    get model() { return s.models.get(n) },
-                    get fields() { return s.fields[n] }
-                }
+                    model: walaxifiedModel,
+                    fields: s.fields[n]
+                })
                 this.d('initmodel', this)
                 if (Object.keys(this._w.fields).length) {
                     Object.keys(this._w.fields).forEach(fn => {
