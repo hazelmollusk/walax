@@ -24,11 +24,21 @@
     <input onclick="
       let a = new w.obj.Store();
       a.name = document.getElementById('txt').value;
-      a.save(); 
+      a.save().then(b => {
+        let l = document.getElementById('list')
+        l.innerHTML = '<ul>'
+        w.obj.Store.objects.all().then(x => {
+          x.forEach(z => {
+            l.innerHTML += '<li>' + z.name + '</li>'
+          })
+        })
+        l.innerHTML += '</ul>'
+      })
       return false;"
       type="submit"
       label="create a store"
     "/>
+    <div id="list" />
 </body>
 
 </html>

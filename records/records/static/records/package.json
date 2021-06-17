@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "mobx": "^6.3.2",
     "walax": "file:../../../.."
   }
 }

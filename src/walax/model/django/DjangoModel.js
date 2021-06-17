@@ -89,7 +89,7 @@ export default class DjangoModel extends Model {
         }
     }
 
-    save() {
+    async save() {
         if (!this._w.dirty.size) {
             this.d('save(): object unchanged, not saving')
             return this
@@ -98,16 +98,15 @@ export default class DjangoModel extends Model {
         this.a(this._validateFields(), 'fields failed to validate')
         let saveFields = Object.fromEntries(this._w.values.entries())
         if (this._w.new) {
-            w.net.post(this._w.model.url, {}, saveFields, {}).then(ret => {
+            return w.net.post(this._w.model.url, {}, saveFields, {}).then(ret => {
                 this.updateFields(ret)
             })
         } else {
             // ERROR CHECKING FOOL
-            w.net
+            return w.net
                 .put(this._w.url, {}, saveFields, {})
                 .then(ret => this.updateFields(ret))
         }
-        return this
     }
 
     delete() {
