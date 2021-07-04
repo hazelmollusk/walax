@@ -21,13 +21,14 @@ export default class DjangoModel extends Model {
     }
 
     _getField(fn) {
+        this.d('getting field', fn)
         return () => {
             let fv = this._w.values.get(fn),
-                fd = this._w.fields[fn]
+                fd = this._w.model.fields[fn]
 
             if (fd.type == 'choice') {
-                fd.choices.forEach(c => {
-                    if (f.value == val) {
+                fd.choices.forEach(f => {
+                    if (f.value == fv) {
                         fv = f.display_name
                         fv.choices = fd.choices
                     }
@@ -40,7 +41,7 @@ export default class DjangoModel extends Model {
 
     _setField(fn) {
         return val => {
-            let fd = this._w.fields[fn]
+            let fd = this._w.model.fields[fn]
             this.d(`setField(${fn})`, val, fd)
             let fv = val
             this.a(fd, `field ${fn} not found`)
@@ -54,7 +55,7 @@ export default class DjangoModel extends Model {
                     break
                 case 'choice':
                     let fc = undefined
-                    fd?.choices.forEach(c => {
+                    fd?.choices.forEach(f => {
                         if (
                             [fv, v.display_name].includes(val) ||
                             fc.toLowerCase() == fv.toLowerCase()

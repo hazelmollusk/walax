@@ -73,7 +73,9 @@ export default class Network extends Control {
      */
     _chkOpts(opts) {
         // todo better sanity?
-        return opts.url && opts.method
+        let ret = (typeof opts?.url == 'string') && opts?.method
+        this.d('checking options', opts, ret)
+        return ret
     }
 
     /**
@@ -90,7 +92,7 @@ export default class Network extends Control {
         // if (!url.startsWith('http'))
         //     url = this.baseUrl + url  //FIXME
         // this.d("transformed url", url)
-        this.a(url && params, 'incorrect request options')
+        this.a(url, 'incorrect request options')
         const opts = { ...{ url, params, body, method }, ...(options || {}) }
         // todo defaults?
         return opts

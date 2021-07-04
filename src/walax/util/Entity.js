@@ -40,12 +40,11 @@ export default class Entity {
             this._daeiGetName(),
             ...msg
         )
-        throw new TypeError(msg[0])
     }
     a(cond, msg, ...dbg) {
-        w?.log?.assert(
-            this._daeiGetName(),
-            ...msg
+        w.log.assert(cond,
+            msg,
+            dbg
         )
     }
     i(...msg) {

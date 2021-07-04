@@ -68,7 +68,7 @@ export default class Schema extends Entity {
     createModel(name, opts = undefined) {
         const baseModel = this.models?.get?.(name) || this.defaultModel
         
-        this.a(WalaxModel, 'no base model to use')
+        this.a(baseModel, 'no base model to use')
         class WalaxModel extends baseModel {
             static _wPlaceholder = true
         }

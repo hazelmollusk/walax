@@ -108,9 +108,10 @@ export class Logger extends Control {
   /* async */  trace(...s) {
         return this._shouldLog(TRACE) && this._log(s, TRACE, true)
     }
-    assert(val, msg, name = false, dbginfo = false) {
+    assert(val, msg, dbginfo = false) {
         if (!val) {
-            this.error(name || '<assert>', msg, dbginfo)
+            this.d('assert failed', msg, dbginfo || undefined)
+            // this.error(name || '<assert>', msg, dbginfo)
             throw new TypeError(msg)
             // crash and reload?  what now?
         }
