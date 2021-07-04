@@ -59,9 +59,10 @@ export default class Network extends Control {
             options
         })
 
-        return m.request(options).then(ret => {
-            this.d('Network data', ret)
-        })
+        return m.request(options)
+        // .then(ret => {
+        //     this.d('Network data', ret)
+        // })
     }
 
     /**

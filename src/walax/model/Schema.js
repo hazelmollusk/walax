@@ -11,8 +11,7 @@ export default class Schema extends Entity {
     description = false
     version = false
     name = false
-    uri = false
-    servers = false
+    url = false
     defaultManager = Manager
     defaultModel = Model
     managers = new Map()
@@ -54,7 +53,7 @@ export default class Schema extends Entity {
         models?.forEach?.(v => this.addModel(v, models[v]))
         this.url = url
         this.servers = servers
-        return this.loadUrl(name, url)
+        return this.loadUrl(url)
     }
 
     checkModel(model) {
