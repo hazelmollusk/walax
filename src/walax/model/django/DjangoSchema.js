@@ -20,8 +20,6 @@ export class DjangoSchema extends Schema {
         this.fields = {}
     }
 
-    initSchema(data) { }
-
     getManager(model) {
         // allows instances/names to be passed in
         if (typeof model == 'string') model = this.models.get(model)

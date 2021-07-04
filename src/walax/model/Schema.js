@@ -95,7 +95,8 @@ export default class Schema extends Entity {
             _initModel(data) {
                 let s = schemaObject,
                     n = name
-
+                    
+                this._w ||= {}
                 Object.assign(this._w, {
                     dirty: new Set(),
                     values: new Map(),
@@ -168,7 +169,8 @@ export default class Schema extends Entity {
         }
         walaxifiedModel.fields = opts.fields || {}
         walaxifiedModel.url = opts.url || ''
-        
+        Object.defineProperty(walaxifiedModel, 
+            'name', {get:()=>name})
         
         this.d(`adding model ${name}`, walaxifiedModel.fields)
         this.addModel(name, walaxifiedModel)

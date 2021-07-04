@@ -16,6 +16,7 @@ module.exports = {
         // libraryTarget: 'umd',
         // umdNamedDefine: true
     },
+    devtool: 'eval-cheap-module-source-map',
     externals: {
         // lodash: {
         //   commonjs: 'lodash',

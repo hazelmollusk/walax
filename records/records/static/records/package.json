@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "mobx": "^6.3.2",
-    "walax": "file:../../../.."
+    "walax": "file:../../../..",
+    "webpack": "^5.42.0"
   }
 }
