@@ -64,7 +64,7 @@ recordLogs.logs = new Set()
 
 export class Logger extends Control {
     all = new Set()
-    level = DEBUG
+    level = TRACE
     stack = false
 
     constructor() {
@@ -106,7 +106,7 @@ export class Logger extends Control {
         return this._shouldLog(DEBUG) && this._log(s, DEBUG)
     }
   /* async */  trace(...s) {
-        return this._shouldLog(TRACE) && this._log(s, TRACE)
+        return this._shouldLog(TRACE) && this._log(s, TRACE, true)
     }
     assert(val, msg, name = false, dbginfo = false) {
         if (!val) {
@@ -116,14 +116,16 @@ export class Logger extends Control {
         }
     }
 
-  /* async */  _log(s, level = INFO, obj = null) {
+  /* async */  _log(s, level = INFO, stack) {
         let promises = []
-        let stack = this.stack && this._shouldLog(DEBUG) ? 'stackinfo()' : false
         this.all.forEach((v, k, z) => {
             if (v.multiple) promises.push(this._processLog(v, s, level, stack))
             else
                 s.forEach(msg => promises.push(this._processLog(v, msg, level, stack)))
-            if (stack) promises.push(this._processLog(v, stack, TRACE))
+            if (stack) {
+                let stackError = new Error()
+                promises.push(this._processLog(v, [stackError.stack], TRACE))
+            }
         })
 
         return promises

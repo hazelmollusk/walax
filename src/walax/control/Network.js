@@ -59,7 +59,9 @@ export default class Network extends Control {
             options
         })
 
-        return m.request(options)
+        return m.request(options).then(ret => {
+            this.d('Network data', ret)
+        })
     }
 
     /**
@@ -88,7 +90,6 @@ export default class Network extends Control {
         //     url = this.baseUrl + url  //FIXME
         // this.d("transformed url", url)
         this.a(url && params, 'incorrect request options')
-        this.d('request', { url, params, body, method, options})
         const opts = { ...{ url, params, body, method }, ...(options || {}) }
         // todo defaults?
         return opts

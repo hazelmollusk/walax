@@ -7,6 +7,9 @@ import w from '../../Walax'
  * @class
  */
 export default class DjangoModel extends Model {
+
+    static defaultManager = DjangoManager
+
     /**
      * builds a new DjangoModel
      * @class
@@ -15,10 +18,6 @@ export default class DjangoModel extends Model {
      */
     constructor(data) {
         super(data)
-    }
-
-    static _w = {
-        defaultManager: DjangoManager
     }
 
     _getField(fn) {

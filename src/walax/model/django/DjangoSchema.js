@@ -39,15 +39,17 @@ export class DjangoSchema extends Schema {
         super.init(data)
     }
 
-    async loadUrl(url) {
+    loadUrl(url) {
         // FIXME hack
-        let modelsUrl = url + 'models/'
+        this.d('loadUrl START')
+        w.log.trace('loadUrl')
+        let modelsUrl = url + '/models/'
         this.d(`loadUrl ${url}`, { modelsUrl })
         w.net.options(modelsUrl).then(info => {
-            this.d(`receiving data for ${url}`, info)
+            this.d(`receiving info for ${url}`, info)
             this.url = url
             this.modelsUrl = modelsUrl
-            this.title = info.name || 'Untitled'
+            // this.title = info.name || 'Untitled'
             this.description = info.description || ''
             this.schema = info
         })
