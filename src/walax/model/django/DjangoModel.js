@@ -81,7 +81,9 @@ export default class DjangoModel extends Model {
 
     updateFields(data, wasNew = false) {
         this.d('updateFields', data)
-        Object.assign(this, data)
+        for (let fn in data) {
+            this._w.values.set(fn, data)
+        }
         if (this._w.new) {
             this._w.url = data.url || '/'.join(this._w.model.url, this.pk)
             this._w.new = false
@@ -98,7 +100,7 @@ export default class DjangoModel extends Model {
         this.a(this._validateFields(), 'fields failed to validate')
         let saveFields = Object.fromEntries(this._w.values.entries())
         if (this._w.new) {
-            return w.net.post(this._w.model.url, {}, saveFields, {}).then(ret => {
+            return w.net.post(this._w.model.modelUrl, {}, saveFields, {}).then(ret => {
                 this.updateFields(ret)
             })
         } else {
