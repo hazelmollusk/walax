@@ -69,7 +69,7 @@ export class DjangoSchema extends Schema {
                         fields: fields,
                         name: modelClassName
                     }
-
+                    this.d('model options', opts)
                     let m = this.createModel(modelClassName, opts)
                     this.fields[modelClassName] = fields
                     m.modelUrl = modelRootUri

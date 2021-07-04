@@ -1,11 +1,14 @@
 import Manager from '../Manager'
 import DjangoQuery from './DjangoQuery'
+import DjangoModel from './DjangoModel'
 
 export default class DjangoManager extends Manager {
     constructor(model) {
         super(model)
         this.model = model
     }
+
+    model = DjangoModel
 
     async all() {
         this.query = new DjangoQuery(this)

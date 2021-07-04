@@ -9,11 +9,11 @@ export default class Model extends Entity {
     constructor(data) {
         super()
         this._w = {
-            model: this.__proto__,
+            model: this.constructor,
             values: new Map(),
             dirty: new Set()
         }
-        this._initModel
+        this._initModel(data)
     }
 
     static get objects() {
@@ -21,6 +21,12 @@ export default class Model extends Entity {
         this.manager ||= new this.defaultManager(this)
         return this.manager
     }
+
+    static get fields() {
+        return this._w.fields
+    }
+
+    static get fields() { return this._w.fields }
 
     save() {
         this.a(false, 'model class must implement save()')
@@ -39,11 +45,10 @@ export default class Model extends Entity {
             url: false,
             new: true,
             values: new Map(),
-            fields: s.fields[n]
         })
         this.d('initmodel', this)
-        if (Object.keys(this._w.fields).length) {
-            Object.keys(this._w.fields).forEach(fn => {
+        if (Object.keys(this._w.model.fields).length) {
+            Object.keys(this._w.model.fields).forEach(fn => {
                 this.d(`field ${fn}`)
                 w.augment(
                     this,
@@ -97,6 +102,6 @@ export default class Model extends Entity {
     }
 
     toString() {
-        return `${name} object`
+        return `object`
     }
 }

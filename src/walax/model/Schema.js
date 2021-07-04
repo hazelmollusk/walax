@@ -66,18 +66,25 @@ export default class Schema extends Entity {
     }
 
     createModel(name, opts = undefined) {
-        const model = this.models?.get?.(name) || this.defaultModel
+        const baseModel = this.models?.get?.(name) || this.defaultModel
         
-        this.a(model, 'no base model to use')
-
-        this.a(this.checkModel(model), `invalid model registered: ${name}`)
+        this.a(WalaxModel, 'no base model to use')
+        class WalaxModel extends baseModel {
+            static _wPlaceholder = true
+        }
+        this.a(this.checkModel(WalaxModel), `invalid model registered: ${name}`)
         this.a(!w.obj.models.has(name), `model ${name} already exists!`)
-        this.d(`creating model ${name}`, { schema: this, model })
-        w.augment(this, name, () => model)
-        w.augment(w.obj, name, () => model)
-        w.obj.models.set(name, model)
-        this.models[name] ||= model
+        this.d(`creating model ${name}`, { schema: this, model: WalaxModel })
+        
+        WalaxModel._w ||= {}
+        if (opts) for (let opt in opts) WalaxModel._w[opt] = opts[opt]
+        
+        w.augment(this, name, () => WalaxModel)
+        w.augment(w.obj, name, () => WalaxModel)
+        w.obj.models.set(name, WalaxModel)
+        this.models[name] ||= WalaxModel
 
-        return model
+        this.d('created model', WalaxModel)
+        return WalaxModel
     }
 }
