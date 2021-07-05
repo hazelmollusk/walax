@@ -101,7 +101,7 @@ export default class DjangoModel extends Model {
         let saveFields = Object.fromEntries(this._w.values.entries())
         if (this._w.new) {
             return w.net.post(this._w.model.modelUrl, {}, saveFields, {}).then(ret => {
-                this.updateFields(ret)
+                //this.updateFields(ret)
             })
         } else {
             // ERROR CHECKING FOOL

@@ -47,6 +47,10 @@ class DjangoQuery extends Entity {
         this.single = single
     }
 
+    toString() {
+        return 'DjangoQuery'
+    }
+
     get model() {
         return this.parent.model
     }
@@ -65,7 +69,7 @@ class DjangoQuery extends Entity {
     }
 
     get cached() {
-        return w.cache.find(false, 'querie s', this.serialized)
+        return w.cache.find(false, 'queries', this.serialized)
     }
 
     set cached(val) {
@@ -80,10 +84,10 @@ class DjangoQuery extends Entity {
         let res = new Set()
         return w.net.get(this.model.modelUrl).then(data => {
             if (data.length) {
-                this.d('data returned',data)
+                this.d('received query data',data)
                 data.forEach(o => {
                     let newObj = w.obj.receiveObject(this.model, o)
-                    this.d('got object', newObj)
+                    this.d('object created', newObj)
                     res.add(newObj)
                 })
             }

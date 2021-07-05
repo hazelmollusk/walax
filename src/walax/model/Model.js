@@ -61,11 +61,10 @@ export default class Model extends Entity {
                 this._setFieldDefault(fn)
             })
             if (data) {
-                this.d('assigning data', this, data)
-                Object.assign(this, data)
                 for (let fn in data) {
                     this.d('setting field', fn, data[fn])
-                    this[fn] = data[fn]
+                    // this[fn] = data[fn]
+                    this._w.values.set(fn, data[fn])
                 }
                 this.d('assigned', this)
             }
@@ -74,6 +73,14 @@ export default class Model extends Entity {
 
     _validateFields() {
         return true
+    }
+
+    _getField(fn) {
+        this.a(false, 'not implemented')
+    }
+
+    _setField(fn) {
+        this.a(false, 'not implemented')
     }
 
     _setFieldDefault(field) {

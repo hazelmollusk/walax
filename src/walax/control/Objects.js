@@ -43,7 +43,7 @@ export default class Objects extends Control {
 
     receiveObject(model, data) {
         this.d(
-            "receiving object",
+            "receiving object data for model",
             model,
             data
         )
