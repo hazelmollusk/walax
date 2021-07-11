@@ -72,7 +72,7 @@ export default class Model extends Entity {
     }
 
     _validateFields() {
-        return true
+        this.a(false, 'not implemented')
     }
 
     _getField(fn) {

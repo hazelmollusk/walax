@@ -38,26 +38,41 @@ class DjangoQuery extends Entity {
      * @param {boolean} [flip=false]
      * @memberof DjangoQuery
      */
-    constructor(parent, filter = false, flip = false, single = false) {
+    constructor(parent, args = false, flip = false, single = false) {
         // todo: sanity check
         super()
         this.parent = parent
         this.flip = flip
-        this.filter = filter
+        this.args = args
         this.single = single
+        this.cache = {}
     }
 
     toString() {
-        return 'DjangoQuery'
+        return 'DjangoQuery ' + this.serialized
+    }
+
+    filter(args) {
+        return new DjangoQuery(this, args)
+    }
+
+    exclude(args) {
+        return new DjangoQuery(this, args, true)
     }
 
     get model() {
         return this.parent.model
     }
 
+    get params() {
+        let p = this.parent.args ? this.parent.args : {}
+        if (this.args) Object.assign(p, this.args)
+        return p
+    }
+
     get serialized() {
         let rec = ''
-        for (let f in this.filter) rec += `(${f}=${this.filter[f]})`
+        for (let f in this.args) rec += `(${f}=${this.filter[f]})`
         if (this.single) rec = '#' + rec
         if (this.flip) rec = '!' + rec
         rec = `${this.parent.serialized}+[${rec}]`
@@ -65,7 +80,7 @@ class DjangoQuery extends Entity {
     }
 
     [Symbol.iterator]() {
-        return new DjangoQueryProxy(this.w, this)
+        return new DjangoQueryProxy(this)
     }
 
     get cached() {
@@ -75,32 +90,31 @@ class DjangoQuery extends Entity {
     set cached(val) {
         return w.cache.store(val, 'queries', this.serialized)
     }
-    get cache() {
-        if (!this.cached) this.fetch()
-        return this.cached
-    }
 
     async fetch() {
         let res = new Set()
-        return w.net.get(this.model.modelUrl).then(data => {
+        this.d('query fetch', this.model, this.params)
+        return w.net.get(this.model.modelUrl, this.params).then(data => {
             if (data.length) {
-                this.d('received query data',data)
+                this.d('received query data', data)
                 data.forEach(o => {
                     let newObj = w.obj.receiveObject(this.model, o)
                     this.d('object created', newObj)
                     res.add(newObj)
                 })
             }
+
             this.d('fetch returns', res)
             return res
         })
     }
 
+    async then() {
+        return this.fetch()
+    }
+
     async all() {
-        let a = this.fetch()
-        return a.then(res=>{
-            return res
-        })
+        return this
     }
 
     async none() {
