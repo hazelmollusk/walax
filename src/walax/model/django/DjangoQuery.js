@@ -67,6 +67,7 @@ class DjangoQuery extends Entity {
     get params() {
         let p = this.parent.args ? this.parent.args : {}
         if (this.args) Object.assign(p, this.args)
+        this.d('query params', p)
         return p
     }
 
@@ -109,8 +110,8 @@ class DjangoQuery extends Entity {
         })
     }
 
-    async then() {
-        return this.fetch()
+    async then(f) {
+        this.fetch().then(res=>f(res))
     }
 
     async all() {

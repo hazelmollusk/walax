@@ -21,7 +21,7 @@ export default class DjangoModel extends Model {
     }
 
     _getField(fn) {
-        this.d('getting field', fn)
+        // this.d('getting field', fn)
         return () => {
             let fv = this._w.values.get(fn),
                 fd = this._w.model.fields[fn]
@@ -42,7 +42,7 @@ export default class DjangoModel extends Model {
     _setField(fn) {
         return val => {
             let fd = this._w.model.fields[fn]
-            this.d(`setField(${fn})`, val, fd)
+            // this.d(`setField(${fn})`, val, fd)
             let fv = val
             this.a(fd, `field ${fn} not found`)
             this.a(!fd?.read_only, `field ${fn} is read-only`)
