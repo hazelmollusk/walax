@@ -30,7 +30,6 @@ export default class DjangoModel extends Model {
                 fd.choices.forEach(f => {
                     if (f.value == fv) {
                         fv = f.display_name
-                        fv.choices = fd.choices
                     }
                 })
             }
@@ -55,10 +54,10 @@ export default class DjangoModel extends Model {
                     break
                 case 'choice':
                     let fc = undefined
-                    fd?.choices.forEach(f => {
+                    fd.choices.forEach(f => {
                         if (
-                            [fv, v.display_name].includes(val) ||
-                            fc.toLowerCase() == fv.toLowerCase()
+                            [f.value, f.display_name].includes(val) ||
+                            f.display_name.toLowerCase() == String(val).toLowerCase()
                         )
                             fc = f.value
                     })
@@ -82,10 +81,11 @@ export default class DjangoModel extends Model {
     updateFields(data, wasNew = false) {
         this.d('updateFields', data)
         for (let fn in data) {
-            this._w.values.set(fn, data)
+            this.d('updating', fn, data[fn])
+            this._w.values.set(fn, data[fn])
         }
         if (this._w.new) {
-            this._w.url = data.url || '/'.join(this._w.model.url, this.pk)
+            // this._w.url = data.url || '/'.join(this._w.model.url, this.pk)
             this._w.new = false
             this._w.dirty.clear()
         }
@@ -101,21 +101,21 @@ export default class DjangoModel extends Model {
         let saveFields = Object.fromEntries(this._w.values.entries())
         if (this._w.new) {
             return w.net.post(this._w.model.modelUrl, {}, saveFields, {}).then(ret => {
-                //this.updateFields(ret)
+                this.updateFields(ret)
             })
         } else {
             // ERROR CHECKING FOOL
             return w.net
-                .put(this._w.url, {}, saveFields, {})
+                .put(this.url, {}, saveFields, {})
                 .then(ret => this.updateFields(ret))
         }
     }
 
     delete() {
-        this.a(!this._deleted, `deleting deleted model: ${this._name}.delete()`)
-        w.net.delete(this._walaxUrl).then(ret => {
+        this.a(!this._w.deleted, `deleting deleted model: ${this._name}.delete()`)
+        return w.net.delete(this.url).then(ret => {
             this.d('deleted', { obj: this })
-            this._deleted = true
+            this._w.deleted = true
             this._w.values.clear()
         })
     }

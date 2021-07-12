@@ -4,5 +4,13 @@ from .models import Band, Album, Song, Store, Inventory
 admin.site.register(Band)
 admin.site.register(Album)
 admin.site.register(Song)
-admin.site.register(Store)
-admin.site.register(Inventory)
+
+class InventoryInline(admin.TabularInline):
+    model = Inventory
+    extra = 1
+
+class StoreAdmin(admin.ModelAdmin):
+    inlines = (InventoryInline,)
+
+# admin.site.register(Inventory)
+admin.site.register(Store, StoreAdmin)

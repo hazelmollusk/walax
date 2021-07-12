@@ -5,20 +5,20 @@ class DjangoQueryProxy extends Entity {
     query = false
     keys = false
 
-    constructor(manager) {
+    constructor(query) {
         super()
-        this.manager = manager
+        this.query = query
     }
 
     [Symbol.iterator]() {
-        this.keys = this.manager.cache
+        this.keys = this.query.cache
         return this
     }
 
     next() {
         let cur = this.keys.next()
         if (cur.done) return cur
-        let obj = w.obj.getObject(this.manager.model, cur.value)
+        let obj = w.obj.getObject(this.query.model, cur.value)
         return { value: obj, done: false }
     }
 }
@@ -46,6 +46,7 @@ class DjangoQuery extends Entity {
         this.args = args
         this.single = single
         this.cache = {}
+        this.d('query', this)
     }
 
     toString() {
@@ -58,6 +59,10 @@ class DjangoQuery extends Entity {
 
     exclude(args) {
         return new DjangoQuery(this, args, true)
+    }
+
+    one(args) {
+        return new DjangoQuery(this, args, false, true)
     }
 
     get model() {
@@ -73,10 +78,10 @@ class DjangoQuery extends Entity {
 
     get serialized() {
         let rec = ''
-        for (let f in this.args) rec += `(${f}=${this.filter[f]})`
+        for (let f in this.args) rec += `(${f}=${this.args[f]})`
         if (this.single) rec = '#' + rec
         if (this.flip) rec = '!' + rec
-        rec = `${this.parent.serialized}+[${rec}]`
+        rec = `${this.parent.serialized}+${rec}`
         return rec
     }
 

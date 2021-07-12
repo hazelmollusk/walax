@@ -21,7 +21,6 @@ export default class DjangoManager extends Manager {
 
     async filter(args) {
         let query = new DjangoQuery(this, args)
-        this.d('filter query', this, query)
         return query
     }
 
@@ -35,6 +34,6 @@ export default class DjangoManager extends Manager {
     }
 
     get serialized() {
-        return `{${this._model._name}}`
+        return this.model._w.name
     }
 }

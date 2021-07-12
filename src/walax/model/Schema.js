@@ -78,6 +78,7 @@ export default class Schema extends Entity {
         
         WalaxModel._w ||= {}
         if (opts) for (let opt in opts) WalaxModel._w[opt] = opts[opt]
+        WalaxModel._w.name = name
         
         w.augment(this, name, () => WalaxModel)
         w.augment(w.obj, name, () => WalaxModel)
