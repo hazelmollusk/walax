@@ -71,8 +71,13 @@ export class DjangoSchema extends Schema {
                     }
                     this.d('model options', opts)
                     let m = this.createModel(modelClassName, opts)
-                    this.fields[modelClassName] = fields
                     m.modelUrl = modelRootUri
+
+                    // set pk if found
+                    for (let fn in fields) 
+                        if (fields[fn]['primary key'] == 'true')
+                            m.pk = fn
+
                     this.d(`created model class ${modelClassName}`, {opts, m})
                 })
             }

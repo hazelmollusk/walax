@@ -15,7 +15,6 @@ export default class WalaxCache extends Control {
     toString() {
         return 'Cache'
     }
-
     cache(key) {
         if (!this._storage.has(key)) this._storage.set(key, new WalaxCache(key))
         return this._storage.get(key)

@@ -49,8 +49,8 @@ export default class DjangoModel extends Model {
                 case 'field':
                     break
                 case 'string':
-                    // this.a(typeof fv == 'string', `field ${fn} is a string`, fv)
-                    // if (fd.max_length) this.a(fv.length <= fd.max_length)
+                    this.a(typeof fv == 'string', `field ${fn} is a string`, fv)
+                    if (fd.max_length) this.a(fv.length <= fd.max_length, 'string is too long')
                     break
                 case 'choice':
                     let fc = undefined
@@ -111,7 +111,7 @@ export default class DjangoModel extends Model {
         }
     }
 
-    delete() {
+    async delete() {
         this.a(!this._w.deleted, `deleting deleted model: ${this._name}.delete()`)
         return w.net.delete(this.url).then(ret => {
             this.d('deleted', { obj: this })
