@@ -28,6 +28,10 @@ export default class Model extends Entity {
 
     static get fields() { return this._w.fields }
 
+    get pk() {
+        return this[this._w.model.pk]
+    }
+
     save() {
         this.a(false, 'model class must implement save()')
     }

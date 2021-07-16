@@ -75,8 +75,11 @@ export class DjangoSchema extends Schema {
 
                     // set pk if found
                     for (let fn in fields) 
-                        if (fields[fn]['primary key'] == 'true')
+                        if (fields[fn]['primary_key'] == 'true') {
                             m.pk = fn
+                            break
+                        }
+
 
                     this.d(`created model class ${modelClassName}`, {opts, m})
                 })
