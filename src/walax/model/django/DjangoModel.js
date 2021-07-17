@@ -17,7 +17,8 @@ export default class DjangoModel extends Model {
      * @param {*} data
      */
     constructor(data) {
-        super(data)
+        super()
+        if (data) this.updateFields(data)
     }
 
     _getField(fn) {
@@ -82,10 +83,14 @@ export default class DjangoModel extends Model {
         this.d('updateFields', data)
         for (let fn in data) {
             this.d('updating', fn, data[fn])
+            //fixme check fname at least
             this._w.values.set(fn, data[fn])
         }
+        if (data && data.url) 
+            this._w.url = data.url 
+        if (!this._w.url && this.pk) 
+            this._w.url = [this._w.model.modelUrl, this.pk].join('')
         if (this._w.new) {
-            // this._w.url = data.url || '/'.join(this._w.model.url, this.pk)
             this._w.new = false
             this._w.dirty.clear()
         }

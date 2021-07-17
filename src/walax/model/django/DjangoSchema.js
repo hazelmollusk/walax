@@ -79,8 +79,8 @@ export class DjangoSchema extends Schema {
                             m.pk = fn
                             break
                         }
-
-
+                    if (!m.pk && (fields['url'] == undefined)) this.e('no primary key', m)
+                    
                     this.d(`created model class ${modelClassName}`, {opts, m})
                 })
             }
