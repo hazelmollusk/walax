@@ -18,7 +18,12 @@ export default class DjangoModel extends Model {
      */
     constructor(data) {
         super()
+        this._setFieldDefaults()
         if (data) this.updateFields(data)
+    }
+
+    toString() {
+        return ['django', this._w.model.modelName, this.pk].join('.')
     }
 
     _getField(fn) {
@@ -69,11 +74,15 @@ export default class DjangoModel extends Model {
             this._w.dirty.add(fn)
             this._w.values.set(fn, fv)
             this.d('field set', fn, fv)
-            return val
+            return fv
         }
     }
 
-    _setFieldDefault(fn) { }
+    //fixme for types
+    _setFieldDefaults() { 
+        for (let fn in this._w.model.fields)
+            this._w.values.set(fn, undefined)
+    }
 
     _validateFields() {
         return true
@@ -82,14 +91,14 @@ export default class DjangoModel extends Model {
     updateFields(data, wasNew = false) {
         this.d('updateFields', data)
         for (let fn in data) {
-            this.d('updating', fn, data[fn])
-            //fixme check fname at least
+            this.a(Object.keys(this._w.model.fields).includes(fn))
             this._w.values.set(fn, data[fn])
         }
         if (data && data.url) 
             this._w.url = data.url 
         if (!this._w.url && this.pk) 
-            this._w.url = [this._w.model.modelUrl, this.pk].join('')
+            this._w.url = [this._w.model.modelUrl, this.pk, '/'].join('')
+            //TODO support non-trailing slash urls?
         if (this._w.new) {
             this._w.new = false
             this._w.dirty.clear()

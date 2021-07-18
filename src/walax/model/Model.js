@@ -72,6 +72,11 @@ export default class Model extends Entity {
                 
                 this._setFieldDefault(fn)
             })
+            if (this._w.model.relatedQueries) {
+                Object.keys(this._w.model.relatedQueries).forEach(rn => {
+                    w.augment(this, rn, this._w.model.relatedQueries[rn])
+                })
+            }
             if (data) {
                 for (let fn in data) {
                     this.d('setting field', fn, data[fn])
@@ -99,9 +104,9 @@ export default class Model extends Entity {
 
     _setFieldDefault(field) {
         if (field == 'url') return true
-        this._w.values[field] = undefined
+        this._w.values.set(field, undefined)
 
-        let fd = this._w.fields[field]
+        let fd = this._w.model.fields[field]
         switch (fd.type) {
         }
         return true

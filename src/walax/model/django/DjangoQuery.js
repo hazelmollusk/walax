@@ -116,7 +116,7 @@ class DjangoQuery extends Entity {
     }
 
     async then(f) {
-        this.fetch().then(res=>f(res))
+        return this.fetch().then(res=>f(res))
     }
 
     async all() {

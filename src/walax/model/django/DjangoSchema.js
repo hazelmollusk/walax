@@ -39,6 +39,34 @@ export class DjangoSchema extends Schema {
         super.init(data)
     }
 
+    processModels() {
+        for (let modelName in this.models) {
+            let model = this.models[modelName]
+            for (let fn in model.fields) {
+                let field = model.fields[fn]
+                if (field.type == 'related') {
+                    let relatedName = field.related_name
+                    relatedName ||= modelName.toLowerCase() + '_set'
+                    this.d(`adding ${field.model}.${relatedName.toLowerCase()}`)
+                    
+                    let targetModel = this.models[field.model]
+                    targetModel.relatedQueries ||= {}
+                    let queryField = `${fn}_id`
+                    let getQuery = function() {
+                        if (this.pk) {
+                            let filter = {}
+                            filter[queryField] = this.pk
+                            let query = model.objects.filter(filter)
+                            return query
+                        }
+                        return []
+                    }
+                    targetModel.relatedQueries[relatedName] = getQuery
+                }
+            }
+        }
+    }
+
     loadUrl(url) {
         // FIXME hack
         this.d('Django loadUrl', url)
@@ -55,25 +83,23 @@ export class DjangoSchema extends Schema {
         })
         return w.net.get(modelsUrl).then(data => {
             this.d('retrieved schema data', data)
+            let modelPromises = []
             for (let modelName in data) {
                 let modelRootUri = data[modelName]
-                w.net.options(modelRootUri).then(modelInfo => {
+                modelPromises.push(w.net.options(modelRootUri).then(modelInfo => {
                     this.d(`retrieved options for model ${modelName}`, modelInfo)
                     let fields = modelInfo.actions.POST
                     let modelClassName = camelCase(modelName)
-                    // let modelClassName = modelInfo.name
-                    //     .replace(' List', '')
-                    //     .replace(' ', '')
                     let opts = {
-                        url: modelRootUri,
+                        modelUrl: modelRootUri,
                         fields: fields,
-                        name: modelClassName
+                        modelName: modelClassName,
+                        schema: this
                     }
                     this.d('model options', opts)
                     let m = this.createModel(modelClassName, opts)
                     m.modelUrl = modelRootUri
 
-                    // set pk if found
                     for (let fn in fields) 
                         if (fields[fn]['primary_key'] == 'true') {
                             m.pk = fn
@@ -82,8 +108,11 @@ export class DjangoSchema extends Schema {
                     if (!m.pk && (fields['url'] == undefined)) this.e('no primary key', m)
                     
                     this.d(`created model class ${modelClassName}`, {opts, m})
-                })
+                }))
             }
+            Promise.all(modelPromises).then(x => {
+                this.processModels()
+            })
         })
     }
 }
