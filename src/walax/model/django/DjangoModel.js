@@ -17,11 +17,17 @@ export default class DjangoModel extends Model {
      * @param {*} data
      */
     constructor(data) {
-        super(data)
+        super()
+        this._setFieldDefaults()
+        if (data) this.updateFields(data)
+    }
+
+    toString() {
+        return ['django', this._w.model.modelName, this.pk].join('.')
     }
 
     _getField(fn) {
-        this.d('getting field', fn)
+        // this.d('getting field', fn)
         return () => {
             let fv = this._w.values.get(fn),
                 fd = this._w.model.fields[fn]
@@ -30,7 +36,6 @@ export default class DjangoModel extends Model {
                 fd.choices.forEach(f => {
                     if (f.value == fv) {
                         fv = f.display_name
-                        fv.choices = fd.choices
                     }
                 })
             }
@@ -42,7 +47,7 @@ export default class DjangoModel extends Model {
     _setField(fn) {
         return val => {
             let fd = this._w.model.fields[fn]
-            this.d(`setField(${fn})`, val, fd)
+            // this.d(`setField(${fn})`, val, fd)
             let fv = val
             this.a(fd, `field ${fn} not found`)
             this.a(!fd?.read_only, `field ${fn} is read-only`)
@@ -50,15 +55,15 @@ export default class DjangoModel extends Model {
                 case 'field':
                     break
                 case 'string':
-                    // this.a(typeof fv == 'string', `field ${fn} is a string`, fv)
-                    // if (fd.max_length) this.a(fv.length <= fd.max_length)
+                    this.a(typeof fv == 'string', `field ${fn} is a string`, fv)
+                    if (fd.max_length) this.a(fv.length <= fd.max_length, 'string is too long')
                     break
                 case 'choice':
                     let fc = undefined
-                    fd?.choices.forEach(f => {
+                    fd.choices.forEach(f => {
                         if (
-                            [fv, v.display_name].includes(val) ||
-                            fc.toLowerCase() == fv.toLowerCase()
+                            [f.value, f.display_name].includes(val) ||
+                            f.display_name.toLowerCase() == String(val).toLowerCase()
                         )
                             fc = f.value
                     })
@@ -69,11 +74,15 @@ export default class DjangoModel extends Model {
             this._w.dirty.add(fn)
             this._w.values.set(fn, fv)
             this.d('field set', fn, fv)
-            return val
+            return fv
         }
     }
 
-    _setFieldDefault(fn) { }
+    //fixme for types
+    _setFieldDefaults() { 
+        for (let fn in this._w.model.fields)
+            this._w.values.set(fn, undefined)
+    }
 
     _validateFields() {
         return true
@@ -82,10 +91,15 @@ export default class DjangoModel extends Model {
     updateFields(data, wasNew = false) {
         this.d('updateFields', data)
         for (let fn in data) {
-            this._w.values.set(fn, data)
+            this.a(Object.keys(this._w.model.fields).includes(fn))
+            this._w.values.set(fn, data[fn])
         }
+        if (data && data.url) 
+            this._w.url = data.url 
+        if (!this._w.url && this.pk) 
+            this._w.url = [this._w.model.modelUrl, this.pk, '/'].join('')
+            //TODO support non-trailing slash urls?
         if (this._w.new) {
-            this._w.url = data.url || '/'.join(this._w.model.url, this.pk)
             this._w.new = false
             this._w.dirty.clear()
         }
@@ -101,21 +115,21 @@ export default class DjangoModel extends Model {
         let saveFields = Object.fromEntries(this._w.values.entries())
         if (this._w.new) {
             return w.net.post(this._w.model.modelUrl, {}, saveFields, {}).then(ret => {
-                //this.updateFields(ret)
+                this.updateFields(ret)
             })
         } else {
             // ERROR CHECKING FOOL
             return w.net
-                .put(this._w.url, {}, saveFields, {})
+                .put(this.url, {}, saveFields, {})
                 .then(ret => this.updateFields(ret))
         }
     }
 
-    delete() {
-        this.a(!this._deleted, `deleting deleted model: ${this._name}.delete()`)
-        w.net.delete(this._walaxUrl).then(ret => {
+    async delete() {
+        this.a(!this._w.deleted, `deleting deleted model: ${this._name}.delete()`)
+        return w.net.delete(this.url).then(ret => {
             this.d('deleted', { obj: this })
-            this._deleted = true
+            this._w.deleted = true
             this._w.values.clear()
         })
     }

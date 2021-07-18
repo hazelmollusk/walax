@@ -31,6 +31,7 @@
         let l = document.getElementById('list')
         l.innerHTML = '<ul>'
         w.obj.Store.objects.all().then(x => {
+          console.log('ASDF',x)
           x.forEach(z => {
             l.innerHTML += '<li>' + z.name + '</li>'
           })

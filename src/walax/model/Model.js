@@ -28,6 +28,18 @@ export default class Model extends Entity {
 
     static get fields() { return this._w.fields }
 
+    get pk() {
+        return this[this._w.model.pk]
+    }
+
+    get url() {
+        return this._w.url
+    }
+
+    set url(u) {
+        this._w.url = u
+    }
+
     save() {
         this.a(false, 'model class must implement save()')
     }
@@ -60,19 +72,26 @@ export default class Model extends Entity {
                 
                 this._setFieldDefault(fn)
             })
+            if (this._w.model.relatedQueries) {
+                Object.keys(this._w.model.relatedQueries).forEach(rn => {
+                    w.augment(this, rn, this._w.model.relatedQueries[rn])
+                })
+            }
             if (data) {
                 for (let fn in data) {
                     this.d('setting field', fn, data[fn])
-                    // this[fn] = data[fn]
-                    this._w.values.set(fn, data[fn])
+                    if (fn == 'url') {
+                        this._w.url = data[fn]
+                    } else {
+                        this._w.values.set(fn, data[fn])
+                    }
                 }
-                this.d('assigned', this)
             }
         }
     }
 
     _validateFields() {
-        return true
+        this.a(false, 'not implemented')
     }
 
     _getField(fn) {
@@ -85,9 +104,9 @@ export default class Model extends Entity {
 
     _setFieldDefault(field) {
         if (field == 'url') return true
-        this._w.values[field] = undefined
+        this._w.values.set(field, undefined)
 
-        let fd = this._w.fields[field]
+        let fd = this._w.model.fields[field]
         switch (fd.type) {
         }
         return true

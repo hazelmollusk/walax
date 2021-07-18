@@ -97,7 +97,7 @@ logging.config.dictConfig({
     'loggers': {
         # root logger
         '': {
-            'level': 'DEBUG',
+            'level': 'DEBUG' if DEBUG else 'WARN',
             'handlers': ['console'],
         },
     },

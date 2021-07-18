@@ -10,24 +10,30 @@ export default class DjangoManager extends Manager {
 
     model = DjangoModel
 
+    get params() {
+        return {}
+    }
+
     async all() {
-        this.query = new DjangoQuery(this)
-        return this.query.all()
+        let query = new DjangoQuery(this)
+        return query
     }
 
     async filter(args) {
-        return this.all().filter(args)
+        let query = new DjangoQuery(this, args)
+        return query
     }
 
     async exclude(...args) {
-        return this.all().exclude(args)
+        let query = new DjangoQuery(this, args, true)
+        return query
     }
 
     async none() {
-        return this.all().none()
+        return this.all().none() 
     }
 
     get serialized() {
-        return `{${this._model._name}}`
+        return this.model._w.name
     }
 }

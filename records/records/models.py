@@ -18,7 +18,7 @@ class Band(models.Model):
 
 class Album(models.Model):
     name = models.CharField(max_length=50)
-    publish_date = models.DateField(auto_now=True)
+    publish_date = models.DateField()
     genre = models.PositiveSmallIntegerField(choices=GENRE_CHOICES)
     band = models.ForeignKey(Band, on_delete=models.CASCADE)
     def __str__(self): return self.name
