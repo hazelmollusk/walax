@@ -82,7 +82,7 @@ export class Walax {
      * @return {*}
      * @memberof Walax
      */
-    load(url, key) {
+    load(key, url) {
         this.net.load(url)
         this.obj.load(url, key)
         this.auth.load(url) // FIXME?
@@ -137,7 +137,7 @@ export class Walax {
             test: Test
         }
         d('initializing...')
-        for (let name in plug) this.addPlugin(plug[name], name)
+        for (let name in plug) this.addPlugin(name, plug[name])
 
         // a(this._plugins.size == Object.keys(plug).size, 'plugin count wrong')
 
@@ -156,7 +156,7 @@ export class Walax {
      * @param {*} args
      * @memberof Walax
      */
-    addPlugin(cmp, key, ...args) {
+    addPlugin(key, cmp, ...args) {
         a(this.checkClass(Control, cmp), `${key} must extend walax.control.Control`, cmp)
         d(`adding plugin ${key}`)
         let newCmp = new cmp(...args)
@@ -184,6 +184,7 @@ export class Walax {
     isValidProp(name) {
         if (!name) return false
         if (typeof name != 'string') return false
+        if (name.search('[^A-Za-z_]') > -1) return false
         //if (name.search(/[^\w]/) != -1) return false
         return true
     }
@@ -200,41 +201,6 @@ export class Walax {
     callable(...args) {
         let f = (args.length == 2 && args[1] in args[0]) ? args[0][args[1]] : (args.length == 1) ? args[0] : undefined
         return f instanceof Function
-    }
-
-    /**
-     * augment an object with a static value
-     *
-     * @param {*} obj
-     * @param {*} key
-     * @param {*} prop
-     * @memberof Walax
-     */
-    augmentObj(obj, key, prop) {
-        obj._walaxAugmentations.set(key, prop)
-        this.augment(obj, key, () => obj._walaxAugmentations.get(key))
-    }
-    
-
-    // FIXME
-    augmentDynamic(...args) {
-        try {
-            let obj = args.shift()
-            let key = args.shift()
-            let getter, setter
-            if (args.length) {
-                setter = args.shift()
-                this.a(this.callable(getter), 'bad property getter')
-                if (args.length) {
-                    setter = args.shift()
-                    this.a(this.callable(setter), 'bad property setter')
-                }
-            }
-            this.augment(obj, key, () => { return obj._walaxAugmentations.get(key) })
-
-        } catch (e) {
-            this.e('augmentDynamic', e)
-        }
     }
 
     /**
@@ -289,12 +255,6 @@ export class Walax {
         if (!cls || !req) return false
         if (cls == req) return true
         return this.checkClass(req, cls.__proto__)
-    }
-
-    addClass(name, cls) {
-        if (!this._walaxAugmentations.has('classes'))
-            this._walaxAugmentations.set('classes', {})
-        Object.defineProperty(this._walaxAugmentations.get('classes'), name, {value: cls})
     }
 }
 
