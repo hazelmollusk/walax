@@ -1,5 +1,3 @@
-import { observable } from 'mobx'
-import Logger from './Logger'
 import Control from './Control'
 
 const f = 'Cache'
@@ -16,13 +14,14 @@ export default class WalaxCache extends Control {
         return 'Cache'
     }
     cache(key) {
-        if (!this._storage.has(key)) this._storage.set(key, new WalaxCache(key))
+        if (!this._storage.has(key)) 
+            this._storage.set(key, new WalaxCache(key))
         return this._storage.get(key)
     }
-    find(key, func, ...args) {
-        this.d(`${this._name}.${key}`, func, ...args)
-        let cachePath =
-            args.length == 1 && args[0].has('.') ? args.shift().split('.') : args
+    find(key, ...args) {
+        let cachePath = args
+        if (cachePath.length == 1 && typeof cachePath[0] == 'function')
+            func = cachePath.shift()
         if (cachePath.length)
             return this.cache(cachePath.shift()).find(key, func, ...cachePath)
         if (!this._storage.has(key)) {

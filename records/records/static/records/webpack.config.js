@@ -7,7 +7,7 @@ module.exports = {
     mode: 'development', // "production" | "development" | "none"
     target: 'web', // node
     entry: {
-        walax: path.resolve(__dirname, 'app.js')
+        walax: path.resolve(__dirname, 'src/app.js')
     },
     output: {
         path: path.resolve(__dirname, 'dist'),

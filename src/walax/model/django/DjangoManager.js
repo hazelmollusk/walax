@@ -8,8 +8,6 @@ export default class DjangoManager extends Manager {
         this.model = model
     }
 
-    model = DjangoModel
-
     get params() {
         return {}
     }
@@ -34,6 +32,6 @@ export default class DjangoManager extends Manager {
     }
 
     get serialized() {
-        return this.model._w.name
+        return this.model.modelName
     }
 }

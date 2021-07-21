@@ -38,7 +38,7 @@ class DjangoQuery extends Entity {
      * @param {boolean} [flip=false]
      * @memberof DjangoQuery
      */
-    constructor(parent, args = false, flip = false, single = false) {
+    constructor(parent, args = false, flip = false, single = false, order, limit, offset) {
         // todo: sanity check
         super()
         this.parent = parent
@@ -46,7 +46,6 @@ class DjangoQuery extends Entity {
         this.args = args
         this.single = single
         this.cache = {}
-        this.d('query', this)
     }
 
     toString() {
@@ -77,24 +76,16 @@ class DjangoQuery extends Entity {
     }
 
     get serialized() {
-        let rec = ''
+        let rec = undefined
         for (let f in this.args) rec += `(${f}=${this.args[f]})`
         if (this.single) rec = '#' + rec
         if (this.flip) rec = '!' + rec
-        rec = `${this.parent.serialized}+${rec}`
+        rec = `${this.parent.serialized}` + (rec ? `+${rec}` : '') 
         return rec
     }
 
     [Symbol.iterator]() {
         return new DjangoQueryProxy(this)
-    }
-
-    get cached() {
-        return w.cache.find(false, 'queries', this.serialized)
-    }
-
-    set cached(val) {
-        return w.cache.store(val, 'queries', this.serialized)
     }
 
     async fetch() {

@@ -69,6 +69,7 @@ export default class Schema extends Entity {
     createModel(name, opts = undefined) {
         let baseModel = this.models[name] || this.defaultModel
         this.a(baseModel, 'no base model to use')
+        this.a(w.isValidProp(name), 'invalid name', name)
         
         eval(`this.models[name] = class ${name} extends baseModel {}`)
 

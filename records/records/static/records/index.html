@@ -22,27 +22,14 @@
 
 <body>
 
-  <script src="dist/go.js"></script>
     <input id="txt" value="name" />
-    <input onclick="
-      let a = new w.obj.Store();
-      a.name = document.getElementById('txt').value;
-      a.save().then(b => {
-        let l = document.getElementById('list')
-        l.innerHTML = '<ul>'
-        w.obj.Store.objects.all().then(x => {
-          console.log('ASDF',x)
-          x.forEach(z => {
-            l.innerHTML += '<li>' + z.name + '</li>'
-          })
-        })
-        l.innerHTML += '</ul>'
-      })
-      return false;"
+    <input onclick="Stores.addStore(document.getElementById('txt').value); return false "
       type="submit"
-      label="create a store"
-    "/>
-    <div id="list" />
+      value="create a store"
+    />
+    <div id="stores" />
+    <script src="dist/go.js"></script>
+
 </body>
 
 </html>

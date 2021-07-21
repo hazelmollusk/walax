@@ -1,7 +1,4 @@
 import Entity from '../util/Entity'
-import w from '../Walax'
-var m = require('mithril')
-var { observable } = require('mobx')
 
 class Manager extends Entity {
     _model = false

@@ -74,10 +74,9 @@ export default class Model extends Entity {
             })
             if (this._w.model.relatedQueries) {
                 Object.keys(this._w.model.relatedQueries).forEach(rn => {
-                    w.augment(this, rn, this._w.model.relatedQueries[rn])
+                    w.augment(this, rn, ()=>this._w.model.relatedQueries[rn])
                 })
-            }
-            if (data) {
+            }if (data) {
                 for (let fn in data) {
                     this.d('setting field', fn, data[fn])
                     if (fn == 'url') {
@@ -94,13 +93,13 @@ export default class Model extends Entity {
         this.a(false, 'not implemented')
     }
 
-    _getField(fn) {
-        this.a(false, 'not implemented')
-    }
+    // _getField(fn) {
+    //     this.a(false, 'not implemented')
+    // }
 
-    _setField(fn) {
-        this.a(false, 'not implemented')
-    }
+    // _setField(fn) {
+    //     this.a(false, 'not implemented')
+    // }
 
     _setFieldDefault(field) {
         if (field == 'url') return true
@@ -120,9 +119,8 @@ export default class Model extends Entity {
     _walaxSetField(field) {
         if (this._setField) return this._setField(field)
         return val => {
-            let newVal = val
             this._w.dirty.add(field)
-            this._w.values.set(field, newVal)
+            this._w.values.set(field, val)
             return newVal
         }
     }

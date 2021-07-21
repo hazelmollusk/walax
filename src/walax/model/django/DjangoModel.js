@@ -23,7 +23,9 @@ export default class DjangoModel extends Model {
     }
 
     toString() {
-        return ['django', this._w.model.modelName, this.pk].join('.')
+        let parts = ['django', this._w.model.modelName]
+        if (this.pk) parts.concat(this.pk)
+        return parts.join('.')
     }
 
     _getField(fn) {
@@ -121,11 +123,13 @@ export default class DjangoModel extends Model {
             // ERROR CHECKING FOOL
             return w.net
                 .put(this.url, {}, saveFields, {})
-                .then(ret => this.updateFields(ret))
+                .then(ret => {this.updateFields(ret)})
         }
     }
 
     async delete() {
+        console.log('this',this)
+        this.d('deleting', this)
         this.a(!this._w.deleted, `deleting deleted model: ${this._name}.delete()`)
         return w.net.delete(this.url).then(ret => {
             this.d('deleted', { obj: this })
