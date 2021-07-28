@@ -52,6 +52,10 @@ class DjangoQuery extends Entity {
         return 'DjangoQuery ' + this.serialized
     }
 
+    all() {
+        return new DjangoQuery(this)
+    }
+
     filter(args) {
         return new DjangoQuery(this, args)
     }
@@ -108,22 +112,6 @@ class DjangoQuery extends Entity {
 
     async then(f) {
         return this.fetch().then(res=>f(res))
-    }
-
-    async all() {
-        return this
-    }
-
-    async none() {
-        return new DjangoQuery(this, false, true)
-    }
-
-    async filter(args) {
-        return new DjangoQuery(this, args)
-    }
-
-    async exclude(args) {
-        return new DjangoQuery(this, args, true)
     }
 }
 
