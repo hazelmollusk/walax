@@ -7,4 +7,5 @@ export default class Control extends Entity {
         super()
     }
     toString() { return 'Control' }
+    async load(key, url) { return true }
 }

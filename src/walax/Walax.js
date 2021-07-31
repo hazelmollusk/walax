@@ -1,5 +1,5 @@
 
-import regeneratorRuntime from "regenerator-runtime";
+import regeneratorRuntime from "regenerator-runtime"
 import { observable } from 'mobx'
 
 import { Logger, consoleLog } from './control/Logger'
@@ -82,12 +82,11 @@ export class Walax {
      * @return {*}
      * @memberof Walax
      */
-    load(key, url) {
-        this.net.load(url)
-        this.obj.load(url, key)
-        this.auth.load(url) // FIXME?
-
-
+    async load(key, url) {
+        this.plugins.forEach(plug => {
+            plug.load(key, url)
+        })
+        this.apiBase = url
         d(`setting apiBase to ${this.apiBase}`)
         return true
     }
@@ -114,7 +113,6 @@ export class Walax {
      */
     sleep = t => new Promise(s => setTimeout(s, t))
 
-
     config = new Map()
     /**
      * signal handler for 'setup'
@@ -139,7 +137,7 @@ export class Walax {
         d('initializing...')
         for (let name in plug) this.addPlugin(name, plug[name])
 
-        // a(this._plugins.size == Object.keys(plug).size, 'plugin count wrong')
+        // a(this.plugins.size == Object.keys(plug).size, 'plugin count wrong')
 
         // should have normal logging by now
         this.log.register(consoleLog)
@@ -157,15 +155,15 @@ export class Walax {
      * @memberof Walax
      */
     addPlugin(key, cmp, ...args) {
+        d(`adding plugin`, { key, cmp, args })
         a(this.checkClass(Control, cmp), `${key} must extend walax.control.Control`, cmp)
-        d(`adding plugin ${key}`)
         let newCmp = new cmp(...args)
-        this._plugins ||= new Map()
+        this.plugins ||= new Map()
         key ||= cmp.name
 
         if (w.isValidProp(key)) {
-            this._plugins.set(key, newCmp)
-            this.augment(this, key, () => this._plugins.get(key))
+            this.plugins.set(key, newCmp)
+            this.augment(this, key, () => this.plugins.get(key))
         } else {
             throw new TypeError('invalid component')
         }
@@ -235,7 +233,7 @@ export class Walax {
             get: getter
         }
         if (setter) desc.set = setter
-        d('augment', {obj, key, desc })
+        d('augment', { obj, key, desc })
         Object.defineProperty(obj, key, desc)
         a(Object.getOwnPropertyNames(obj).includes(key), 'augmentation failed')
         // d('augmented', { obj }, { key }, { desc })

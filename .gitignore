@@ -4,6 +4,7 @@
 .vscode/
 **/*.code-workspace
 records/walax
+node_modules/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

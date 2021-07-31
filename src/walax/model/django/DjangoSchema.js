@@ -48,11 +48,12 @@ export class DjangoSchema extends Schema {
                     let relatedName = field.related_name
                     relatedName ||= modelName.toLowerCase() + '_set'
                     this.d(`adding ${field.model}.${relatedName.toLowerCase()}`)
-                    
+
                     let targetModel = this.models[field.model]
+                    this.d('targetModel', { targetModel, field }, this.models)
                     targetModel.relatedQueries ||= {}
                     let queryField = `${fn}_id`
-                    let getQuery = function() {
+                    let getQuery = function () {
                         if (this.pk) {
                             let filter = {}
                             filter[queryField] = this.pk
@@ -100,14 +101,14 @@ export class DjangoSchema extends Schema {
                     let m = this.createModel(modelClassName, opts)
                     m.modelUrl = modelRootUri
 
-                    for (let fn in fields) 
+                    for (let fn in fields)
                         if (fields[fn]['primary_key'] == 'true') {
                             m.pk = fn
                             break
                         }
                     if (!m.pk && (fields['url'] == undefined)) this.e('no primary key', m)
-                    
-                    this.d(`created model class ${modelClassName}`, {opts, m})
+
+                    this.d(`created model class ${modelClassName}`, { opts, m })
                 }))
             }
             Promise.all(modelPromises).then(x => {
