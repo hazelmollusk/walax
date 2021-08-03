@@ -150,7 +150,8 @@ export class Walax {
      * load a component control plugin
      *
      * @param {*} cmp
-     * @param {boolean} [key=false]
+     * @param {boolean} [kee]
+     * @param {object} [cmp]
      * @param {*} args
      * @memberof Walax
      */
@@ -159,7 +160,6 @@ export class Walax {
         a(this.checkClass(Control, cmp), `${key} must extend walax.control.Control`, cmp)
         let newCmp = new cmp(...args)
         this.plugins ||= new Map()
-        key ||= cmp.name
 
         if (w.isValidProp(key)) {
             this.plugins.set(key, newCmp)
@@ -169,7 +169,6 @@ export class Walax {
         }
 
         return cmp
-
     }
 
     /**
@@ -212,21 +211,16 @@ export class Walax {
      * */
     augment(obj, key, getter, setter = undefined) {
         a(
-            obj && key && getter,
+            obj && key && getter && typeof getter == 'function',
             'augment called improperly',
             { obj },
             { key },
-            { getter }
+            { getter },
+            { setter }
         )
         a(this.isValidProp(key), `invalid key: ${key}`)
         a(!Object.keys(obj).includes(key), `key exists: ${key}`)
-        a(
-            typeof getter == 'function',
-            'getter must be a function',
-            { obj },
-            { key },
-            { getter }
-        )
+
         let desc = {
             enumerable: true,
             configurable: false,

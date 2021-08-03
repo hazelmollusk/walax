@@ -81,7 +81,7 @@ export default class DjangoModel extends Model {
     }
 
     //fixme for types
-    _setFieldDefaults() { 
+    _setFieldDefaults() {
         for (let fn in this._w.model.fields)
             this._w.values.set(fn, undefined)
     }
@@ -91,20 +91,19 @@ export default class DjangoModel extends Model {
     }
 
     updateFields(data, wasNew = false) {
-        this.d('updateFields', data)
+        this.d('updateFields', data, this)
         for (let fn in data) {
-            this.a(Object.keys(this._w.model.fields).includes(fn))
+            this.a(Object.keys(this._w.model.fields).includes(fn), `key ${fn} not found`, this._w.model)
             this._w.values.set(fn, data[fn])
+            if (this._w.new) {
+                this._w.dirty.add(fn)
+            }
         }
-        if (data && data.url) 
-            this._w.url = data.url 
-        if (!this._w.url && this.pk) 
+        if (data && data.url)
+            this._w.url = data.url
+        if (!this._w.url && this.pk)
             this._w.url = [this._w.model.modelUrl, this.pk, '/'].join('')
-            //TODO support non-trailing slash urls?
-        if (this._w.new) {
-            this._w.new = false
-            this._w.dirty.clear()
-        }
+        //TODO support non-trailing slash urls?
     }
 
     async save() {
@@ -115,6 +114,9 @@ export default class DjangoModel extends Model {
         this.a(!this._w.deleted, `saving deleted model: ${this.toString()}.save()`)
         this.a(this._validateFields(), 'fields failed to validate')
         let saveFields = Object.fromEntries(this._w.values.entries())
+        for (let fn in saveFields)
+            if (saveFields[fn] === undefined)
+                delete (saveFields[fn])
         if (this._w.new) {
             return w.net.post(this._w.model.modelUrl, {}, saveFields, {}).then(ret => {
                 this.updateFields(ret)
@@ -123,12 +125,12 @@ export default class DjangoModel extends Model {
             // ERROR CHECKING FOOL
             return w.net
                 .put(this.url, {}, saveFields, {})
-                .then(ret => {this.updateFields(ret)})
+                .then(ret => { this.updateFields(ret) })
         }
     }
 
     async delete() {
-        console.log('this',this)
+        console.log('this', this)
         this.d('deleting', this)
         this.a(!this._w.deleted, `deleting deleted model: ${this._name}.delete()`)
         return w.net.delete(this.url).then(ret => {

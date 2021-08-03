@@ -1,5 +1,6 @@
 import Control from './Control'
 const m = require('mithril')
+import w from '../Walax'
 
 export default class Network extends Control {
     constructor() {
@@ -52,8 +53,12 @@ export default class Network extends Control {
      */
     async _req(options) {
         this.a(options, 'empty request options')
-        options.headers ||=
-            'Accept: application/vnd.oai.openapi+json, application/json'
+        options.headers ||= {}
+        options.headers.Accept = 'application/vnd.oai.openapi+json, application/json'
+        if (w.auth.state) {
+            options.headers.Authorization = `Bearer ${w.auth.token}`
+        }
+
         this.a(this._chkOpts(options), 'bad request options', options)
         this.d(`Request: ${options.method.toUpperCase()} ${options.url}`, {
             options
@@ -92,7 +97,7 @@ export default class Network extends Control {
         // if (!url.startsWith('http'))
         //     url = this.baseUrl + url  //FIXME
         // this.d("transformed url", url)
-        this.a(url, 'incorrect request options', {url, params, body, options, method})
+        this.a(url, 'incorrect request options', { url, params, body, options, method })
         const opts = { ...{ url, params, body, method }, ...(options || {}) }
         // todo defaults?
         return opts

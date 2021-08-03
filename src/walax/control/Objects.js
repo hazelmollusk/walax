@@ -12,7 +12,7 @@ export default class Objects extends Control {
         super()
     }
 
-    toString() { return 'Objects'}
+    toString() { return 'Objects' }
     get defaultSchemaClass() {
         return DjangoSchema
     }
@@ -27,14 +27,15 @@ export default class Objects extends Control {
             model,
             data
         )
-        //this.checkModels([model])
-        
-        let obj = new model(data)
-        
-        obj._w.new = false
-        obj._w.dirty.clear()
+        this.checkModel(model)
 
-        this.d(`object created`, {model, obj})
+        let obj = new model()
+
+        if (data) obj.updateFields(data)
+        if (obj.pk) obj._w.new = false
+        // obj._w.dirty.clear()
+
+        this.d(`object created`, { model, obj })
 
         // k, v, ...cache ident
         //w.cache.store(obj.pk, obj, 'objects', model._schema, model)
@@ -78,6 +79,7 @@ export default class Objects extends Control {
         this.checkModels(models)
         schemaCls ||= this.defaultSchemaClass
         this.checkSchema(schemaCls)
+        this.apiBase = url
         this.d('loading schema class', url, schemaCls)
         let schema = new schemaCls(name, url, models)
         w.augment(this, name, () => this.schemas.get(name))
@@ -88,5 +90,4 @@ export default class Objects extends Control {
     schema(name) {
         return this.schemas.get(name)
     }
-    initialize(data) { }
 }
