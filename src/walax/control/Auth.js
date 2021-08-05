@@ -50,6 +50,23 @@ export default class Auth extends Control {
         this.storage.removeItem('username')
         return true
     }
+    async refreshToken() {
+        return w.net
+            .post(
+                // fixme: dunno
+                baseUrl + 'auth/token/refresh',
+                { refresh: this.refresh, },
+                { refresh: this.refresh, })
+            .then(result => {
+                this.i('refreshed auth')
+                this.access = result.access
+                if (result.refresh) {
+                    this.refresh = result.refresh
+                }
+                return true
+            })
+            .catch(err => this.e(err))
+    }
     async authenticate(alias, passcode, baseUrl = undefined) {
         baseUrl ||= this.baseUrl
         this.a(baseUrl, 'no url for authentication')
@@ -81,5 +98,4 @@ export default class Auth extends Control {
             .catch(err => this.e(err))
 
     }
-    refreshToken() { } //TODO
 }
