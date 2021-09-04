@@ -86,7 +86,7 @@ export class Walax {
         this.plugins.forEach(plug => {
             plug.load(key, url)
         })
-        this.apiBase = url
+        this.apiBase = url  // this is broken for multiple remotes
         d(`setting apiBase to ${this.apiBase}`)
         return true
     }
