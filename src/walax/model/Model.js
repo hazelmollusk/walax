@@ -8,7 +8,7 @@ export default class Model extends Entity {
 
     constructor(data) {
         super()
-        this._w = {
+        this._meta = {
             model: this.constructor,
             values: new Map(),
             dirty: new Set()
@@ -23,21 +23,21 @@ export default class Model extends Entity {
     }
 
     static get fields() {
-        return this._w.fields
+        return this._meta.fields
     }
 
-    static get fields() { return this._w.fields }
+    static get fields() { return this._meta.fields }
 
     get pk() {
-        return this[this._w.model.pk]
+        return this[this._meta.model.pk]
     }
 
     get url() {
-        return this._w.url
+        return this._meta.url
     }
 
     set url(u) {
-        this._w.url = u
+        this._meta.url = u
     }
 
     save() {
@@ -50,8 +50,8 @@ export default class Model extends Entity {
 
     _initModel(data) {
             
-        this._w ||= {}
-        Object.assign(this._w, {
+        this._meta ||= {}
+        Object.assign(this._meta, {
             dirty: new Set(),
             values: new Map(),
             url: false,
@@ -59,8 +59,8 @@ export default class Model extends Entity {
             values: new Map(),
         })
         this.d('initmodel', this)
-        if (Object.keys(this._w.model.fields).length) {
-            Object.keys(this._w.model.fields).forEach(fn => {
+        if (Object.keys(this._meta.model.fields).length) {
+            Object.keys(this._meta.model.fields).forEach(fn => {
                 this.d(`field ${fn}`)
                 w.augment(
                     this,
@@ -72,17 +72,17 @@ export default class Model extends Entity {
                 
                 this._setFieldDefault(fn)
             })
-            if (this._w.model.relatedQueries) {
-                Object.keys(this._w.model.relatedQueries).forEach(rn => {
-                    w.augment(this, rn, ()=>this._w.model.relatedQueries[rn])
+            if (this._meta.model.relatedQueries) {
+                Object.keys(this._meta.model.relatedQueries).forEach(rn => {
+                    w.augment(this, rn, ()=>this._meta.model.relatedQueries[rn])
                 })
             }if (data) {
                 for (let fn in data) {
                     this.d('setting field', fn, data[fn])
                     if (fn == 'url') {
-                        this._w.url = data[fn]
+                        this._meta.url = data[fn]
                     } else {
-                        this._w.values.set(fn, data[fn])
+                        this._meta.values.set(fn, data[fn])
                     }
                 }
             }
@@ -103,9 +103,9 @@ export default class Model extends Entity {
 
     _setFieldDefault(field) {
         if (field == 'url') return true
-        this._w.values.set(field, undefined)
+        this._meta.values.set(field, undefined)
 
-        let fd = this._w.model.fields[field]
+        let fd = this._meta.model.fields[field]
         switch (fd.type) {
         }
         return true
@@ -113,14 +113,14 @@ export default class Model extends Entity {
 
     _walaxGetField(field) {
         if (this._getField) return this._getField(field)
-        return () => this._w.values.get(field)
+        return () => this._meta.values.get(field)
     }
 
     _walaxSetField(field) {
         if (this._setField) return this._setField(field)
         return val => {
-            this._w.dirty.add(field)
-            this._w.values.set(field, val)
+            this._meta.dirty.add(field)
+            this._meta.values.set(field, val)
             return newVal
         }
     }

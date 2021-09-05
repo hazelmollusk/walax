@@ -2,7 +2,7 @@
 import regeneratorRuntime from "regenerator-runtime"
 import { observable } from 'mobx'
 
-import { Logger, consoleLog } from './control/Logger'
+import { Logger, consoleLog, DEBUG } from './control/Logger'
 import Control from './control/Control'
 import Objects from './control/Objects'
 import Network from './control/Network'
@@ -173,7 +173,7 @@ export class Walax {
      */
     addPlugin(key, cmp, ...args) {
         d(`adding plugin`, { key, cmp, args })
-        a(this.checkClass(Control, cmp), `${key} must extend walax.control.Control`, cmp)
+        a(this.isSubclassOf(Control, cmp), `${key} must extend walax.control.Control`, cmp)
         let newCmp = new cmp(...args)
         this.plugins ||= new Map()
 
@@ -257,15 +257,17 @@ export class Walax {
      * @return {*}
      * @memberof Walax
      */
-    checkClass(req, cls) {
+    isSubclassOf(req, cls) {
         if (!req || !cls) return false // should prob log something heres
         if (req instanceof cls) return true
-        if (!cls || !req) return false
         if (cls == req) return true
-        return this.checkClass(req, cls.__proto__)
+        return this.isSubclassOf(req, cls.__proto__)
     }
 }
 
 export const w = observable.box(new Walax()).get()
-if (window) window.w = w
+
+if (window && (w.log.level >= DEBUG)) 
+    window.w = w
+    
 export default w

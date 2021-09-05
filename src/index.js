@@ -1,5 +1,6 @@
 
 import w from './walax/Walax'
+import m from 'mithril'
 import Entity from './walax/util/Entity'
 import Schema from './walax/model/Schema'
 import Model from './walax/model/Model'
@@ -12,7 +13,8 @@ w.cls = {
      Schema, 
      Model, 
      Manager, 
-     Control 
+     Control,
+     m
 }
 
 export default w

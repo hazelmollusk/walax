@@ -23,7 +23,7 @@ export default class DjangoModel extends Model {
     }
 
     toString() {
-        let parts = ['django', this._w.model.modelName]
+        let parts = ['django', this._meta.model.modelName]
         if (this.pk) parts.concat(this.pk)
         return parts.join('.')
     }
@@ -31,8 +31,8 @@ export default class DjangoModel extends Model {
     _getField(fn) {
         // this.d('getting field', fn)
         return () => {
-            let fv = this._w.values.get(fn),
-                fd = this._w.model.fields[fn]
+            let fv = this._meta.values.get(fn),
+                fd = this._meta.model.fields[fn]
 
             if (fd.type == 'choice') {
                 fd.choices.forEach(f => {
@@ -48,7 +48,7 @@ export default class DjangoModel extends Model {
 
     _setField(fn) {
         return val => {
-            let fd = this._w.model.fields[fn]
+            let fd = this._meta.model.fields[fn]
             // this.d(`setField(${fn})`, val, fd)
             let fv = val
             this.a(fd, `field ${fn} not found`)
@@ -73,8 +73,8 @@ export default class DjangoModel extends Model {
                     fv = fc
                     break
             }
-            this._w.dirty.add(fn)
-            this._w.values.set(fn, fv)
+            this._meta.dirty.add(fn)
+            this._meta.values.set(fn, fv)
             this.d('field set', fn, fv)
             return fv
         }
@@ -82,8 +82,8 @@ export default class DjangoModel extends Model {
 
     //fixme for types
     _setFieldDefaults() {
-        for (let fn in this._w.model.fields)
-            this._w.values.set(fn, undefined)
+        for (let fn in this._meta.model.fields)
+            this._meta.values.set(fn, undefined)
     }
 
     _validateFields() {
@@ -93,32 +93,32 @@ export default class DjangoModel extends Model {
     updateFields(data, wasNew = false) {
         this.d('updateFields', data, this)
         for (let fn in data) {
-            this.a(Object.keys(this._w.model.fields).includes(fn), `key ${fn} not found`, this._w.model)
-            this._w.values.set(fn, data[fn])
-            if (this._w.new) {
-                this._w.dirty.add(fn)
+            this.a(Object.keys(this._meta.model.fields).includes(fn), `key ${fn} not found`, this._meta.model)
+            this._meta.values.set(fn, data[fn])
+            if (this._meta.new) {
+                this._meta.dirty.add(fn)
             }
         }
         if (data && data.url)
-            this._w.url = data.url
-        if (!this._w.url && this.pk)
-            this._w.url = [this._w.model.modelUrl, this.pk, '/'].join('')
+            this._meta.url = data.url
+        if (!this._meta.url && this.pk)
+            this._meta.url = [this._meta.model.modelUrl, this.pk, '/'].join('')
         //TODO support non-trailing slash urls?
     }
 
     async save() {
-        if (!this._w.dirty.size) {
+        if (!this._meta.dirty.size) {
             this.d('save(): object unchanged, not saving')
             return this
         }
-        this.a(!this._w.deleted, `saving deleted model: ${this.toString()}.save()`)
+        this.a(!this._meta.deleted, `saving deleted model: ${this.toString()}.save()`)
         this.a(this._validateFields(), 'fields failed to validate')
-        let saveFields = Object.fromEntries(this._w.values.entries())
+        let saveFields = Object.fromEntries(this._meta.values.entries())
         for (let fn in saveFields)
             if (saveFields[fn] === undefined)
                 delete (saveFields[fn])
-        if (this._w.new) {
-            return w.net.post(this._w.model.modelUrl, {}, saveFields, {}).then(ret => {
+        if (this._meta.new) {
+            return w.net.post(this._meta.model.modelUrl, {}, saveFields, {}).then(ret => {
                 this.updateFields(ret)
             })
         } else {
@@ -132,11 +132,11 @@ export default class DjangoModel extends Model {
     async delete() {
         console.log('this', this)
         this.d('deleting', this)
-        this.a(!this._w.deleted, `deleting deleted model: ${this._name}.delete()`)
+        this.a(!this._meta.deleted, `deleting deleted model: ${this._name}.delete()`)
         return w.net.delete(this.url).then(ret => {
             this.d('deleted', { obj: this })
-            this._w.deleted = true
-            this._w.values.clear()
+            this._meta.deleted = true
+            this._meta.values.clear()
         })
     }
 }

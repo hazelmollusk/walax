@@ -1,6 +1,9 @@
 import m from 'mithril'
 import { observable, action } from 'mobx'
+import w from '../Walax'
 import Control from './Control'
+
+const refreshInterval = 300000
 
 export default class Auth extends Control {
     constructor() {
@@ -9,6 +12,8 @@ export default class Auth extends Control {
             throw 'no storage available'
         }
         this.baseUrl = undefined
+
+        setInterval(() => { w.auth.refreshToken() }, refreshInterval)
     }
     load(key, url) {
         this.baseUrl = url
@@ -51,22 +56,29 @@ export default class Auth extends Control {
         return true
     }
     async refreshToken() {
-        return w.net
-            .post(
-                // fixme: dunno
-                baseUrl + 'auth/token/refresh',
-                { refresh: this.refresh, },
-                { refresh: this.refresh, })
-            .then(result => {
-                this.i('refreshed auth')
-                this.access = result.access
-                if (result.refresh) {
-                    this.refresh = result.refresh
-                }
-                return true
-            })
-            .catch(err => this.e(err))
+        if (this.refresh) {
+            this.d('refreshing token')
+            return w.net
+                .post(
+                    // fixme: dunno
+                    this.baseUrl + 'auth/token/refresh/',
+                    { refresh: this.refresh, },
+                    { refresh: this.refresh, })
+                .then(result => {
+                    this.i('refreshed auth')
+                    this.access = result.access
+                    if (result.refresh) {
+                        this.refresh = result.refresh
+                    }
+                    return true
+                })
+                .catch(err => {
+                    this.d('refresh failed, logging out')
+                    w.auth.logout()
+                })
+        }
     }
+
     async authenticate(alias, passcode, baseUrl = undefined) {
         baseUrl ||= this.baseUrl
         this.a(baseUrl, 'no url for authentication')

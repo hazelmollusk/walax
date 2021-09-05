@@ -25,7 +25,7 @@ export class DjangoSchema extends Schema {
         if (typeof model == 'string') model = this.models.get(model)
         if (model?._model) model = model._model
         return w.cache.find('managers', model, m => {
-            let mgrClass = `${m._w.modelClassName}Manager`
+            let mgrClass = `${m._meta.modelClassName}Manager`
             if (this.models.has(mgrClass)) return new mgrClass(m)
             return new this.defaultManager(model)
         })
@@ -42,6 +42,7 @@ export class DjangoSchema extends Schema {
     processModels() {
         for (let modelName in this.models) {
             let model = this.models[modelName]
+            this.d('processing', modelName, model, this.models)
             for (let fn in model.fields) {
                 let field = model.fields[fn]
                 if (field.type == 'related') {

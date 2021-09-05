@@ -57,7 +57,7 @@ export default class Schema extends Entity {
     }
 
     checkModel(model) {
-        if (!w.checkClass(Model, model)) return false
+        if (!w.isSubclassOf(Model, model)) return false
         return true
     }
 
@@ -77,8 +77,8 @@ export default class Schema extends Entity {
         this.a(!w.obj.models.has(name), `model ${name} already exists!`)
         this.d(`creating model ${name}`, { schema: this, model: this.models[name] })
 
-        this.models[name]._w ||= {}
-        if (opts) for (let opt in opts) this.models[name]._w[opt] = opts[opt]
+        this.models[name]._meta ||= {}
+        if (opts) for (let opt in opts) this.models[name]._meta[opt] = opts[opt]
         this.models[name].modelName = name
 
         w.augment(this, name, () => this.models[name])

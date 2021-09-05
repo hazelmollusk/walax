@@ -65,6 +65,11 @@ export default class Network extends Control {
         })
 
         return m.request(options)
+            .catch(err => {
+                //todo smarter than this
+                w.auth.refreshToken()
+                return m.request(options)
+            })
         // .then(ret => {
         //     this.d('Network data', ret)
         // })

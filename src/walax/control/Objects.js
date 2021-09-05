@@ -32,8 +32,8 @@ export default class Objects extends Control {
         let obj = new model()
 
         if (data) obj.updateFields(data)
-        if (obj.pk) obj._w.new = false
-        // obj._w.dirty.clear()
+        if (obj.pk) obj._meta.new = false
+        // obj._meta.dirty.clear()
 
         this.d(`object created`, { model, obj })
 
@@ -63,7 +63,7 @@ export default class Objects extends Control {
     }
 
     checkModel(model) {
-        return w.checkClass(Model, model) // todo maybe
+        return w.isSubclassOf(Model, model) // todo maybe
     }
 
     checkSchema(cls) {
