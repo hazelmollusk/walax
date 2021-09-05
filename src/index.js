@@ -7,7 +7,6 @@ import Model from './walax/model/Model'
 import Manager from './walax/model/Manager'
 import Control from './walax/control/Control'
 
-w.initialize()
 w.cls = {
      Entity, 
      Schema, 

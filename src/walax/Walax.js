@@ -72,6 +72,7 @@ const a = (c, ...m) => {
  */
 export class Walax {
     constructor(...args) {
+        this.setup()
     }
 
     /**
@@ -93,16 +94,6 @@ export class Walax {
 
     toString() {
         return 'WALAX'
-    }
-
-    /**
-     * initialize Walax object for use
-     *
-     * @param {*} sig
-     * @memberof Walax
-     */
-    initialize(...sig) {
-        this.setup()  // fixme
     }
 
     /**
@@ -177,7 +168,7 @@ export class Walax {
         let newCmp = new cmp(...args)
         this.plugins ||= new Map()
 
-        if (w.isValidProp(key)) {
+        if (this.isValidProp(key)) {
             this.plugins.set(key, newCmp)
             this.augment(this, key, () => this.plugins.get(key))
         } else {
