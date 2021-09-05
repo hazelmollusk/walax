@@ -15,7 +15,7 @@ import Test from './control/Test'
 // walax object
 
 // todo console logging themes (for applications)
-const DEBUG = true
+const WDEBUG = true
 const WLXBG1 =
     'background-color: green; padding: 2px; \
           color: white; border: 3px solid #bbb; \
@@ -34,7 +34,7 @@ const WLX1 =
         border-top-left-radius: 0px; \
         border-bottom-left-radius: 0px; \
         '
-const d = DEBUG
+const d = WDEBUG
     ? (t, ...m) => console.log(`%c  walax  %c ${t} `, WLXBG1, WLX1, ...m)
     : () => undefined
 const WLXBG2 =
@@ -55,7 +55,7 @@ const WLX2 =
         border-top-left-radius: 0px; \
         border-bottom-left-radius: 0px; \
         '
-const _d_a = DEBUG
+const _d_a = WDEBUG
     ? (...m) => console.log(`%c  walax  %c ASSERT FAILED `, WLXBG2, WLX2, ...m)
     : () => undefined
 
@@ -267,7 +267,6 @@ export class Walax {
 
 export const w = observable.box(new Walax()).get()
 
-if (window && (w.log.level >= DEBUG)) 
-    window.w = w
-    
+if (window && WDEBUG) window.w = w
+
 export default w
