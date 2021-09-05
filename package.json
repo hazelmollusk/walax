@@ -37,13 +37,13 @@
     "@rollup/plugin-node-resolve": "^13.0.0",
     "chokidar": "^3.5.2",
     "jest": "^27.0.6",
+    "mithril": "^2.0.4",
     "rollup": "^2.55.0",
     "rollup-plugin-terser": "^7.0.2",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.0"
   },
   "dependencies": {
-    "mithril": "^2.0.4",
     "mobx": "^6.3.2",
     "npm": "^7.22.0"
   }
