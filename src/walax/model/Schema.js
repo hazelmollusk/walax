@@ -85,6 +85,9 @@ export default class Schema extends Entity {
     if (opts.methods) {
       this.createMethods(name, opts.methods)
     }
+    if (opts.fields) {
+      this.createFields(name, opts.fields)
+    }
 
     w.augment(this, name, () => this.models[name])
     w.augment(w.obj, name, () => this.models[name])
@@ -94,16 +97,33 @@ export default class Schema extends Entity {
     return this.models[name]
   }
 
+  createFields (name, fields) {
+    for (let fn in fields) {
+      let field = fields[fn]
+      let model = this.models[name]
+      let getter = function () {
+        this._getField(fn)
+        console.log('get', fn)
+      }
+      let setter = function (val) {
+        this._setField(fn, val)
+        console.log('set', fn, val)
+      }
+      w.augment(this.models[name].prototype, fn, getter, setter)
+    }
+  }
+
   createMethods (name, methods) {
     for (let fn of methods) {
       this.d('installing method', { name, fn })
       this.a(w.isValidProp(fn.name))
-      function remoteMethod (params, data) {
+      async function remoteMethod (params, data) {
         this.i(`calling remote method ${fn.name}`, { params, data })
+        this.a(this.url, 'attempted rpc with unsaved object!')
         return w.net[fn.method]([this.url, fn.name].join('/'), params, data)
       }
-      Object.defineProperty(this.models[name], fn.name, { value: remoteMethod })
-      this.d('function installed', this.models[name][fn.name])
+      // Object.defineProperty(this.models[name], fn.name, { value: remoteMethod })
+      this.models[name].prototype[fn.name] = remoteMethod
     }
   }
 }

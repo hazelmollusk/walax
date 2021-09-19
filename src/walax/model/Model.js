@@ -62,7 +62,7 @@ export default class Model extends Entity {
     if (Object.keys(this._meta.model.fields).length) {
       Object.keys(this._meta.model.fields).forEach(fn => {
         this.d(`field ${fn}`)
-        w.augment(this, fn, this._walaxGetField(fn), this._walaxSetField(fn))
+        // w.augment(this, fn, this._walaxGetField(fn), this._walaxSetField(fn))
         //FIXME at the very least per-type
 
         this._setFieldDefault(fn)
@@ -107,18 +107,14 @@ export default class Model extends Entity {
     return true
   }
 
-  _walaxGetField (field) {
-    if (this._getField) return this._getField(field)
-    return () => this._meta.values.get(field)
+  _getField (field) {
+    this._meta.values.get(field)
   }
 
-  _walaxSetField (field) {
-    if (this._setField) return this._setField(field)
-    return val => {
-      this._meta.dirty.add(field)
-      this._meta.values.set(field, val)
-      return newVal
-    }
+  _setField (field) {
+    this._meta.dirty.add(field)
+    this._meta.values.set(field, val)
+    return newVal
   }
 
   toString () {
