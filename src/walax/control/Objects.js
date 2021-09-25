@@ -5,89 +5,95 @@ import Model from '../model/Model'
 import Control from './Control'
 
 export default class Objects extends Control {
-    schemas = new Map()
-    models = new Map()
-    managers = new Map()
-    constructor() {
-        super()
+  schemas = new Map()
+  models = new Map()
+  managers = new Map()
+  constructor () {
+    super()
+  }
+
+  toString () {
+    return 'Objects'
+  }
+  get defaultSchemaClass () {
+    return DjangoSchema
+  }
+
+  checkManager (manager) {
+    return true // not even sure we should check inheritance here
+  }
+
+  receiveObject (model, data) {
+    this.d('receiving model object data', model, data)
+    this.checkModel(model)
+
+    let obj
+    if (model.pk in data) {
+      let key = `objects/${model.name}/${data[model.pk]}`
+      obj = w.cache.get(key, () => {
+        return new model()
+      })
+    } else {
+      obj = new model()
     }
 
-    toString() { return 'Objects' }
-    get defaultSchemaClass() {
-        return DjangoSchema
-    }
+    if (data) obj.updateFields(data)
+    if (obj.pk) obj._meta.new = false
+    // obj._meta.dirty.clear()
 
-    checkManager(manager) {
-        return true // not even sure we should check inheritance here
-    }
+    this.d(`object created`, { model, obj })
 
-    receiveObject(model, data) {
-        this.d(
-            "receiving model object data",
-            model,
-            data
-        )
-        this.checkModel(model)
+    // k, v, ...cache ident
+    //w.cache.store(obj.pk, obj, 'objects', model._schema, model)
+    return obj
+  }
 
-        let obj = new model()
+  checkName (name) {
+    // todo generic, move to Walax
+    if (!name) throw new TypeError('schema name may not be blank')
+    if (this.schemas.has(name))
+      throw new TypeError(`schema name ${name} already registered`)
+    if (!w.isValidProp(name))
+      throw new TypeError(`invalid schema name: ${name}`)
+    return true
+  }
 
-        if (data) obj.updateFields(data)
-        if (obj.pk) obj._meta.new = false
-        // obj._meta.dirty.clear()
+  checkModels (models) {
+    if (!models) return true
+    models.forEach((v, k) => {
+      if (!w.isValidProp(k)) throw new TypeError(`invalid name for model ${k}`)
+      if (!this.checkModel(v))
+        throw new TypeError(`custom model ${k} is not a WalaxObject`)
+    })
+    return true
+  }
 
-        this.d(`object created`, { model, obj })
+  checkModel (model) {
+    return w.isSubclassOf(Model, model) // todo maybe
+  }
 
-        // k, v, ...cache ident
-        //w.cache.store(obj.pk, obj, 'objects', model._schema, model)
-        return obj
-    }
+  checkSchema (cls) {
+    return true
+  }
 
-    checkName(name) {
-        // todo generic, move to Walax
-        if (!name) throw new TypeError('schema name may not be blank')
-        if (this.schemas.has(name))
-            throw new TypeError(`schema name ${name} already registered`)
-        if (!w.isValidProp(name))
-            throw new TypeError(`invalid schema name: ${name}`)
-        return true
-    }
+  toString () {
+    return 'Objects'
+  }
 
-    checkModels(models) {
-        if (!models) return true
-        models.forEach((v, k) => {
-            if (!w.isValidProp(k)) throw new TypeError(`invalid name for model ${k}`)
-            if (!this.checkModel(v))
-                throw new TypeError(`custom model ${k} is not a WalaxObject`)
-        })
-        return true
-    }
+  async load (name, url, models = false, schemaCls = false) {
+    this.checkName(name)
+    this.checkModels(models)
+    schemaCls ||= this.defaultSchemaClass
+    this.checkSchema(schemaCls)
+    this.apiBase = url
+    this.d('loading schema class', url, schemaCls)
+    let schema = new schemaCls(name, url, models)
+    w.augment(this, name, () => this.schemas.get(name))
+    this.schemas.set(name, schema)
+    return schema
+  }
 
-    checkModel(model) {
-        return w.isSubclassOf(Model, model) // todo maybe
-    }
-
-    checkSchema(cls) {
-        return true
-    }
-
-    toString() {
-        return 'Objects'
-    }
-
-    async load(name, url, models = false, schemaCls = false) {
-        this.checkName(name)
-        this.checkModels(models)
-        schemaCls ||= this.defaultSchemaClass
-        this.checkSchema(schemaCls)
-        this.apiBase = url
-        this.d('loading schema class', url, schemaCls)
-        let schema = new schemaCls(name, url, models)
-        w.augment(this, name, () => this.schemas.get(name))
-        this.schemas.set(name, schema)
-        return schema
-    }
-
-    schema(name) {
-        return this.schemas.get(name)
-    }
+  schema (name) {
+    return this.schemas.get(name)
+  }
 }
