@@ -16,12 +16,14 @@ export default class Auth extends Control {
     setInterval(() => {
       w.auth.refreshToken()
     }, refreshInterval)
-    this.refreshToken()
   }
   load (key, url) {
     this.baseUrl = url
   }
-  setup () {}
+  initialize () {
+    // this.refreshToken()
+    // fixme: this should work but doesn't
+  }
   toString () {
     return 'Auth'
   }

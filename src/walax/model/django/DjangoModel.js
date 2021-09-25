@@ -94,9 +94,10 @@ export default class DjangoModel extends Model {
         this._meta.model
       )
       this._meta.values.set(fn, data[fn])
-      if (this._meta.new) {
-        this._meta.dirty.add(fn)
-      }
+      // not sure this should ever happen
+      // if (this._meta.new) {
+      //   this._meta.dirty.add(fn)
+      // }
     }
     if (data && data.url) this._meta.url = data.url
     if (!this._meta.url && this.pk)

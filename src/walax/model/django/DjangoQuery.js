@@ -43,9 +43,9 @@ class DjangoQuery extends Entity {
     args = false,
     flip = false,
     single = false,
-    order,
-    limit,
-    offset
+    order = false, // TODO
+    limit = false,
+    offset = false
   ) {
     // todo: sanity check
     super()
@@ -54,26 +54,35 @@ class DjangoQuery extends Entity {
     this.args = args
     this.single = single
     this.cache = {}
+    this.d('query constructed', { parent, flip, args, single })
   }
 
   toString () {
     return 'DjangoQuery ' + this.serialized
   }
 
-  all () {
+  async all () {
     return new DjangoQuery(this)
   }
 
-  filter (args) {
+  async filter (args) {
     return new DjangoQuery(this, args)
   }
 
-  exclude (args) {
+  async exclude (args) {
     return new DjangoQuery(this, args, true)
   }
 
-  one (args) {
-    return new DjangoQuery(this, args, false, true)
+  async one (args) {
+    let q = new DjangoQuery(this, args, false)
+    this.d('ONE q', q)
+    return q.then(x => {
+      this.d('ONE', x)
+      x.forEach(y => {
+        this.d('ONE TWO', y)
+        return y
+      })
+    })
   }
 
   get model () {
@@ -109,7 +118,7 @@ class DjangoQuery extends Entity {
         data.forEach(o => {
           let newObj = w.obj.receiveObject(this.model, o)
           this.d('object created', newObj)
-          if (this.single) return newObj
+          // if (this.single) return newObj
           res.add(newObj)
         })
       }

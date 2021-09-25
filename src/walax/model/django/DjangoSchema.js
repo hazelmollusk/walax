@@ -116,7 +116,8 @@ export class DjangoSchema extends Schema {
         )
       }
       Promise.all(modelPromises).then(x => {
-        this.processModels()
+        this.d('PROCESSING MODELS')
+        return this.processModels()
       })
     })
   }

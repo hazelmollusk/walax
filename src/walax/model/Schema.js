@@ -21,7 +21,7 @@ export default class Schema extends Entity {
     super()
     this.a(name || !url, `need a name for schema ${url}`)
     this.name = name
-    this.d(` Django schema ${name} (${url}) loaded`)
+    this.d(`Django schema ${name} (${url}) loading`)
     this.initialize(models)
     if (url) this.load(name, url, models)
   }
@@ -65,6 +65,7 @@ export default class Schema extends Entity {
     this.a(false, 'initSchema not implemented')
   }
 
+  // TODO: move a lot of this logic to DjangoSchema
   createModel (name, opts = undefined) {
     let baseModel = this.models[name] || this.defaultModel
     this.a(baseModel, 'no base model to use')
@@ -77,7 +78,10 @@ export default class Schema extends Entity {
       `invalid model registered: ${name}`
     )
     this.a(!w.obj.models.has(name), `model ${name} already exists!`)
-    this.d(`creating model ${name}`, { schema: this, model: this.models[name] })
+    this.d(`creating model ${name}`, {
+      schema: this,
+      model: this.models[name]
+    })
 
     this.models[name]._meta ||= {}
     if (opts) for (let opt in opts) this.models[name]._meta[opt] = opts[opt]
@@ -99,15 +103,11 @@ export default class Schema extends Entity {
 
   createFields (name, fields) {
     for (let fn in fields) {
-      let field = fields[fn]
-      let model = this.models[name]
       let getter = function () {
-        this._getField(fn)
-        console.log('get', fn)
+        return this._getField(fn)
       }
       let setter = function (val) {
-        this._setField(fn, val)
-        console.log('set', fn, val)
+        return this._setField(fn, val)
       }
       w.augment(this.models[name].prototype, fn, getter, setter)
     }
@@ -120,7 +120,7 @@ export default class Schema extends Entity {
       async function remoteMethod (params, data) {
         this.i(`calling remote method ${fn.name}`, { params, data })
         this.a(this.url, 'attempted rpc with unsaved object!')
-        return w.net[fn.method]([this.url, fn.name].join('/'), params, data)
+        return w.net[fn.method]([this.url, fn.name, '/'].join(''), params, data)
       }
       // Object.defineProperty(this.models[name], fn.name, { value: remoteMethod })
       this.models[name].prototype[fn.name] = remoteMethod

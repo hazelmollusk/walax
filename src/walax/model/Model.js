@@ -61,10 +61,6 @@ export default class Model extends Entity {
     this.d('initmodel', this)
     if (Object.keys(this._meta.model.fields).length) {
       Object.keys(this._meta.model.fields).forEach(fn => {
-        this.d(`field ${fn}`)
-        // w.augment(this, fn, this._walaxGetField(fn), this._walaxSetField(fn))
-        //FIXME at the very least per-type
-
         this._setFieldDefault(fn)
       })
       if (this._meta.model.relatedQueries) {
