@@ -132,16 +132,9 @@ export class Walax {
     if (config) for (let name in config) this.config.set(name, config[name])
 
     // register plugins
-    const plug = {
-      log: Logger,
-      cache: Cache,
-      net: Network,
-      obj: Objects,
-      auth: Auth,
-      test: Test
-    }
+    const plug = [Logger, Cache, Network, Objects, Auth, Test]
     d('initializing...')
-    for (let name in plug) this.addPlugin(name, plug[name])
+    for (let p of plug) this.addPlugin(p)
     console.log(this.plugins)
     this.plugins.forEach((v, k) => {
       v.initialize()
@@ -162,15 +155,16 @@ export class Walax {
    * @param {*} args
    * @memberof Walax
    */
-  addPlugin (key, cmp, ...args) {
-    d(`adding plugin`, { key, cmp, args })
+  addPlugin (cmp, ...args) {
+    d(`adding plugin`, { cmp, args })
     a(
       this.isSubclassOf(Control, cmp),
-      `${key} must extend walax.control.Control`,
+      `plugin must extend walax.control.Control`,
       cmp
     )
     let newCmp = new cmp(...args)
     this.plugins ||= new Map()
+    let key = newCmp.getPropName()
 
     if (this.isValidProp(key)) {
       this.plugins.set(key, newCmp)
@@ -258,6 +252,7 @@ export class Walax {
    * @memberof Walax
    */
   isSubclassOf (req, cls) {
+    d('isSubclassOf', { req, cls })
     if (!req || !cls) return false // should prob log something heres
     if (req instanceof cls) return true
     if (cls == req) return true

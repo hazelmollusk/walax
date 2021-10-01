@@ -106,10 +106,10 @@ export default class DjangoModel extends Model {
   }
 
   async save () {
-    if (!this._meta.dirty.size) {
-      this.d('save(): object unchanged, not saving')
-      return this
-    }
+    // if (!this._meta.dirty.size) {
+    //   this.d('save(): object unchanged, not saving')
+    //   return this
+    // }
     this.a(
       !this._meta.deleted,
       `saving deleted model: ${this.toString()}.save()`
@@ -118,11 +118,17 @@ export default class DjangoModel extends Model {
     let saveFields = Object.fromEntries(this._meta.values.entries())
     for (let fn in saveFields)
       if (saveFields[fn] === undefined) delete saveFields[fn]
+
+    this.d('saving object', { obj: this, saveFields })
     if (this._meta.new) {
       return w.net
         .post(this._meta.model.modelUrl, {}, saveFields, {})
         .then(ret => {
           this.updateFields(ret)
+          return w.obj.cache.get(
+            `objects/${this.name}/${ret[this._meta.model.pk]}`,
+            () => this
+          )
         })
     } else {
       // ERROR CHECKING FOOL

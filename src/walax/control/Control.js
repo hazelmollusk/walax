@@ -10,6 +10,9 @@ export default class Control extends Entity {
   toString () {
     return 'Control'
   }
+  getPropName() {
+    throw new TypeError('getPropName not implemented')
+  }
   async load (key, url) {
     return true
   }

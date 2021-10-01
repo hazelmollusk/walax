@@ -27,6 +27,9 @@ export default class Auth extends Control {
   toString () {
     return 'Auth'
   }
+  getPropName() {
+    return 'auth'
+  }
   get storage () {
     return window.localStorage
   }

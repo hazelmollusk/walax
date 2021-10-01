@@ -7,6 +7,9 @@ export default class Test extends Control {
     toString() {
         return 'Test'
     }
+    getPropName() {
+      return 'test'
+    }
     toggle(elm) {
         if (typeof elm == 'string') elm = document.getElementById(elm)
         d(elm.style)

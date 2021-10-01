@@ -12,6 +12,9 @@ export default class WalaxCache extends Control {
   toString () {
     return 'Cache'
   }
+  getPropName () {
+    return 'cache'
+  }
   get (key, func = undefined) {
     if (this._storage.has(key)) {
       this.d('cache hit', key)

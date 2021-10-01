@@ -19,14 +19,17 @@ export default class DjangoManager extends Manager {
 
   async one (args) {
     let query = new DjangoQuery(this, args, false)
-    this.d('ONE q', query)
     return query.then(x => {
-      this.d('ONE', x)
+      this.d('ONE', { query, x })
       x.forEach(y => {
         this.d('returning ONE', y)
         return y
       })
     })
+  }
+
+  cached (id) {
+    return w.cache.get(`objects/${this.model.name}/${id}`)
   }
 
   async filter (args) {

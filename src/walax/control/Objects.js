@@ -15,6 +15,9 @@ export default class Objects extends Control {
   toString () {
     return 'Objects'
   }
+  getPropName() {
+    return 'obj'
+  }
   get defaultSchemaClass () {
     return DjangoSchema
   }
@@ -27,15 +30,10 @@ export default class Objects extends Control {
     this.d('receiving model object data', model, data)
     this.checkModel(model)
 
-    let obj
-    if (model.pk in data) {
-      let key = `objects/${model.name}/${data[model.pk]}`
-      obj = w.cache.get(key, () => {
-        return new model()
-      })
-    } else {
-      obj = new model()
-    }
+    let key = `objects/${model.name}/${data[model.pk]}`
+    let obj = w.cache.get(key, () => {
+      return new model()
+    })
 
     if (data) obj.updateFields(data)
     if (obj.pk) obj._meta.new = false
