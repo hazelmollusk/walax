@@ -252,7 +252,7 @@ export class Walax {
    * @memberof Walax
    */
   isSubclassOf (req, cls) {
-    d('isSubclassOf', { req, cls })
+    // d('isSubclassOf', { req, cls })
     if (!req || !cls) return false // should prob log something heres
     if (req instanceof cls) return true
     if (cls == req) return true

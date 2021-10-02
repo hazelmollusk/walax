@@ -3,9 +3,10 @@ import DjangoQuery from './DjangoQuery'
 import DjangoModel from './DjangoModel'
 
 export default class DjangoManager extends Manager {
-  constructor (model) {
+  constructor (model, args = false) {
     super(model)
     this.model = model
+    this.args = args || {}
   }
 
   get params () {
@@ -13,11 +14,12 @@ export default class DjangoManager extends Manager {
   }
 
   async all () {
-    let query = new DjangoQuery(this)
+    let query = new DjangoQuery(this, this.args)
     return query
   }
 
   async one (args) {
+    Object.assign(args, this.args)
     let query = new DjangoQuery(this, args, false)
     return query.then(x => {
       this.d('ONE', { query, x })
@@ -33,11 +35,13 @@ export default class DjangoManager extends Manager {
   }
 
   async filter (args) {
+    Object.assign(args, this.args)
     let query = new DjangoQuery(this, args)
     return query
   }
 
-  async exclude (...args) {
+  async exclude (args) {
+    Object.assign(args, this.args)
     let query = new DjangoQuery(this, args, true)
     return query
   }
