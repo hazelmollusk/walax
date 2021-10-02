@@ -90,9 +90,9 @@ class DjangoQuery extends Entity {
   }
 
   get params () {
-    let p = this.parent.args ? this.parent.args : {}
+    let p = this.parent.params ? this.parent.params : {}
     if (this.args) Object.assign(p, this.args)
-    this.d('query params', p)
+    this.d('query params', { cur: p, orig: this.args })
     return p
   }
 
