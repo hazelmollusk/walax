@@ -10,7 +10,7 @@ export default class Network extends Control {
   toString () {
     return 'Network'
   }
-  getPropName() {
+  getPropName () {
     return 'net'
   }
   load (url) {
@@ -68,13 +68,22 @@ export default class Network extends Control {
       options
     })
 
-    return m.request(options).catch(err => {
-      this.d('request error', { options })
-      //todo smarter than this
-      return w.auth.refreshToken().then(x => {
-        return m.request(options)
+    return m
+      .request(options)
+      .then(data => {
+        this.d('received data', { options, data })
+        return data
       })
-    })
+      .catch(err => {
+        this.d('request error', { options, err })
+        //todo smarter than this
+        return w.auth.refreshToken().then(x => {
+          return m.request(options).then(data => {
+            this.d('received data after reauth', { options, data })
+            return data
+          })
+        })
+      })
     // .then(ret => {
     //     this.d('Network data', ret)
     // })

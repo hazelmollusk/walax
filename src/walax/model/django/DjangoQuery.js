@@ -78,10 +78,12 @@ class DjangoQuery extends Entity {
     this.d('ONE q', q)
     return q.then(x => {
       this.d('ONE', x)
+      let z = undefined
       x.forEach(y => {
         this.d('ONE TWO', y)
-        return y
+        z = y // this is weird FIXME
       })
+      return z
     })
   }
 
