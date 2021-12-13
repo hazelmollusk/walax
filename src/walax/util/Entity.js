@@ -9,49 +9,35 @@ import w from '../Walax'
 */
 
 export default class Entity {
-    constructor() { 
-    }
+  constructor () {}
 
-    toString() {
-        return 'Walax Entity'
-    }
+  toString () {
+    return 'Walax Entity'
+  }
 
-    /*
+  /*
       sets up logging shortcuts that automatically tag
       logs with this objects ident 
     */
-    _daeiName = false
-    // override to set a dynamic log name that isn't toString()
-    _daeiGetName() {
-        return this._daeiName
-            ? this._daeiName
-            : this.toString
-                ? this.toString()
-                : 'Walax Entity'
-    }
-    d(...msg) {
-        w?.log?.debug(
-            this._daeiGetName(),
-            ...msg
-        )
-    }
-    e(...msg) {
-        w?.log?.error(
-            this._daeiGetName(),
-            ...msg
-        )
-    }
-    a(cond, msg, ...dbg) {
-        w.log.assert(cond,
-            msg,
-            dbg
-        )
-    }
-    i(...msg) {
-        w?.log?.info(
-            this._daeiGetName(),
-            ...msg
-        )
-    }
-
+  _daeiName = false
+  // override to set a dynamic log name that isn't toString()
+  _daeiGetName () {
+    return this._daeiName
+      ? this._daeiName
+      : this.toString
+      ? this.toString()
+      : 'Walax Entity'
+  }
+  d (...msg) {
+    w?.log?.debug(this._daeiGetName(), ...msg)
+  }
+  e (...msg) {
+    w?.log?.error(this._daeiGetName(), 'ERROR', ...msg)
+  }
+  a (cond, msg, ...dbg) {
+    w.log.assert(cond, msg, dbg)
+  }
+  i (...msg) {
+    w?.log?.info(this._daeiGetName(), ...msg)
+  }
 }

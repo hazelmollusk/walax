@@ -54,7 +54,7 @@ export default class Network extends Control {
    * @param {*} options
    * @returns {Promise}
    */
-  async _req (options) {
+  async _req (options, retry = true) {
     this.a(options, 'empty request options')
     options.headers ||= {}
     options.headers.Accept =
@@ -77,12 +77,17 @@ export default class Network extends Control {
       .catch(err => {
         this.d('request error', { options, err })
         //todo smarter than this
-        return w.auth.refreshToken().then(x => {
-          return m.request(options).then(data => {
-            this.d('received data after reauth', { options, data })
-            return data
+        if (retry) {
+          return w.auth.refreshToken().then(x => {
+            if (w.auth.state)
+              return m.request(options).then(data => {
+                this.d('received data after reauth', { options, data })
+                return data
+              })
           })
-        })
+        } else {
+          return null
+        }
       })
     // .then(ret => {
     //     this.d('Network data', ret)

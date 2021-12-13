@@ -120,21 +120,26 @@ export default class DjangoModel extends Model {
       if (saveFields[fn] === undefined) delete saveFields[fn]
 
     this.d('saving object', { obj: this, saveFields })
-    if (this._meta.new) {
-      return w.net
-        .post(this._meta.model.modelUrl, {}, saveFields, {})
-        .then(ret => {
+    try {
+      if (this._meta.new) {
+        return w.net
+          .post(this._meta.model.modelUrl, {}, saveFields, {})
+          .then(ret => {
+            this.updateFields(ret)
+            return w.obj.cache.get(
+              `objects/${this.name}/${ret[this._meta.model.pk]}`,
+              () => this
+            )
+          })
+      } else {
+        // ERROR CHECKING FOOL
+        return w.net.put(this.url, {}, saveFields, {}).then(ret => {
           this.updateFields(ret)
-          return w.obj.cache.get(
-            `objects/${this.name}/${ret[this._meta.model.pk]}`,
-            () => this
-          )
         })
-    } else {
-      // ERROR CHECKING FOOL
-      return w.net.put(this.url, {}, saveFields, {}).then(ret => {
-        this.updateFields(ret)
-      })
+      }
+    } catch (err) {
+      this.d('error saving object')
+      this.e(err)
     }
   }
 

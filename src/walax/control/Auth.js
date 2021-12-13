@@ -27,7 +27,7 @@ export default class Auth extends Control {
   toString () {
     return 'Auth'
   }
-  getPropName() {
+  getPropName () {
     return 'auth'
   }
   get storage () {
@@ -62,6 +62,7 @@ export default class Auth extends Control {
     this.storage.removeItem('access')
     this.storage.removeItem('refresh')
     this.storage.removeItem('username')
+    this.d('logged out', this.state, this.access)
     return true
   }
   async refreshToken () {
@@ -84,7 +85,7 @@ export default class Auth extends Control {
         })
         .catch(err => {
           this.d('refresh failed, logging out')
-          w.auth.logout()
+          this.logout()
         })
     }
   }
