@@ -15,7 +15,7 @@ export default class Objects extends Control {
   toString () {
     return 'Objects'
   }
-  getPropName() {
+  getPropName () {
     return 'obj'
   }
   get defaultSchemaClass () {
@@ -29,16 +29,23 @@ export default class Objects extends Control {
   receiveObject (model, data) {
     this.d('receiving model object data', model, data)
     this.checkModel(model)
+    if (!data) {
+      this.d('')
+    }
+    let obj
+    if (data) {
+      let key = `objects/${model.name}/${data[model.pk]}`
+      obj = w.cache.get(key, () => {
+        return new model()
+      })
 
-    let key = `objects/${model.name}/${data[model.pk]}`
-    let obj = w.cache.get(key, () => {
-      return new model()
-    })
-
-    if (data) obj.updateFields(data)
-    if (obj.pk) obj._meta.new = false
-    // obj._meta.dirty.clear()
-
+      obj.updateFields(data)
+      console.log('refresh')
+      if (obj.pk) obj._meta.new = false
+      // obj._meta.dirty.clear()
+    } else {
+      obj = new model()
+    }
     this.d(`object created`, { model, obj })
 
     // k, v, ...cache ident

@@ -123,7 +123,7 @@ export default class DjangoModel extends Model {
     try {
       if (this._meta.new) {
         return w.net
-          .post(this._meta.model.modelUrl, {}, saveFields, {})
+          .post(this._meta.model.modelUrl, saveFields, saveFields, {})
           .then(ret => {
             this.updateFields(ret)
             return w.obj.cache.get(
